@@ -126,6 +126,23 @@ En `data/torneos/<categoria>-<edicion>.json`, buscar el partido en `rondas` y aj
 
 Regenerar con `node build.js`: la tarjeta, el cuadro y la home se actualizan.
 
+## Cómo cambiar las redes sociales y el contacto
+
+Todo vive en `data/sitio.json` (un solo lugar, igual que las noticias):
+
+```json
+"redes": [
+  { "nombre": "Instagram", "url": "https://www.instagram.com/...", "icono": "assets/img/iconos/instagram.jpg" },
+  ...
+],
+"contacto": { "email": "...", "telefono": "...", "direccion": "..." }
+```
+
+- El logo de cada red se muestra en el encabezado y el pie (reemplaza las siglas IG/FB/WA originales). `icono` es la ruta al logotipo dentro del sitio; para cambiar un logo, reemplazás el archivo en `assets/img/iconos/` o apuntás `icono` a otro archivo.
+- Los logotipos llegan con fondo blanco y se muestran como chips blancos (`social-link`): no hace falta recortarlos.
+- La página de Contacto se arma con el bloque `contacto` del mismo JSON. Para ocultar un dato (ej. un teléfono que todavía no hay), el valor es `"-----"`.
+- Regenerar con `node build.js`.
+
 ## Cómo agregar un torneo
 
 ### Una edición nueva (misma categoría)

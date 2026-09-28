@@ -88,21 +88,31 @@
   text-decoration: none;
 }
 
+/* ===== Redes sociales: chip blanco con el logotipo =====
+   Los logotipos (JPEG) llegan con fondo blanco: el chip es del mismo
+   blanco, así el logo se ve como si fuera la etiqueta oficial. */
 .social-link {
   display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: var(--esp-1) 0.55rem;
-  border-radius: var(--radio-pill);
-  background: rgba(255, 255, 255, 0.1);
+  width: var(--alto-icono-red);
+  height: var(--alto-icono-red);
+  border-radius: 6px;
+  background: var(--color-blanco);
   border: 1px solid rgba(255, 255, 255, 0.22);
-  color: var(--color-blanco);
   margin-left: var(--esp-2);
-  transition: background var(--dur) var(--ease);
+  overflow: hidden;
+  line-height: 0;
+  transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease);
 }
 .social-link:hover {
-  background: rgba(255, 213, 0, 0.22);
+  filter: brightness(0.94);
+  transform: translateY(-1px);
   text-decoration: none;
+}
+.social-link .social-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ===== Contenido ===== */

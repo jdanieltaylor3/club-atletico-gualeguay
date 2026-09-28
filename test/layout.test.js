@@ -59,6 +59,27 @@ test("renderRedes: lista vacía y escapado de URLs", () => {
   assert.match(renderRedes([{ url: 'x" onclick="1', icono: "IG" }]), /&quot;/);
 });
 
+test("renderRedes: pinta el logotipo en vez del texto IG/FB/WA", () => {
+  const html = renderRedes(
+    [{ nombre: "Instagram", url: "https://ig", icono: "assets/img/iconos/instagram.jpg" }],
+    "../../"
+  );
+  assert.match(html, /aria-label="Instagram"/);
+  assert.match(html, /<img class="social-icon" src="\.\.\/\.\.\/assets\/img\/iconos\/instagram\.jpg" alt="" width="24" height="24">/);
+  assert.doesNotMatch(html, /IG/);
+});
+
+test("assemble: los iconos de redes resuelven assetsRoot en header y pie", () => {
+  const html = assemble({
+    titulo: "X",
+    contenido: "",
+    anio: 2026,
+    assetsRoot: "../",
+    redes: [{ nombre: "WhatsApp", url: "https://wa.me/54", icono: "assets/img/iconos/whatsapp.jpg" }],
+  });
+  assert.match(html, /src="\.\.\/assets\/img\/iconos\/whatsapp\.jpg"/);
+});
+
 test("parsearPlantilla: separa metadata y contenido", () => {
   const meta = parsearPlantilla('<!-- PAGINA: Torneos | torneos -->\n<section>hola</section>');
   assert.equal(meta.titulo, "Torneos");

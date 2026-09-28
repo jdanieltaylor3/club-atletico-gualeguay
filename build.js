@@ -102,10 +102,24 @@ function prepararDist() {
 
 // Páginas escritas a mano en templates/ (sin datos).
 function generarManuscritas() {
-  for (const nombre of ["instalaciones.html", "contacto.html", "404.html"]) {
+  for (const nombre of ["instalaciones.html", "404.html"]) {
     const { titulo, navActiva, contenido } = plantilla(nombre);
     escribirPagina(nombre, titulo, navActiva, contenido);
   }
+}
+
+// La página de contacto se arma desde data/sitio.json (igual que las redes):
+// así los datos viven en un solo lugar y no se hardcodean en la plantilla.
+function generarContacto() {
+  const c = sitio().contacto;
+  const { titulo, navActiva, contenido } = plantilla("contacto.html");
+  escribirPagina("contacto.html", titulo, navActiva, rellenar(contenido, {
+    "<!-- CONTACTO -->": `<ul class="contact-list">
+      <li>Email: ${escapeHtml(c.email)}</li>
+      <li>Teléfono: ${escapeHtml(c.telefono)}</li>
+      <li>Dirección: ${escapeHtml(c.direccion)}</li>
+    </ul>`,
+  }));
 }
 
 // Una página por archivo de data/torneos/. Es un shell: el navegador carga su
@@ -299,6 +313,8 @@ function main() {
   prepararDist();
   console.log("Generando páginas manuscritas…");
   generarManuscritas();
+  console.log("Generando contacto…");
+  generarContacto();
   console.log("Generando ediciones de torneo…");
   console.log(`  → ${generarEdiciones()} ediciones`);
   console.log("Generando índice de torneos…");

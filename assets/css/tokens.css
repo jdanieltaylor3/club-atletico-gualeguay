@@ -69,6 +69,7 @@
   --ancho-max-lg: 1080px;
   --alto-escudo: 30px;
   --alto-logo: 44px;
+  --alto-icono-red: 24px;  /* logotipos de redes en el header y el pie */
 
   /* --- Espaciado: los pasos que usa el diseño --- */
   --esp-1: 0.2rem;
