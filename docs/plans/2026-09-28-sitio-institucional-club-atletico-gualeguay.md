@@ -151,7 +151,7 @@ Modelo: cada edición es autocontenida. La Ronda 1 usa `"zona": "iniciales"` (cr
 {
   "nombre": "Club Atlético Gualeguay",
   "ciudad": "Villaguay, Entre Ríos",
-  "escudo": "assets/img/escudo-club.jpg",
+  "escudo": "assets/img/escudo-club.png",
   "colores": { "primario": "#FFD500", "secundario": "#2E52E0", "acento": "#FFD500", "fondo": "#060A21" },
   "redes": [
     { "nombre": "Instagram", "url": "https://instagram.com/tu-club", "icono": "IG" },
@@ -274,7 +274,7 @@ Modelo: cada edición es autocontenida. La Ronda 1 usa `"zona": "iniciales"` (cr
 
 - [ ] **Paso 5: Escudo real del club y SVGs placeholder para noticias**
 
-El escudo real se integró como `assets/img/escudo-club.jpg` (fuente: `recursos/escudo-club/escudo-cag-f7.jpg`) con sus colores oficiales (azul #0226A6 + amarillo #FDFE03) aplicados en el tema oscuro del CSS.
+El escudo real se integró como `assets/img/escudo-club.png` (fuente: `recursos/escudo-club/escudo-cag-f7.jpg`) con sus colores oficiales (azul #0226A6 + amarillo #FDFE03) aplicados en el tema oscuro del CSS.
 
 `assets/img/placeholder-1.svg` ("Foto 1") y `assets/img/placeholder-2.svg` ("Foto 2") siguen como placeholders de imágenes de noticias y se reemplazan por fotos reales cuando el club las entregue.
 
@@ -439,7 +439,7 @@ git commit -m "feat: utilidades del build con tests"
 ```html
 <header class="site-header">
   <a class="brand" href="<!-- ASSETS_ROOT -->index.html">
-    <img class="brand-logo" src="<!-- ASSETS_ROOT -->assets/img/escudo-club.jpg" alt="Escudo del Club Atlético Gualeguay">
+    <img class="brand-logo" src="<!-- ASSETS_ROOT -->assets/img/escudo-club.png" alt="Escudo del Club Atlético Gualeguay">
     <span class="brand-name">Club Atlético Gualeguay</span>
   </a>
   <button class="nav-toggle" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menú">☰</button>

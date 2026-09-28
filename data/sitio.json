@@ -1,7 +1,7 @@
 {
   "nombre": "Club Atlético Gualeguay",
   "ciudad": "Villaguay, Entre Ríos",
-  "escudo": "assets/img/escudo-club.jpg",
+  "escudo": "assets/img/escudo-club.png",
   "colores": { "primario": "#FFD500", "secundario": "#2E52E0", "acento": "#FFD500", "fondo": "#060A21" },
   "redes": [
     { "nombre": "Instagram", "url": "https://instagram.com/tu-club", "icono": "IG" },
