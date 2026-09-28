@@ -6,6 +6,15 @@
   let torneo = null;
   const $ = (html) => { contenedor.innerHTML = html; };
 
+  // Las rutas en los JSON son relativas a la raíz del sitio (p. ej. "assets/img/x.png"),
+  // pero esta página vive en /torneos/<categoria>/<edicion>/. Se anteponen los "../"
+  // que ya usa el layout para el CSS y los scripts, para que no dependan de la URL.
+  function rutaAsset(ruta) {
+    if (/^(https?:)?\/\//.test(ruta) || ruta.startsWith("/")) return ruta;
+    const profundidad = location.pathname.split("/").length - 2;
+    return "../".repeat(Math.max(profundidad, 0)) + ruta;
+  }
+
   function estadoHTML(tipo, mensaje) {
     return `<div class="estado${tipo === "error" ? " error" : ""}"><p>${mensaje}</p></div>`;
   }
@@ -31,7 +40,7 @@
   function escudoDe(e) {
     if (!e) return "";
     if (e.escudo) {
-      return `<img class="equipo-escudo" src="${e.escudo}" alt="Escudo de ${e.nombre}" loading="lazy">`;
+      return `<img class="equipo-escudo" src="${rutaAsset(e.escudo)}" alt="Escudo de ${e.nombre}" loading="lazy">`;
     }
     const ini = e.nombre.split(/\s+/).map((w) => w[0]).join("").slice(0, 3).toUpperCase();
     return `<span class="equipo-escudo fallback" aria-hidden="true">${ini}</span>`;

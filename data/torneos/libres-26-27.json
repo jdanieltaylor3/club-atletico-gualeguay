@@ -6,12 +6,12 @@
   "edicion": "26/27",
   "estado": "vigente",
   "equipos": [
-    { "id": "eq-1", "nombre": "Amistad FC" },
-    { "id": "eq-2", "nombre": "Centenario" },
-    { "id": "eq-3", "nombre": "La Picada" },
-    { "id": "eq-4", "nombre": "Río Uruguay" },
-    { "id": "eq-5", "nombre": "Los Amigos" },
-    { "id": "eq-6", "nombre": "San Martín" }
+    { "id": "eq-1", "nombre": "Amistad FC", "escudo": "assets/img/equipos/eq-1.png" },
+    { "id": "eq-2", "nombre": "Centenario", "escudo": "assets/img/equipos/eq-2.png" },
+    { "id": "eq-3", "nombre": "La Picada", "escudo": "assets/img/equipos/eq-3.png" },
+    { "id": "eq-4", "nombre": "Río Uruguay", "escudo": "assets/img/equipos/eq-4.png" },
+    { "id": "eq-5", "nombre": "Los Amigos", "escudo": "assets/img/equipos/eq-5.png" },
+    { "id": "eq-6", "nombre": "San Martín", "escudo": "assets/img/equipos/eq-6.png" }
   ],
   "rondas": [
     {

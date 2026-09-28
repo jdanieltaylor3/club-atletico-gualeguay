@@ -6,10 +6,10 @@
   "edicion": "26/27",
   "estado": "vigente",
   "equipos": [
-    { "id": "eq-1", "nombre": "Veteranos A" },
-    { "id": "eq-2", "nombre": "Veteranos B" },
-    { "id": "eq-3", "nombre": "Ex-River" },
-    { "id": "eq-4", "nombre": "La Vieja Guardia" }
+    { "id": "eq-1", "nombre": "Veteranos A", "escudo": "assets/img/equipos/eq-1.png" },
+    { "id": "eq-2", "nombre": "Veteranos B", "escudo": "assets/img/equipos/eq-2.png" },
+    { "id": "eq-3", "nombre": "Ex-River", "escudo": "assets/img/equipos/eq-3.png" },
+    { "id": "eq-4", "nombre": "La Vieja Guardia", "escudo": "assets/img/equipos/eq-4.png" }
   ],
   "rondas": [
     {
