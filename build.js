@@ -196,6 +196,29 @@ function recientesPartidos(t, max = 3) {
     .slice(0, max);
 }
 
+function renderCategoria(categoria, torneos) {
+  const nombre = categoria === "libres" ? "Libres" : "Veteranos";
+  const lista = torneos.map((t) => {
+    const vigente = t.estado === "vigente" ? ' <span class="badge v2">vigente</span>' : "";
+    return `<li><a href="${categoria}/${slugEdicion(t)}/index.html">Edición ${t.edicion}</a>${vigente}</li>`;
+  }).join("");
+  return `<article class="categoria">
+    <h2>${nombre}</h2>
+    <ul>${lista || "<li>Sin ediciones cargadas.</li>"}</ul>
+  </article>`;
+}
+
+function generarTorneosIndex() {
+  const torneos = leerTorneos();
+  const libres = torneos.filter((t) => t.categoria === "libres");
+  const veteranos = torneos.filter((t) => t.categoria === "veteranos");
+  const plantilla = fs.readFileSync(path.join(TEMPLATES, "torneos-index.html"), "utf8");
+  const meta = metadataDePlantilla(plantilla);
+  const contenido = meta.contenido.replace("<!-- CATEGORIAS -->",
+    renderCategoria("libres", libres) + renderCategoria("veteranos", veteranos));
+  escribirPagina("torneos/index.html", meta.titulo, meta.navActiva, contenido);
+}
+
 function generarHome() {
   const sitio = leerJSON(path.join(DATA, "sitio.json"));
   const libres = torneoVigente("libres");
@@ -269,6 +292,8 @@ function main() {
   copiarManuscritas();
   console.log("Generando ediciones de torneo…");
   generarEdiciones();
+  console.log("Generando índice de torneos…");
+  generarTorneosIndex();
   console.log("Generando noticias…");
   generarNoticias();
   console.log("Generando home…");
