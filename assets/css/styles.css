@@ -135,6 +135,19 @@ h2 { font-size: 1.3rem; margin: 1.5rem 0 0.5rem; }
 .tp-resultado { font-weight: 800; white-space: nowrap; }
 .tp-meta { font-size: 0.78rem; color: var(--color-texto-suave); margin-top: 0.2rem; }
 
+/* ===== Escudos de equipos ===== */
+.equipo-escudo {
+  width: 30px; height: 30px; border-radius: 50%;
+  object-fit: contain; vertical-align: middle;
+  margin-right: 0.4rem; background: #fff;
+}
+.equipo-escudo.fallback {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--color-secundario); color: var(--color-primario);
+  font-size: 0.62rem; font-weight: 800; letter-spacing: 0.02em;
+  vertical-align: middle;
+}
+
 /* ===== Tabs y navegador de ronda ===== */
 .tabs { display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.3rem; margin: 0.75rem 0; }
 .tab {

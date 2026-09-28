@@ -22,6 +22,21 @@
     return m;
   }
 
+  function equiposPorId() {
+    const m = {};
+    for (const e of torneo.equipos) m[e.id] = e;
+    return m;
+  }
+
+  function escudoDe(e) {
+    if (!e) return "";
+    if (e.escudo) {
+      return `<img class="equipo-escudo" src="${e.escudo}" alt="Escudo de ${e.nombre}" loading="lazy">`;
+    }
+    const ini = e.nombre.split(/\s+/).map((w) => w[0]).join("").slice(0, 3).toUpperCase();
+    return `<span class="equipo-escudo fallback" aria-hidden="true">${ini}</span>`;
+  }
+
   function ganaEquipo(partido, equipoId) {
     if (partido.estado !== "jugado" || !partido.resultado) return null;
     const r = partido.resultado;
@@ -35,9 +50,11 @@
     for (const ronda of torneo.rondas) {
       for (const p of ronda.partidos) {
         if (p.estado !== "jugado") continue;
-        const ganador = ganaEquipo(p, equipoId);
-        if (ganador === "A" && p.equipoB === equipoId) vidas -= 1;
-        if (ganador === "B" && p.equipoA === equipoId) vidas -= 1;
+        const perdio = (ganaEquipo(p, equipoId) === "A" && p.equipoB === equipoId) ||
+          (ganaEquipo(p, equipoId) === "B" && p.equipoA === equipoId);
+        if (!perdio) continue;
+        if (ronda.zona === "perdedores") { vidas = 0; continue; }
+        vidas -= 1;
       }
     }
     return Math.max(vidas, 0);
@@ -53,7 +70,7 @@
   function renderEquipos() {
     const lista = torneo.equipos.map((e) =>
       `<div class="tarjeta-partido"><div class="tp-fila">` +
-      `<span class="tp-equipo">${e.nombre}</span>${badgeVidas(vidasEquipo(e.id))}` +
+      `<span class="tp-equipo">${escudoDe(e)} ${e.nombre}</span>${badgeVidas(vidasEquipo(e.id))}` +
       `</div></div>`
     ).join("");
     $("<h2>Equipos</h2>" + (lista || estadoHTML("", "Todavía no hay equipos cargados.")));
@@ -74,22 +91,26 @@
     perdedores: ["Zona Perdedores", "perdedores"],
   };
 
-  function tarjetaPartido(p, nombres) {
+  function tarjetaPartido(p, nombres, conVidas) {
+    const porId = equiposPorId();
     if (p.estado === "pase-libre") {
+      const e = porId[p.equipoA];
+      const quien = e ? `${escudoDe(e)} ${e.nombre}` : "Equipo";
       return `<div class="tarjeta-partido"><div class="tp-titulo">Pase libre</div>` +
-        `<div class="tp-fila"><span class="tp-equipo">⚽ ${nombres[p.equipoA]} pasa de ronda</span>` +
+        `<div class="tp-fila"><span class="tp-equipo">${quien} pasa de ronda</span>` +
         `<span class="badge bye">Bye</span></div></div>`;
     }
     const meta = p.fecha
       ? `${p.fecha} ${p.hora} · ${p.cancha}`
       : "Fecha y cancha a definir";
     const eq = (id) => id ? nombres[id] : '<span class="tp-equipo vacio">por definir</span>';
-    const badge = (id) => (id ? badgeVidas(vidasEquipo(id)) : "");
+    const conEscudo = (id) => (id && porId[id] ? `${escudoDe(porId[id])} ` : "");
+    const badge = (id) => (conVidas && id ? badgeVidas(vidasEquipo(id)) : "");
     const resultado = p.estado === "jugado" ? textoResultado(p) : "<strong>vs</strong>";
     return `<div class="tarjeta-partido"><div class="tp-titulo">${meta}</div>` +
-      `<div class="tp-fila"><span class="tp-equipo">⚽ ${eq(p.equipoA)} ${badge(p.equipoA)}</span>` +
+      `<div class="tp-fila"><span class="tp-equipo">${conEscudo(p.equipoA)}${eq(p.equipoA)} ${badge(p.equipoA)}</span>` +
       `<span class="tp-resultado">${resultado}</span>` +
-      `<span class="tp-equipo">⚽ ${eq(p.equipoB)} ${badge(p.equipoB)}</span></div></div>`;
+      `<span class="tp-equipo">${conEscudo(p.equipoB)}${eq(p.equipoB)} ${badge(p.equipoB)}</span></div></div>`;
   }
 
   function renderCuadro() {
@@ -105,7 +126,7 @@
     const zonas = Object.keys(ETIQUETA_ZONA).filter((z) => ronda.zonas[z]);
     const columnas = zonas.map((z) => {
       const [titulo, clase] = ETIQUETA_ZONA[z];
-      const partidos = ronda.zonas[z].map((p) => tarjetaPartido(p, nombres)).join("");
+      const partidos = ronda.zonas[z].map((p) => tarjetaPartido(p, nombres, z !== "iniciales")).join("");
       return `<div><div class="zona-titulo ${clase}">${titulo}</div>${partidos || '<p class="tp-titulo">Sin partidos en esta zona.</p>'}</div>`;
     }).join("");
     const botones = `<button class="tab" data-ronda="-1" ${actual === 0 ? "disabled" : ""}>◀</button>` +
@@ -133,7 +154,7 @@
         const cards = r.zonas[z]
           .slice()
           .sort((a, b) => (a.fecha || "").localeCompare(b.fecha || ""))
-          .map((p) => tarjetaPartido(p, nombres)).join("");
+          .map((p) => tarjetaPartido(p, nombres, z !== "iniciales")).join("");
         return `<h3 class="zona-titulo ${clase}">Ronda ${r.numero} · ${titulo}</h3>${cards}`;
       }).join("");
       return `<div class="fixture-ronda">${secciones}</div>`;

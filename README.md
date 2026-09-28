@@ -13,7 +13,7 @@ Sitio 100% estático (HTML + CSS + JS vanilla) con generador mínimo en Node sin
 
 - `data/sitio.json` — identidad, redes, edición vigente, contacto.
 - `data/noticias.json` — noticias (párrafos separados por línea en blanco).
-- `data/torneos/<categoria>-<edicion>.json` — una edición por archivo: equipos, rondas (zona `iniciales | ganadores | perdedores`; partido `por jugar | jugado | pase-libre`; penales opcionales) y goleadores.
+- `data/torneos/<categoria>-<edicion>.json` — una edición por archivo: equipos (cada uno puede tener `escudo` con una ruta de imagen; si falta se muestra la inicial), rondas (zona `iniciales | ganadores | perdedores`; partido `por jugar | jugado | pase-libre`; penales opcionales) y goleadores.
 - `templates/` — layout (partials), páginas manuscritas y plantillas.
 - `assets/` — CSS y JS; se copian tal cual a `dist/`.
 - `dist/` — salida del build (ver `.gitignore`).

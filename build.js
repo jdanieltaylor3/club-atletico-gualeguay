@@ -163,9 +163,19 @@ function nombresDe(torneo) {
   return m;
 }
 
-function partidoCard(p, nombres) {
+function escudoHtml(e) {
+  if (!e) return "";
+  if (e.escudo) {
+    return `<img class="equipo-escudo" src="${e.escudo}" alt="Escudo de ${e.nombre}" loading="lazy">`;
+  }
+  const ini = e.nombre.split(/\s+/).map((w) => w[0]).join("").slice(0, 3).toUpperCase();
+  return `<span class="equipo-escudo fallback" aria-hidden="true">${ini}</span>`;
+}
+
+function partidoCard(p, nombres, escudos) {
   if (p.estado === "pase-libre") return "";
   const eq = (id) => (id ? nombres[id] : "por definir");
+  const conEscudo = (id) => (id && escudos[id] ? `${escudoHtml(escudos[id])} ` : "");
   const meta = p.fecha ? `${formatFecha(p.fecha)} ${p.hora} · ${p.cancha}` : "Fecha a definir";
   const res = p.estado === "jugado"
     ? (p.penales
@@ -173,8 +183,8 @@ function partidoCard(p, nombres) {
         : `${p.resultado.golesA}–${p.resultado.golesB}`)
     : "vs";
   return `<div class="tarjeta-partido"><div class="tp-titulo">${meta}</div>` +
-    `<div class="tp-fila"><span class="tp-equipo">${eq(p.equipoA)}</span>` +
-    `<span class="tp-resultado">${res}</span><span class="tp-equipo">${eq(p.equipoB)}</span></div></div>`;
+    `<div class="tp-fila"><span class="tp-equipo">${conEscudo(p.equipoA)}${eq(p.equipoA)}</span>` +
+    `<span class="tp-resultado">${res}</span><span class="tp-equipo">${conEscudo(p.equipoB)}${eq(p.equipoB)}</span></div></div>`;
 }
 
 function ultimaRondaPartidos(t) {
@@ -223,12 +233,14 @@ function generarHome() {
   const sitio = leerJSON(path.join(DATA, "sitio.json"));
   const libres = torneoVigente("libres");
   const nombres = libres ? nombresDe(libres) : {};
+  const escudos = {};
+  if (libres) for (const e of libres.equipos) escudos[e.id] = e;
 
   let bloqueTorneo = "";
   if (libres) {
-    const ultima = ultimaRondaPartidos(libres).map((p) => partidoCard(p, nombres)).join("");
-    const proximos = proximosPartidos(libres).map((p) => partidoCard(p, nombres)).join("");
-    const recientes = recientesPartidos(libres).map((p) => partidoCard(p, nombres)).join("");
+    const ultima = ultimaRondaPartidos(libres).map((p) => partidoCard(p, nombres, escudos)).join("");
+    const proximos = proximosPartidos(libres).map((p) => partidoCard(p, nombres, escudos)).join("");
+    const recientes = recientesPartidos(libres).map((p) => partidoCard(p, nombres, escudos)).join("");
     const urlTorneo = `torneos/${libres.categoria}/${slugEdicion(libres)}/index.html`;
     bloqueTorneo = `
       <section class="page home-grid">
