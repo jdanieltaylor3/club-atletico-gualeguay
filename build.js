@@ -36,6 +36,20 @@ function escribirPagina(rutaRel, titulo, navActiva, contenidoHtml) {
   console.log("  →", rutaRel);
 }
 
+function metadataDePlantilla(html) {
+  const m = html.match(/^<!-- PAGINA: (.+) \| ([a-z0-9]*) -->\s*\n/i);
+  if (!m) throw new Error("Falta metadata <!-- PAGINA: título | nav --> en la plantilla");
+  return { titulo: m[1].trim(), navActiva: m[2].trim(), contenido: html.replace(m[0], "") };
+}
+
+function copiarManuscritas() {
+  for (const nombre of ["instalaciones.html", "contacto.html", "404.html"]) {
+    const raw = fs.readFileSync(path.join(TEMPLATES, nombre), "utf8");
+    const meta = metadataDePlantilla(raw);
+    escribirPagina(nombre, meta.titulo, meta.navActiva, meta.contenido);
+  }
+}
+
 function main() {
   console.log("Limpiando dist/ …");
   cleanDist();
@@ -50,6 +64,9 @@ function main() {
     "inicio",
     '<section class="hero"><h1>Club Atlético Gualeguay</h1><p>Sitio en construcción.</p></section>'
   );
+
+  console.log("Copiando páginas manuscritas…");
+  copiarManuscritas();
 
   console.log("Build OK ✔");
 }
