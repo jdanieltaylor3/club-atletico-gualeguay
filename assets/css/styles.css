@@ -176,6 +176,9 @@ h2 { font-size: 1.3rem; margin: 1.5rem 0 0.5rem; }
 .archivo-anio { margin-top: 1.5rem; border-bottom: 2px solid var(--color-acento); padding-bottom: 0.2rem; }
 @media (min-width: 768px) { .noticias-grid { grid-template-columns: repeat(2, 1fr); } }
 
+.home-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+@media (min-width: 900px) { .home-grid { grid-template-columns: repeat(3, 1fr); } }
+
 /* ===== Desktop (≥768px) ===== */
 @media (min-width: 768px) {
   .nav-toggle { display: none; }

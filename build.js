@@ -152,6 +152,110 @@ function generarNoticias() {
   console.log(`  → ${leerNoticias().length} noticias generadas`);
 }
 
+function torneoVigente(categoria) {
+  const vigente = leerJSON(path.join(DATA, "sitio.json")).edicionVigente[categoria];
+  return leerTorneos().find((t) => t.categoria === categoria && t.edicion === vigente) || null;
+}
+
+function nombresDe(torneo) {
+  const m = {};
+  for (const e of torneo.equipos) m[e.id] = e.nombre;
+  return m;
+}
+
+function partidoCard(p, nombres) {
+  if (p.estado === "pase-libre") return "";
+  const eq = (id) => (id ? nombres[id] : "por definir");
+  const meta = p.fecha ? `${formatFecha(p.fecha)} ${p.hora} · ${p.cancha}` : "Fecha a definir";
+  const res = p.estado === "jugado"
+    ? (p.penales
+        ? `${p.resultado.golesA}–${p.resultado.golesB} <span class="badge pen">${p.penales.a}-${p.penales.b} pen.</span>`
+        : `${p.resultado.golesA}–${p.resultado.golesB}`)
+    : "vs";
+  return `<div class="tarjeta-partido"><div class="tp-titulo">${meta}</div>` +
+    `<div class="tp-fila"><span class="tp-equipo">${eq(p.equipoA)}</span>` +
+    `<span class="tp-resultado">${res}</span><span class="tp-equipo">${eq(p.equipoB)}</span></div></div>`;
+}
+
+function ultimaRondaPartidos(t) {
+  const maxNum = Math.max(...t.rondas.map((r) => r.numero));
+  return t.rondas.filter((r) => r.numero === maxNum).flatMap((r) => r.partidos);
+}
+
+function proximosPartidos(t, max = 3) {
+  return t.rondas.flatMap((r) => r.partidos)
+    .filter((p) => p.estado === "por jugar" && p.fecha)
+    .sort((a, b) => a.fecha.localeCompare(b.fecha))
+    .slice(0, max);
+}
+
+function recientesPartidos(t, max = 3) {
+  return t.rondas.flatMap((r) => r.partidos)
+    .filter((p) => p.estado === "jugado")
+    .sort((a, b) => b.fecha.localeCompare(a.fecha))
+    .slice(0, max);
+}
+
+function generarHome() {
+  const sitio = leerJSON(path.join(DATA, "sitio.json"));
+  const libres = torneoVigente("libres");
+  const nombres = libres ? nombresDe(libres) : {};
+
+  let bloqueTorneo = "";
+  if (libres) {
+    const ultima = ultimaRondaPartidos(libres).map((p) => partidoCard(p, nombres)).join("");
+    const proximos = proximosPartidos(libres).map((p) => partidoCard(p, nombres)).join("");
+    const recientes = recientesPartidos(libres).map((p) => partidoCard(p, nombres)).join("");
+    const urlTorneo = `torneos/${libres.categoria}/${slugEdicion(libres)}/index.html`;
+    bloqueTorneo = `
+      <section class="page home-grid">
+        <article>
+          <h2>Última ronda · ${libres.nombre} ${libres.edicion}</h2>
+          ${ultima || '<p class="nota-meta">Los cruces se cargan ronda a ronda.</p>'}
+          <p><a href="${urlTorneo}">Ver cuadro completo →</a></p>
+        </article>
+        <article>
+          <h2>Próximos partidos</h2>
+          ${proximos || '<p class="nota-meta">Todavía no hay partidos programados.</p>'}
+        </article>
+        <article>
+          <h2>Resultados recientes</h2>
+          ${recientes || '<p class="nota-meta">Todavía no hay resultados cargados.</p>'}
+        </article>
+      </section>`;
+  } else {
+    bloqueTorneo = '<section class="page"><p>Todavía no se cargó el torneo vigente.</p></section>';
+  }
+
+  const noticias = leerNoticias().slice(0, 3).map((n) => `
+      <article class="tarjeta-nota">
+        <div class="tarjeta-nota-body">
+          <h3><a href="noticias/${slugNoticia(n)}.html">${escapeHtml(n.titulo)}</a></h3>
+          <p class="nota-meta">${formatFecha(n.fecha)}</p>
+          <p>${escapeHtml(n.resumen)}</p>
+        </div>
+      </article>`).join("");
+  const bloqueNoticias = `
+    <section class="page">
+      <h2>Últimas noticias</h2>
+      <div class="noticias-grid">${noticias || "<p>Todavía no hay noticias.</p>"}</div>
+      <p><a href="noticias/index.html">Ver todas las noticias →</a></p>
+    </section>`;
+
+  const hero = `
+    <section class="hero">
+      <h1>${escapeHtml(sitio.nombre)}</h1>
+      <p>${escapeHtml(sitio.ciudad)} — torneos de Fútbol 7, con la doble eliminación por vidas.</p>
+      <br>
+      <a class="btn" href="torneos/index.html">Ver torneos</a>
+    </section>`;
+
+  const plantilla = fs.readFileSync(path.join(TEMPLATES, "index.html"), "utf8");
+  const meta = metadataDePlantilla(plantilla);
+  const contenido = hero + "\n" + bloqueTorneo + "\n" + bloqueNoticias;
+  escribirPagina("index.html", meta.titulo, meta.navActiva, meta.contenido.replace("<!-- CONTENIDO_HOME -->", contenido));
+}
+
 function main() {
   console.log("Limpiando dist/ …");
   cleanDist();
@@ -161,20 +265,14 @@ function main() {
   copiarDatos();
   fs.writeFileSync(path.join(DIST, ".nojekyll"), "", "utf8");
 
-  console.log("Generando páginas …");
-  escribirPagina(
-    "index.html",
-    "Inicio | Club Atlético Gualeguay",
-    "inicio",
-    '<section class="hero"><h1>Club Atlético Gualeguay</h1><p>Sitio en construcción.</p></section>'
-  );
-
   console.log("Copiando páginas manuscritas…");
   copiarManuscritas();
   console.log("Generando ediciones de torneo…");
   generarEdiciones();
   console.log("Generando noticias…");
   generarNoticias();
+  console.log("Generando home…");
+  generarHome();
 
   console.log("Build OK ✔");
 }

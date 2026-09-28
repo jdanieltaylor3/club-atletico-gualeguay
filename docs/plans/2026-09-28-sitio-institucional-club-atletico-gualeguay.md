@@ -158,7 +158,7 @@ Modelo: cada edición es autocontenida. La Ronda 1 usa `"zona": "iniciales"` (cr
     { "nombre": "Facebook", "url": "https://facebook.com/tu-club", "icono": "FB" },
     { "nombre": "WhatsApp", "url": "https://wa.me/54XXXXXXXXXX", "icono": "WA" }
   ],
-  "edicionVigente": { "libres": "26-27", "veteranos": "26-27" },
+  "edicionVigente": { "libres": "26/27", "veteranos": "26/27" },
   "contacto": { "email": "info@clubgualeguay.com.ar", "telefono": "+54 9 3455 00-0000", "direccion": "Calle Sarmiento 123, Villaguay" }
 }
 ```
