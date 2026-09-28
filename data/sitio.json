@@ -4,9 +4,9 @@
   "escudo": "assets/img/escudo-club.png",
   "colores": { "primario": "#FFD500", "secundario": "#2E52E0", "acento": "#FFD500", "fondo": "#060A21" },
   "redes": [
-    { "nombre": "Instagram", "url": "https://www.instagram.com/clubgualeguay_", "icono": "assets/img/iconos/instagram.jpg" },
-    { "nombre": "Facebook", "url": "https://www.facebook.com/club.gualeguay.3", "icono": "assets/img/iconos/facebook.jpg" },
-    { "nombre": "WhatsApp", "url": "https://wa.me/54XXXXXXXXXX", "icono": "assets/img/iconos/whatsapp.jpg" }
+    { "nombre": "Instagram", "url": "https://www.instagram.com/clubgualeguay_", "icono": "assets/img/iconos/instagram.png" },
+    { "nombre": "Facebook", "url": "https://www.facebook.com/club.gualeguay.3", "icono": "assets/img/iconos/facebook.png" },
+    { "nombre": "WhatsApp", "url": "https://wa.me/54XXXXXXXXXX", "icono": "assets/img/iconos/whatsapp.png" }
   ],
   "edicionVigente": { "libres": "26/27", "veteranos": "26/27" },
   "contacto": { "email": "-----", "telefono": "-----", "direccion": "Calle H. IRYGOYEN 1490, Villaguay" }

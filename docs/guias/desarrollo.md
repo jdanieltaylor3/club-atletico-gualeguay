@@ -132,14 +132,14 @@ Todo vive en `data/sitio.json` (un solo lugar, igual que las noticias):
 
 ```json
 "redes": [
-  { "nombre": "Instagram", "url": "https://www.instagram.com/...", "icono": "assets/img/iconos/instagram.jpg" },
+  { "nombre": "Instagram", "url": "https://www.instagram.com/...", "icono": "assets/img/iconos/instagram.png" },
   ...
 ],
 "contacto": { "email": "...", "telefono": "...", "direccion": "..." }
 ```
 
 - El logo de cada red se muestra en el encabezado y el pie (reemplaza las siglas IG/FB/WA originales). `icono` es la ruta al logotipo dentro del sitio; para cambiar un logo, reemplazás el archivo en `assets/img/iconos/` o apuntás `icono` a otro archivo.
-- Los logotipos llegan con fondo blanco y se muestran como chips blancos (`social-link`): no hace falta recortarlos.
+- Los logotipos son PNG sin fondo (el logo llena el chip y se ve el fondo del sitio atrás). Si entran fondos blancos, correr `python tools/procesar-iconos-redes.py`: recorta el blanco, lo vuelve transparente y regenera los PNG (requiere Pillow).
 - La página de Contacto se arma con el bloque `contacto` del mismo JSON. Para ocultar un dato (ej. un teléfono que todavía no hay), el valor es `"-----"`.
 - Regenerar con `node build.js`.
 

@@ -88,18 +88,14 @@
   text-decoration: none;
 }
 
-/* ===== Redes sociales: chip blanco con el logotipo =====
-   Los logotipos (JPEG) llegan con fondo blanco: el chip es del mismo
-   blanco, así el logo se ve como si fuera la etiqueta oficial. */
+/* ===== Redes sociales: logotipos PNG sin fondo blanco =====
+   Los logotipos se procesan sin fondo (tools/procesar-iconos-redes.py):
+   el logo llena todo el chip y se ve el fondo del sitio detrás. */
 .social-link {
   display: inline-block;
   width: var(--alto-icono-red);
   height: var(--alto-icono-red);
-  border-radius: 6px;
-  background: var(--color-blanco);
-  border: 1px solid rgba(255, 255, 255, 0.22);
   margin-left: var(--esp-2);
-  overflow: hidden;
   line-height: 0;
   transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease);
 }
@@ -112,7 +108,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 /* ===== Contenido ===== */

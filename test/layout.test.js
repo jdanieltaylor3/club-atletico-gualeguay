@@ -61,11 +61,11 @@ test("renderRedes: lista vacía y escapado de URLs", () => {
 
 test("renderRedes: pinta el logotipo en vez del texto IG/FB/WA", () => {
   const html = renderRedes(
-    [{ nombre: "Instagram", url: "https://ig", icono: "assets/img/iconos/instagram.jpg" }],
+    [{ nombre: "Instagram", url: "https://ig", icono: "assets/img/iconos/instagram.png" }],
     "../../"
   );
   assert.match(html, /aria-label="Instagram"/);
-  assert.match(html, /<img class="social-icon" src="\.\.\/\.\.\/assets\/img\/iconos\/instagram\.jpg" alt="" width="24" height="24">/);
+  assert.match(html, /<img class="social-icon" src="\.\.\/\.\.\/assets\/img\/iconos\/instagram\.png" alt="" width="24" height="24">/);
   assert.doesNotMatch(html, /IG/);
 });
 
@@ -75,9 +75,9 @@ test("assemble: los iconos de redes resuelven assetsRoot en header y pie", () =>
     contenido: "",
     anio: 2026,
     assetsRoot: "../",
-    redes: [{ nombre: "WhatsApp", url: "https://wa.me/54", icono: "assets/img/iconos/whatsapp.jpg" }],
+    redes: [{ nombre: "WhatsApp", url: "https://wa.me/54", icono: "assets/img/iconos/whatsapp.png" }],
   });
-  assert.match(html, /src="\.\.\/assets\/img\/iconos\/whatsapp\.jpg"/);
+  assert.match(html, /src="\.\.\/assets\/img\/iconos\/whatsapp\.png"/);
 });
 
 test("parsearPlantilla: separa metadata y contenido", () => {

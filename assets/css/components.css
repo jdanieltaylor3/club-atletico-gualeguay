@@ -120,8 +120,8 @@
   object-fit: contain;
   vertical-align: middle;
   margin-right: var(--esp-3);
-  background: var(--color-blanco);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* Sin fondo ni borde: los PNG ya traen el escudo transparente que llena
+     todo el cuadro, igual que el escudo del club en el header. */
 }
 
 /* Sin escudo: círculo con las iniciales del equipo. */
