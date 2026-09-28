@@ -180,7 +180,7 @@ El repositorio contiene fuentes (`data/`, `templates/`, `assets/`, páginas manu
 
 - Noticias en `data/noticias.json` → listado + detalle + archivo por fecha (generadas por build).
 - Institucional: Instalaciones/Sede y Contacto manuscritos (modo B), con header/footer compartidos.
-- Contacto: datos + formulario externo (ej. mailto o servicio gratuito tipo Google Forms) — sin backend propio.
+- Contacto: datos de contacto + redes sociales (sin formulario: GitHub Pages no permite envío de mensajes, se descartó la idea de "mensaje rápido").
 
 ## 13. Despliegue (todo gratuito)
 

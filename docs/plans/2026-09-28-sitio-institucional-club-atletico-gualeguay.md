@@ -59,7 +59,7 @@
 5. build.js núcleo: dist limpio, copia de assets, `.nojekyll`, páginas de prueba
 6. Páginas manuscritas: Instalaciones, Contacto, 404
 7. CSS: tokens + base + header/footer/hero (móvil primero)
-8. CSS: componentes (badges, tarjeta de partido, tabs, tablas, formulario, estados)
+8. CSS: componentes (badges, tarjeta de partido, tabs, tablas, estados)
 9. JS `main.js`: hamburguesa, menú móvil, foco, footer
 10. Shell de edición de torneo (template + generación + índice de ediciones)
 11. JS `torneo.js`: vista Equipos
@@ -151,8 +151,8 @@ Modelo: cada edición es autocontenida. La Ronda 1 usa `"zona": "iniciales"` (cr
 {
   "nombre": "Club Atlético Gualeguay",
   "ciudad": "Villaguay, Entre Ríos",
-  "escudo": "assets/img/escudo.svg",
-  "colores": { "primario": "#0c5c46", "secundario": "#f7f3e8", "acento": "#c9a227" },
+  "escudo": "assets/img/escudo-club.jpg",
+  "colores": { "primario": "#FFD500", "secundario": "#2E52E0", "acento": "#FFD500", "fondo": "#060A21" },
   "redes": [
     { "nombre": "Instagram", "url": "https://instagram.com/tu-club", "icono": "IG" },
     { "nombre": "Facebook", "url": "https://facebook.com/tu-club", "icono": "FB" },
@@ -163,7 +163,7 @@ Modelo: cada edición es autocontenida. La Ronda 1 usa `"zona": "iniciales"` (cr
 }
 ```
 
-> Los colores son placeholders: se reemplazan por los reales del club cuando se entreguen.
+> Colores oficiales del club (escudo azul #0226A6 + amarillo #FDFE03); el sitio usa tema oscuro sobre azul marino.
 
 - [ ] **Paso 2: `data/noticias.json`**
 
@@ -272,21 +272,11 @@ Modelo: cada edición es autocontenida. La Ronda 1 usa `"zona": "iniciales"` (cr
 }
 ```
 
-- [ ] **Paso 5: Crear los SVGs placeholder** (el header y las noticias los referencian desde el primer build)
+- [ ] **Paso 5: Escudo real del club y SVGs placeholder para noticias**
 
-`assets/img/escudo.svg`:
+El escudo real se integró como `assets/img/escudo-club.jpg` (fuente: `recursos/escudo-club/escudo-cag-f7.jpg`) con sus colores oficiales (azul #0226A6 + amarillo #FDFE03) aplicados en el tema oscuro del CSS.
 
-```svg
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Escudo del Club Atlético Gualeguay">
-  <circle cx="32" cy="32" r="30" fill="#0c5c46"/>
-  <circle cx="32" cy="32" r="26" fill="none" stroke="#f7f3e8" stroke-width="2"/>
-  <text x="32" y="39" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#f7f3e8">CAG</text>
-</svg>
-```
-
-`assets/img/placeholder-1.svg` (misma idea, texto "Foto 1") y `assets/img/placeholder-2.svg` ("Foto 2"), reemplazando el `<text>` y el `aria-label`; usar `fill="#c9a227"` para variar.
-
-> Cuando el club entregue el escudo y las fotos reales, se reemplazan estos archivos (mismos nombres) sin tocar código.
+`assets/img/placeholder-1.svg` ("Foto 1") y `assets/img/placeholder-2.svg` ("Foto 2") siguen como placeholders de imágenes de noticias y se reemplazan por fotos reales cuando el club las entregue.
 
 - [ ] **Paso 6: Validar que los JSON son válidos y commitear**
 
@@ -449,7 +439,7 @@ git commit -m "feat: utilidades del build con tests"
 ```html
 <header class="site-header">
   <a class="brand" href="<!-- ASSETS_ROOT -->index.html">
-    <img class="brand-logo" src="<!-- ASSETS_ROOT -->assets/img/escudo.svg" alt="Escudo del Club Atlético Gualeguay">
+    <img class="brand-logo" src="<!-- ASSETS_ROOT -->assets/img/escudo-club.jpg" alt="Escudo del Club Atlético Gualeguay">
     <span class="brand-name">Club Atlético Gualeguay</span>
   </a>
   <button class="nav-toggle" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menú">☰</button>
@@ -738,17 +728,7 @@ Convención: la **primera línea** de cada plantilla manuscrita es el metadata: 
     <li>Dirección: Calle Sarmiento 123, Villaguay</li>
   </ul>
 
-  <h2>Mensaje rápido</h2>
-  <form class="contact-form" action="mailto:info@clubgualeguay.com.ar" method="post" enctype="text/plain">
-    <label for="f-nombre">Nombre</label>
-    <input id="f-nombre" name="nombre" type="text" autocomplete="name" required>
-    <label for="f-mail">Email</label>
-    <input id="f-mail" name="email" type="email" autocomplete="email" required>
-    <label for="f-msg">Mensaje</label>
-    <textarea id="f-msg" name="mensaje" rows="5" required></textarea>
-    <button type="submit">Enviar por correo</button>
-    <p class="form-note">El formulario abre tu programa de correo. También podés contactarnos por las redes del header/footer.</p>
-  </form>
+  <p class="nota-meta">Escribinos por Instagram, Facebook o WhatsApp (accesos en el menú).</p>
 </section>
 ```
 
@@ -948,7 +928,7 @@ Test-Path dist\assets\css\styles.css
 
 ```bash
 git add assets/css/styles.css
-git commit -m "feat: CSS base, header, footer, hero y formulario (móvil primero)"
+git commit -m "feat: CSS base, header, footer y hero (móvil primero)"
 ```
 
 ---
@@ -1365,7 +1345,7 @@ Insertar después de `renderEquipos()`:
   function tarjetaPartido(p, nombres) {
     if (p.estado === "pase-libre") {
       return `<div class="tarjeta-partido"><div class="tp-titulo">Pase libre</div>` +
-        `<div class="tp-fila"><span class="tp-equipo">⚽ ${nombres[p.equipoA]} pasa de ronda</span>` +
+        `<div class="tp-fila"><span class="tp-equipo">${nombres[p.equipoA]} pasa de ronda</span>` +
         `<span class="badge bye">Bye</span></div></div>`;
     }
     const meta = p.fecha
@@ -1375,9 +1355,9 @@ Insertar después de `renderEquipos()`:
     const badge = (id) => (id ? badgeVidas(vidasEquipo(id)) : "");
     const resultado = p.estado === "jugado" ? textoResultado(p) : "<strong>vs</strong>";
     return `<div class="tarjeta-partido"><div class="tp-titulo">${meta}</div>` +
-      `<div class="tp-fila"><span class="tp-equipo">⚽ ${eq(p.equipoA)} ${badge(p.equipoA)}</span>` +
+      `<div class="tp-fila"><span class="tp-equipo">${eq(p.equipoA)} ${badge(p.equipoA)}</span>` +
       `<span class="tp-resultado">${resultado}</span>` +
-      `<span class="tp-equipo">⚽ ${eq(p.equipoB)} ${badge(p.equipoB)}</span></div></div>`;
+      `<span class="tp-equipo">${eq(p.equipoB)} ${badge(p.equipoB)}</span></div></div>`;
   }
 ```
 
@@ -2068,7 +2048,7 @@ Checklist:
 - [ ] Torneos → Libres 26/27: Cuadro (ronda navegable, ganadores/perdedores, penales, bye, badges de vidas), Fixture, Equipos, Goleadores
 - [ ] Selector de ediciones en la página de torneo
 - [ ] Noticias: listado con archivo por año y detalle
-- [ ] Instalaciones y Contacto (formulario → mailto)
+- [ ] Instalaciones y Contacto (datos y redes, sin formulario)
 - [ ] 404 para rutas inexistentes
 - [ ] Mobile (≤375px): hamburguesa, tabs deslizables, sin scroll horizontal
 - [ ] Desktop (≥1024px): nav horizontal, grid de home, columnas del cuadro
