@@ -4,15 +4,24 @@
   <div class="selector-ediciones"><!-- INDICE_EDICIONES --></div>
 
   <div class="tabs" role="tablist" aria-label="Secciones del torneo">
-    <button class="tab on" role="tab" data-vista="cuadro" aria-selected="true">Cuadro</button>
-    <button class="tab" role="tab" data-vista="fixture" aria-selected="false">Fixture</button>
-    <button class="tab" role="tab" data-vista="equipos" aria-selected="false">Equipos</button>
-    <button class="tab" role="tab" data-vista="goleadores" aria-selected="false">Goleadores</button>
+    <button class="tab on" id="tab-cuadro" role="tab" type="button"
+      data-vista="cuadro" aria-controls="vista-torneo" aria-selected="true">Cuadro</button>
+    <button class="tab" id="tab-fixture" role="tab" type="button"
+      data-vista="fixture" aria-controls="vista-torneo" aria-selected="false">Fixture</button>
+    <button class="tab" id="tab-equipos" role="tab" type="button"
+      data-vista="equipos" aria-controls="vista-torneo" aria-selected="false">Equipos</button>
+    <button class="tab" id="tab-goleadores" role="tab" type="button"
+      data-vista="goleadores" aria-controls="vista-torneo" aria-selected="false">Goleadores</button>
   </div>
 
-  <div id="vista-torneo" role="tabpanel" aria-live="polite"></div>
+  <!--
+    La vista se arma en el navegador: este es un shell. La ruta del JSON del
+    torneo va en data-torneo-src para que torneo.js la lea del DOM y no
+    necesite una variable global.
+  -->
+  <div id="vista-torneo" role="tabpanel" aria-labelledby="tab-cuadro" aria-live="polite"
+    data-torneo-src="<!-- DATA_URL -->">
+    <div class="estado"><p>Cargando el torneo…</p></div>
+  </div>
 </section>
-<script>
-  window.__TORNEO__ = { dataUrl: "<!-- DATA_URL -->", nombreTorneo: "<!-- TITULO_EDICION -->" };
-</script>
-<script src="../../../assets/js/torneo.js"></script>
+<script type="module" src="<!-- ASSETS_ROOT -->assets/js/torneo.js"></script>

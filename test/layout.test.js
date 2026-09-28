@@ -1,10 +1,9 @@
-"use strict";
-const { test } = require("node:test");
-const assert = require("node:assert/strict");
-const layout = require("../lib/layout.js");
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { assemble, parsearPlantilla, renderRedes } from "../lib/layout.js";
 
 test("assemble: inserta título y contenido", () => {
-  const html = layout.assemble({
+  const html = assemble({
     titulo: "Noticias | Club Gualeguay",
     contenido: "<p>Hola</p>",
     navActiva: "noticias",
@@ -12,33 +11,61 @@ test("assemble: inserta título y contenido", () => {
     assetsRoot: "",
     redes: [{ nombre: "Instagram", url: "#", icono: "IG" }],
   });
-  assert.ok(html.includes("<title>Noticias | Club Gualeguay</title>"));
-  assert.ok(html.includes("<p>Hola</p>"));
+  assert.match(html, /<title>Noticias \| Club Gualeguay<\/title>/);
+  assert.match(html, /<p>Hola<\/p>/);
 });
 
-test("assemble: marca nav activa", () => {
-  const html = layout.assemble({
+test("assemble: arma el documento completo (head, header, contenido, footer, scripts)", () => {
+  const html = assemble({ titulo: "X", contenido: "<main>contenido</main>", anio: 2026 });
+  assert.ok(html.startsWith("<!doctype html>") || html.startsWith("<!DOCTYPE html>"));
+  assert.match(html, /<main>contenido<\/main>/);
+  assert.ok(html.trimEnd().endsWith("</html>"));
+});
+
+test("assemble: marca nav activa solo en la sección correspondiente", () => {
+  const html = assemble({ titulo: "X", contenido: "", navActiva: "torneos", anio: 2026, assetsRoot: "../" });
+  assert.match(html, /class="nav-link on" href="\.\.\/torneos\/index\.html"/);
+  assert.doesNotMatch(html, /class="nav-link on" href="index\.html"/);
+});
+
+test("assemble: assetsRoot se aplica a estilos, scripts y al contenido de la plantilla", () => {
+  const html = assemble({
     titulo: "X",
-    contenido: "",
-    navActiva: "torneos",
+    contenido: '<script type="module" src="<!-- ASSETS_ROOT -->assets/js/torneo.js"></script>',
     anio: 2026,
-    assetsRoot: "../",
-    redes: [],
+    assetsRoot: "../../../",
   });
-  assert.ok(html.includes('class="nav-link on" href="../torneos/index.html"'));
-  assert.ok(!html.includes('class="nav-link on" href="index.html"'));
+  assert.match(html, /\.\.\/\.\.\/\.\.\/assets\/css\/styles\.css/);
+  assert.match(html, /\.\.\/\.\.\/\.\.\/assets\/js\/main\.js/);
+  assert.match(html, /\.\.\/\.\.\/\.\.\/assets\/js\/torneo\.js/);
+  assert.doesNotMatch(html, /<!-- ASSETS_ROOT -->/);
 });
 
-test("assemble: renderiza redes y año", () => {
-  const html = layout.assemble({
-    titulo: "X",
+test("assemble: escapa el título y renderiza redes y año", () => {
+  const html = assemble({
+    titulo: 'X & "Y"',
     contenido: "",
-    navActiva: "inicio",
     anio: 2026,
-    assetsRoot: "",
     redes: [{ nombre: "Instagram", url: "https://ig", icono: "IG" }],
   });
-  assert.ok(html.includes("https://ig"));
-  assert.ok(html.includes("© 2026 Club Atlético Gualeguay"));
-  assert.ok(html.endsWith("</html>"));
+  assert.match(html, /<title>X &amp; &quot;Y&quot;<\/title>/);
+  assert.match(html, /https:\/\/ig/);
+  assert.match(html, /© 2026 Club Atlético Gualeguay/);
+});
+
+test("renderRedes: lista vacía y escapado de URLs", () => {
+  assert.equal(renderRedes([]), "");
+  assert.equal(renderRedes(undefined), "");
+  assert.match(renderRedes([{ url: 'x" onclick="1', icono: "IG" }]), /&quot;/);
+});
+
+test("parsearPlantilla: separa metadata y contenido", () => {
+  const meta = parsearPlantilla('<!-- PAGINA: Torneos | torneos -->\n<section>hola</section>');
+  assert.equal(meta.titulo, "Torneos");
+  assert.equal(meta.navActiva, "torneos");
+  assert.equal(meta.contenido, "<section>hola</section>");
+});
+
+test("parsearPlantilla: sin metadata lanza un error claro", () => {
+  assert.throws(() => parsearPlantilla("<section>hola</section>"), /Falta metadata/);
 });
