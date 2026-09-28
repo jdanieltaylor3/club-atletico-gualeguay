@@ -1,7 +1,7 @@
 "use strict";
 const fs = require("fs");
 const path = require("path");
-const { leerJSON } = require("./lib/utils.js");
+const { leerJSON, slugify, escapeHtml, formatFecha } = require("./lib/utils.js");
 const { assemble } = require("./lib/layout.js");
 
 const ROOT = __dirname;
@@ -95,6 +95,63 @@ function generarEdiciones() {
   console.log(`  → ${torneos.length} ediciones generadas`);
 }
 
+function leerNoticias() {
+  return leerJSON(path.join(DATA, "noticias.json"))
+    .slice()
+    .sort((a, b) => b.fecha.localeCompare(a.fecha));
+}
+
+function slugNoticia(n) {
+  return `${slugify(n.titulo)}-${n.id}`;
+}
+
+function cuerpoNoticia(n) {
+  return escapeHtml(n.contenido)
+    .split(/\n\s*\n/)
+    .map((p) => `<p>${p}</p>`)
+    .join("\n");
+}
+
+function renderListaNoticias(assetsRoot) {
+  const noticias = leerNoticias();
+  if (!noticias.length) return '<p>Todavía no hay noticias publicadas.</p>';
+  let anioActual = null;
+  return noticias.map((n) => {
+    const anio = n.fecha.slice(0, 4);
+    const separador = anio !== anioActual ? `<h2 class="archivo-anio">${anio}</h2>` : "";
+    anioActual = anio;
+    const imagen = n.imagen ? `<img class="nota-img" src="${assetsRoot}${n.imagen}" alt="" loading="lazy">` : "";
+    return `${separador}<article class="tarjeta-nota">
+      ${imagen}
+      <div class="tarjeta-nota-body">
+        <h3><a href="${slugNoticia(n)}.html">${escapeHtml(n.titulo)}</a></h3>
+        <p class="nota-meta">${formatFecha(n.fecha)}<span class="badge">${escapeHtml(n.categoria)}</span></p>
+        <p>${escapeHtml(n.resumen)}</p>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function generarNoticias() {
+  const plantillaIdx = fs.readFileSync(path.join(TEMPLATES, "noticias-index.html"), "utf8");
+  const metaIdx = metadataDePlantilla(plantillaIdx);
+  const lista = renderListaNoticias("../");
+  escribirPagina("noticias/index.html", metaIdx.titulo, metaIdx.navActiva,
+    metaIdx.contenido.replace("<!-- LISTA_NOTICIAS -->", lista));
+  for (const n of leerNoticias()) {
+    const plantilla = fs.readFileSync(path.join(TEMPLATES, "noticia.html"), "utf8");
+    const meta = metadataDePlantilla(plantilla);
+    const contenido = meta.contenido
+      .replace(/<!-- NOTICIA_TITULO -->/g, escapeHtml(n.titulo))
+      .replace("<!-- NOTICIA_META -->", `${formatFecha(n.fecha)} · <span class="badge">${escapeHtml(n.categoria)}</span>`)
+      .replace("<!-- NOTICIA_IMAGEN -->",
+        n.imagen ? `<img class="nota-img" src="../${n.imagen}" alt="${escapeHtml(n.titulo)}">` : "")
+      .replace("<!-- NOTICIA_CONTENIDO -->", cuerpoNoticia(n));
+    escribirPagina(`noticias/${slugNoticia(n)}.html`, `${n.titulo} | Club Atlético Gualeguay`, "noticias", contenido);
+  }
+  console.log(`  → ${leerNoticias().length} noticias generadas`);
+}
+
 function main() {
   console.log("Limpiando dist/ …");
   cleanDist();
@@ -116,6 +173,8 @@ function main() {
   copiarManuscritas();
   console.log("Generando ediciones de torneo…");
   generarEdiciones();
+  console.log("Generando noticias…");
+  generarNoticias();
 
   console.log("Build OK ✔");
 }
