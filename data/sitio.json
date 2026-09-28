@@ -1,0 +1,13 @@
+{
+  "nombre": "Club Atlético Gualeguay",
+  "ciudad": "Villaguay, Entre Ríos",
+  "escudo": "assets/img/escudo.svg",
+  "colores": { "primario": "#0c5c46", "secundario": "#f7f3e8", "acento": "#c9a227" },
+  "redes": [
+    { "nombre": "Instagram", "url": "https://instagram.com/tu-club", "icono": "IG" },
+    { "nombre": "Facebook", "url": "https://facebook.com/tu-club", "icono": "FB" },
+    { "nombre": "WhatsApp", "url": "https://wa.me/54XXXXXXXXXX", "icono": "WA" }
+  ],
+  "edicionVigente": { "libres": "26-27", "veteranos": "26-27" },
+  "contacto": { "email": "info@clubgualeguay.com.ar", "telefono": "+54 9 3455 00-0000", "direccion": "Calle Sarmiento 123, Villaguay" }
+}

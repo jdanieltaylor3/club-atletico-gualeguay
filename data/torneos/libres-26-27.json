@@ -1,0 +1,45 @@
+{
+  "id": "libres-26-27",
+  "nombre": "Libres",
+  "categoria": "libres",
+  "temporada": "26/27",
+  "edicion": "26/27",
+  "estado": "vigente",
+  "equipos": [
+    { "id": "eq-1", "nombre": "Amistad FC" },
+    { "id": "eq-2", "nombre": "Centenario" },
+    { "id": "eq-3", "nombre": "La Picada" },
+    { "id": "eq-4", "nombre": "Río Uruguay" },
+    { "id": "eq-5", "nombre": "Los Amigos" },
+    { "id": "eq-6", "nombre": "San Martín" }
+  ],
+  "rondas": [
+    {
+      "numero": 1,
+      "zona": "iniciales",
+      "partidos": [
+        { "id": "r1-p1", "equipoA": "eq-1", "equipoB": "eq-2", "estado": "jugado", "resultado": { "golesA": 2, "golesB": 1 }, "penales": null, "fecha": "2026-10-03", "hora": "20:30", "cancha": "Cancha 1" },
+        { "id": "r1-p2", "equipoA": "eq-3", "equipoB": "eq-4", "estado": "jugado", "resultado": { "golesA": 0, "golesB": 0 }, "penales": { "a": 3, "b": 2 }, "fecha": "2026-10-03", "hora": "21:30", "cancha": "Cancha 2" },
+        { "id": "r1-p3", "equipoA": "eq-5", "equipoB": "eq-6", "estado": "por jugar", "fecha": "2026-10-04", "hora": "19:00", "cancha": "Cancha 1" }
+      ]
+    },
+    {
+      "numero": 2,
+      "zona": "ganadores",
+      "partidos": [
+        { "id": "r2-p1", "equipoA": "eq-1", "equipoB": null, "estado": "pase-libre", "fecha": "", "hora": "", "cancha": "" }
+      ]
+    },
+    {
+      "numero": 2,
+      "zona": "perdedores",
+      "partidos": [
+        { "id": "r2-p2", "equipoA": "eq-2", "equipoB": "eq-3", "estado": "por jugar", "fecha": "2026-10-10", "hora": "20:30", "cancha": "Cancha 3" }
+      ]
+    }
+  ],
+  "goleadores": [
+    { "jugador": "López", "equipoId": "eq-1", "goles": 3 },
+    { "jugador": "Fernández", "equipoId": "eq-3", "goles": 2 }
+  ]
+}
