@@ -57,7 +57,15 @@ h2 {
   letter-spacing: 0.02em;
 }
 
-/* Accesibilidad: si el sistema pide menos movimiento, se respeta. */
+/* Accesibilidad: si el sistema pide menos movimiento, se respeta.
+   Se apagan transiciones Y animaciones; el contenido queda visible
+   sin esperar ningún efecto (cada animación declara su estado
+   inicial solo dentro de prefers-reduced-motion: no-preference). */
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

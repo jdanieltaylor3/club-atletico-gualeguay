@@ -82,7 +82,12 @@
   --esp-8: 1.5rem;
   --esp-9: 2.5rem;
 
-  /* --- Movimiento --- */
-  --dur: 160ms;
+  /* --- Movimiento ---
+     Ritmos por función: micro (hover) < estado (menú, panel) < entrada.
+     Todo el movimiento se apaga con prefers-reduced-motion (base.css). */
+  --dur: 160ms;                            /* micro-interacciones (hover) */
   --ease: ease;
+  --dur-medio: 220ms;                      /* cambios de estado y hover de tarjetas */
+  --dur-entrada: 500ms;                    /* entradas de contenido */
+  --ease-entrada: cubic-bezier(0.2, 0.7, 0.3, 1);
 }

@@ -23,6 +23,11 @@ async function iniciar(panel, url) {
     }
     panel.innerHTML = renderVista();
     panel.setAttribute("aria-labelledby", `tab-${estado.vista}`);
+    // Entrada suave del contenido re-renderizado (CSS #vista-torneo.vista-anim):
+    // al reiniciar la clase el navegador reanima, en cada cambio de vista.
+    panel.classList.remove("vista-anim");
+    void panel.offsetWidth; // fuerza el reflow para reiniciar la animación
+    panel.classList.add("vista-anim");
     conectarBotonesRonda();
   };
 

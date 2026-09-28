@@ -114,7 +114,7 @@ function generarContacto() {
   const c = sitio().contacto;
   const { titulo, navActiva, contenido } = plantilla("contacto.html");
   escribirPagina("contacto.html", titulo, navActiva, rellenar(contenido, {
-    "<!-- CONTACTO -->": `<ul class="contact-list">
+    "<!-- CONTACTO -->": `<ul class="contact-list" data-reveal>
       <li>Email: ${escapeHtml(c.email)}</li>
       <li>Teléfono: ${escapeHtml(c.telefono)}</li>
       <li>Dirección: ${escapeHtml(c.direccion)}</li>
@@ -169,7 +169,7 @@ function renderCategoria(categoria, lista) {
     .map((t) => `<li><a href="${categoria}/${slugEdicion(t.edicion)}/index.html">` +
       `Edición ${escapeHtml(t.edicion)}</a>${t.estado === "vigente" ? " " + badge("vigente", "v2") : ""}</li>`)
     .join("");
-  return `<article class="categoria">
+  return `<article class="categoria" data-reveal>
     <h2>${escapeHtml(data.nombreCategoria(categoria, lista))}</h2>
     <ul>${items || "<li>Sin ediciones cargadas.</li>"}</ul>
   </article>`;
@@ -214,7 +214,7 @@ function listaNoticias(profundidadPagina) {
     const anio = n.fecha.slice(0, 4);
     const separador = anio !== anioActual ? `<h2 class="archivo-anio">${anio}</h2>` : "";
     anioActual = anio;
-    return `${separador}<article class="tarjeta-nota">
+    return `${separador}<article class="tarjeta-nota" data-reveal>
       ${n.imagen ? `<img class="nota-img" src="${rutaAsset(n.imagen, profundidadPagina)}" alt="" loading="lazy">` : ""}
       <div class="tarjeta-nota-body">
         <h3><a href="${slugify(n.titulo)}-${n.id}.html">${escapeHtml(n.titulo)}</a></h3>
@@ -273,16 +273,16 @@ function bloqueTorneo() {
 
   return `
       <section class="page home-grid">
-        <article>
+        <article data-reveal>
           ${bloque(`Última ronda · ${escapeHtml(torneo.nombre)} ${escapeHtml(torneo.edicion)}`,
             tarjetas(data.ultimaRondaPartidos(torneo), torneo, 0), "Los cruces se cargan ronda a ronda.")}
           <p><a href="${url}">Ver cuadro completo →</a></p>
         </article>
-        <article>
+        <article data-reveal>
           ${bloque("Próximos partidos", tarjetas(data.proximosPartidos(torneo), torneo, 0),
             "Todavía no hay partidos programados.")}
         </article>
-        <article>
+        <article data-reveal>
           ${bloque("Resultados recientes", tarjetas(data.recientesPartidos(torneo), torneo, 0),
             "Todavía no hay resultados cargados.")}
         </article>
@@ -291,7 +291,7 @@ function bloqueTorneo() {
 
 function bloqueNoticias() {
   const items = noticias().slice(0, 3).map((n) => `
-        <article class="tarjeta-nota">
+        <article class="tarjeta-nota" data-reveal>
           <div class="tarjeta-nota-body">
             <h3><a href="noticias/${slugify(n.titulo)}-${n.id}.html">${escapeHtml(n.titulo)}</a></h3>
             <p class="nota-meta">${formatFecha(n.fecha)}</p>

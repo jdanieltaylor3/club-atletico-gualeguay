@@ -51,15 +51,13 @@
 }
 .nav-toggle:hover { border-color: var(--color-primario); }
 
-/* ===== Navegación (colapsada en móvil) ===== */
+/* ===== Navegación (colapsada en móvil, sobre el contenido) =====
+   Se oculta con opacidad (no display) para poder animar la apertura;
+   queda posicionado sobre el contenido, así no empuja la página. */
 .site-nav {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: var(--esp-1);
-}
-
-.site-nav.open {
-  display: flex;
   position: absolute;
   top: 52px;
   left: 0;
@@ -69,6 +67,22 @@
   padding: var(--esp-5) var(--esp-7) 0.9rem;
   box-shadow: var(--sombra);
   z-index: 20;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition:
+    opacity var(--dur-medio) var(--ease),
+    transform var(--dur-medio) var(--ease),
+    visibility 0s linear var(--dur-medio);
+}
+
+.site-nav.open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  transition-delay: 0s;
 }
 
 .nav-link {
@@ -121,16 +135,80 @@
 }
 
 .hero {
+  position: relative;
+  isolation: isolate;
   background: linear-gradient(180deg, var(--color-hero-inicio) 0%, var(--color-fondo) 100%);
   border-top: 3px solid var(--color-primario);
   padding: var(--esp-9) var(--esp-7);
   text-align: center;
+  overflow: hidden;
 }
+
+/* Fondo del hero según la página.
+   Home: escudo del club como marca de agua tenue.
+   Contacto (.hero-contacto): foto del frente del club, completa y sin
+   recorte, con overlay oscuro para legibilidad. */
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.hero > * { position: relative; }
+
+.hero::before {
+  background-image: url("../img/escudo-club.png");
+  background-size: 260px auto;
+  background-position: center 42%;
+  background-repeat: no-repeat;
+  opacity: 0.12;
+}
+.hero::after { display: none; }
+
+.hero-contacto::before {
+  background-image: url("../img/foto-club.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.55;
+}
+.hero-contacto::after {
+  display: block;
+  background: linear-gradient(180deg, rgba(6, 10, 33, 0.45) 0%, rgba(6, 10, 33, 0.78) 100%);
+}
+
 .hero h1 { margin-bottom: var(--esp-3); }
 .hero p {
   opacity: 0.85;
   max-width: 560px;
   margin: 0 auto var(--esp-7);
+}
+
+/* Movimiento solo si el usuario no pidió menos movimiento:
+   zoom (ken-burns) muy lento de la imagen de fondo + entrada
+   escalonada del contenido. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero::before {
+    animation: hero-zoom 30s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .hero-contacto::before { animation-duration: 26s; }
+  .hero h1,
+  .hero p,
+  .hero .btn {
+    animation: hero-subir 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+  }
+  .hero p { animation-delay: 80ms; }
+  .hero .btn { animation-delay: 160ms; }
+}
+@keyframes hero-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.15); }
+}
+@keyframes hero-subir {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
 }
 
 /* Grilla de la home: una columna en móvil, tres desde 900px. */
@@ -187,6 +265,10 @@
     background: transparent;
     padding: 0;
     box-shadow: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
   }
   .site-nav.open {
     position: static;
@@ -214,4 +296,38 @@
 @media (min-width: 1024px) {
   .site-main,
   .page { max-width: var(--ancho-max-lg); }
+}
+
+/* ===== Sistema de movimiento =====
+   Entradas de secciones (data-reveal) y transiciones de contenido.
+   Reglas del sistema:
+   - solo transform + opacity (sin layout/reflow);
+   - el CSS solo oculta bajo html.js-reveal: sin JS nada queda oculto;
+   - prefers-reduced-motion lo desactiva todo (ver base.css).
+   El scroll anima cada [data-reveal] una sola vez (assets/js/movimiento.js),
+   con stagger acotado por var(--reveal-i). */
+@media (prefers-reduced-motion: no-preference) {
+  html.js-reveal [data-reveal] {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--dur-entrada) var(--ease-entrada),
+      transform var(--dur-entrada) var(--ease-entrada);
+    transition-delay: calc(var(--reveal-i, 0) * 60ms);
+  }
+  html.js-reveal [data-reveal].visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Cambio de pestaña o ronda en un torneo: el panel se re-renderiza por
+     HTML (torneo.js). Un fade corto evita el "salto" seco sin atrasar la
+     lectura de resultados (dur-medio). */
+  #vista-torneo.vista-anim {
+    animation: vista-entra var(--dur-medio) var(--ease-entrada);
+  }
+}
+@keyframes vista-entra {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
 }
