@@ -1,0 +1,18 @@
+<!-- PAGINA: <!-- TITULO_EDICION --> | Club Atlético Gualeguay | torneos -->
+<section class="page">
+  <h1><!-- TITULO_EDICION --></h1>
+  <div class="selector-ediciones"><!-- INDICE_EDICIONES --></div>
+
+  <div class="tabs" role="tablist" aria-label="Secciones del torneo">
+    <button class="tab on" role="tab" data-vista="cuadro" aria-selected="true">Cuadro</button>
+    <button class="tab" role="tab" data-vista="fixture" aria-selected="false">Fixture</button>
+    <button class="tab" role="tab" data-vista="equipos" aria-selected="false">Equipos</button>
+    <button class="tab" role="tab" data-vista="goleadores" aria-selected="false">Goleadores</button>
+  </div>
+
+  <div id="vista-torneo" role="tabpanel" aria-live="polite"></div>
+</section>
+<script>
+  window.__TORNEO__ = { dataUrl: "<!-- DATA_URL -->", nombreTorneo: "<!-- TITULO_EDICION -->" };
+</script>
+<script src="../../../assets/js/torneo.js"></script>

@@ -19,6 +19,22 @@ function copiarAssets() {
   fs.cpSync(ASSETS, path.join(DIST, "assets"), { recursive: true });
 }
 
+function copiarDatos() {
+  fs.cpSync(path.join(ROOT, "data"), path.join(DIST, "data"), { recursive: true });
+}
+
+function leerTorneos() {
+  const carpeta = path.join(DATA, "torneos");
+  return fs.readdirSync(carpeta)
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => leerJSON(path.join(carpeta, f)))
+    .sort((a, b) => (a.categoria === b.categoria ? b.edicion.localeCompare(a.edicion) : a.categoria.localeCompare(b.categoria)));
+}
+
+function slugEdicion(torneo) {
+  return torneo.edicion.replace("/", "-");
+}
+
 function escribirPagina(rutaRel, titulo, navActiva, contenidoHtml) {
   const sitio = leerJSON(path.join(DATA, "sitio.json"));
   const dirs = rutaRel.split("/").slice(0, -1).filter(Boolean);
@@ -50,11 +66,42 @@ function copiarManuscritas() {
   }
 }
 
+function renderSelector(torneo, torneos) {
+  const hermanas = torneos.filter((t) => t.categoria === torneo.categoria);
+  return hermanas.map((t) => {
+    const activa = t.id === torneo.id;
+    const href = activa ? "index.html" : `../${slugEdicion(t)}/index.html`;
+    return `<a class="tab${activa ? " on" : ""}" href="${href}">Edición ${t.edicion}${t.estado === "vigente" ? " · vigente" : ""}</a>`;
+  }).join("");
+}
+
+function generarEdiciones() {
+  const torneos = leerTorneos();
+  for (const t of torneos) {
+    const plantilla = fs.readFileSync(path.join(TEMPLATES, "torneo-edicion.html"), "utf8");
+    const meta = metadataDePlantilla(plantilla);
+    const titulo = `${t.nombre} · Edición ${t.edicion}`;
+    const contenido = meta.contenido
+      .replace(/<!-- TITULO_EDICION -->/g, titulo)
+      .replace(/<!-- INDICE_EDICIONES -->/g, renderSelector(t, torneos))
+      .replace(/<!-- DATA_URL -->/g, `../../../data/torneos/${t.id}.json`);
+    escribirPagina(
+      `torneos/${t.categoria}/${slugEdicion(t)}/index.html`,
+      `${titulo} | Club Atlético Gualeguay`,
+      "torneos",
+      contenido
+    );
+  }
+  console.log(`  → ${torneos.length} ediciones generadas`);
+}
+
 function main() {
   console.log("Limpiando dist/ …");
   cleanDist();
   console.log("Copiando assets …");
   copiarAssets();
+  console.log("Copiando datos…");
+  copiarDatos();
   fs.writeFileSync(path.join(DIST, ".nojekyll"), "", "utf8");
 
   console.log("Generando páginas …");
@@ -67,6 +114,8 @@ function main() {
 
   console.log("Copiando páginas manuscritas…");
   copiarManuscritas();
+  console.log("Generando ediciones de torneo…");
+  generarEdiciones();
 
   console.log("Build OK ✔");
 }
