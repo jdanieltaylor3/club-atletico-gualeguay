@@ -6,7 +6,7 @@ Sitio 100% estático (HTML + CSS + JS vanilla) con generador mínimo en Node sin
 
 - Requisito: Node.js ≥ 18.
 - `node build.js` → genera `dist/`.
-- `node --test test/` → corre los tests (usar `node --test` en Windows).
+- `node --test` → corre los tests (descubrimiento por defecto; `node --test test/` con barra falla en Windows).
 - Servir: `npx serve dist` o cualquier HTTP estático.
 
 ## Estructura
@@ -30,6 +30,8 @@ Sitio 100% estático (HTML + CSS + JS vanilla) con generador mínimo en Node sin
 3. `node build.js` → aparece en el selector de ediciones y en Torneos.
 
 ## Despliegue
+
+> Guía completa con comandos exactos (crear repo, push, activar Pages, Cloudflare, rollback): [`docs/guias/despliegue-github-cloudflare.md`](docs/guias/despliegue-github-cloudflare.md)
 
 ### GitHub Pages (repo público)
 
