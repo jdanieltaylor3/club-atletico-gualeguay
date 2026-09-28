@@ -1,0 +1,294 @@
+/* ============================================================
+   Componentes — piezas que se repiten. Cada una en su propio
+   bloque: si tocás una tarjeta o un badge, el resto no se mueve.
+   El HTML de estos componentes lo generan lib/render.js y
+   assets/js/vistas-torneo.js.
+   ============================================================ */
+
+/* ===== Botón ===== */
+.btn {
+  display: inline-block;
+  background: var(--color-primario);
+  color: var(--color-tinta);
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--fs-base);
+  padding: 0.55rem 1.2rem;
+  border-radius: var(--radio-pill);
+  transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease);
+}
+.btn:hover { text-decoration: none; filter: brightness(0.96); }
+.btn:active { transform: translateY(1px); }
+
+/* ===== Badges: estado de vida, categoría, penal y bye ===== */
+.badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 0.12rem var(--esp-4);
+  border-radius: var(--radio-pill);
+  vertical-align: middle;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-iniciales);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.badge.v2 {
+  background: rgba(64, 220, 130, 0.16);
+  color: var(--color-v2);
+  border-color: rgba(64, 220, 130, 0.35);
+}
+.badge.v1 {
+  background: var(--tinte-primario);
+  color: var(--color-primario);
+  border-color: rgba(255, 213, 0, 0.4);
+}
+.badge.elim {
+  background: rgba(255, 110, 110, 0.16);
+  color: var(--color-elim);
+  border-color: rgba(255, 110, 110, 0.4);
+}
+.badge.pen {
+  background: var(--tinte-primario);
+  color: #ffe266;
+  border-color: rgba(255, 213, 0, 0.35);
+}
+.badge.bye {
+  background: var(--tinte-blanco);
+  color: #aeb6e4;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+/* ===== Categorías (índice de torneos) ===== */
+.categoria {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: var(--esp-7) 1.1rem;
+  margin: 0 0 0.8rem;
+}
+
+/* ===== Tarjeta de partido ===== */
+.tarjeta-partido {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: var(--esp-5) 0.8rem;
+  margin: 0 0 var(--esp-5);
+}
+
+.tp-titulo {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-texto-suave);
+  margin-bottom: var(--esp-1);
+}
+
+.tp-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--esp-4);
+}
+
+.tp-equipo {
+  font-weight: 600;
+  color: var(--color-blanco);
+}
+.tp-equipo.vacio {
+  color: var(--color-texto-suave);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.tp-resultado {
+  font-weight: 800;
+  white-space: nowrap;
+  color: var(--color-primario);
+}
+
+/* ===== Escudos de equipo ===== */
+.equipo-escudo {
+  width: var(--alto-escudo);
+  height: var(--alto-escudo);
+  border-radius: var(--radio-escudo);
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: var(--esp-3);
+  background: var(--color-blanco);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Sin escudo: círculo con las iniciales del equipo. */
+.equipo-escudo.fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-secundario);
+  color: var(--color-primario);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: none;
+}
+
+/* ===== Tabs (vistas del torneo) ===== */
+.tabs {
+  display: flex;
+  gap: var(--esp-3);
+  overflow-x: auto;
+  padding-bottom: var(--esp-2);
+  margin: var(--esp-6) 0;
+}
+
+.tab {
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  border: 1px solid var(--color-borde);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radio-pill);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.tab:hover {
+  border-color: rgba(255, 213, 0, 0.5);
+  text-decoration: none;
+}
+.tab:disabled { opacity: 0.4; cursor: default; }
+.tab.on {
+  background: var(--color-primario);
+  border-color: var(--color-primario);
+  color: var(--color-tinta);
+  font-weight: 700;
+}
+
+/* ===== Navegación entre rondas ===== */
+.nav-ronda {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-4);
+  margin: var(--esp-4) 0 var(--esp-6);
+  flex-wrap: wrap;
+}
+.nav-ronda .ronda-actual {
+  font-weight: 700;
+  min-width: 5.5rem;
+  text-align: center;
+  color: var(--color-blanco);
+}
+
+/* ===== Zonas del cuadro ===== */
+.zonas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--esp-7);
+}
+
+.zona-titulo {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--esp-4);
+  padding-bottom: var(--esp-2);
+  border-bottom: 2px solid;
+}
+.zona-titulo.iniciales { color: var(--color-iniciales); border-color: #3a4370; }
+.zona-titulo.ganadores { color: var(--color-ganadores); border-color: var(--color-secundario); }
+.zona-titulo.perdedores { color: var(--color-perdedores); border-color: #6a3fd0; }
+
+/* ===== Tabla de goleadores ===== */
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-base);
+}
+.tabla th {
+  text-align: left;
+  color: var(--color-texto-suave);
+  border-bottom: 2px solid var(--color-borde);
+  padding: 0.35rem var(--esp-4);
+}
+.tabla td {
+  border-bottom: 1px solid var(--color-borde);
+  padding: var(--esp-3) var(--esp-4);
+}
+.tabla tr:nth-child(even) td { background: rgba(255, 255, 255, 0.04); }
+
+/* ===== Estados vacío y error ===== */
+.estado {
+  border: 2px dashed var(--color-borde);
+  border-radius: var(--radio);
+  padding: 1.6rem var(--esp-7);
+  text-align: center;
+  color: var(--color-texto-suave);
+  background: var(--color-superficie);
+}
+.estado.error {
+  border-color: rgba(255, 110, 110, 0.5);
+  color: #ff9c9c;
+  background: rgba(255, 90, 90, 0.08);
+}
+
+/* ===== Noticias ===== */
+.noticias-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--esp-7);
+}
+
+.tarjeta-nota {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+.tarjeta-nota a:hover { text-decoration: none; }
+
+.tarjeta-nota-body { padding: 0.7rem 0.9rem; }
+
+.nota-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  background: var(--color-superficie-alt);
+}
+
+.nota-meta {
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+  display: flex;
+  gap: var(--esp-4);
+  align-items: center;
+}
+
+.nota-cuerpo {
+  line-height: var(--lh-texto);
+  color: var(--color-texto);
+}
+
+.archivo-anio {
+  margin-top: var(--esp-8);
+  border-bottom: 2px solid var(--color-acento);
+  padding-bottom: var(--esp-1);
+}
+
+/* ===== Contacto ===== */
+.contact-list { line-height: 2; }
+
+/* ===== 768px: dos columnas donde aporta ===== */
+@media (min-width: 768px) {
+  .noticias-grid { grid-template-columns: repeat(2, 1fr); }
+  .zonas { grid-template-columns: 1fr 1fr; }
+}

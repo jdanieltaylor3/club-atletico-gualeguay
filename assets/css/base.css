@@ -1,0 +1,63 @@
+/* ============================================================
+   Base — reset, tipografía y elementos globales.
+   Solo lo que aplica a todo el sitio. Las secciones viven en
+   layout.css y las piezas repetidas en components.css.
+   ============================================================ */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-text);
+  line-height: var(--lh-base);
+  color: var(--color-texto);
+  background: var(--color-fondo);
+}
+
+img { max-width: 100%; height: auto; }
+
+::selection {
+  background: rgba(255, 213, 0, 0.85);
+  color: var(--color-tinta);
+}
+
+a {
+  color: var(--color-primario);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* Foco visible para navegación por teclado: nunca se quita el outline. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-lg);
+  line-height: 1.15;
+  margin: 0 0 var(--esp-6);
+  color: var(--color-blanco);
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--fs-md);
+  margin: var(--esp-8) 0 var(--esp-4);
+  color: var(--color-blanco);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Accesibilidad: si el sistema pide menos movimiento, se respeta. */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

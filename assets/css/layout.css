@@ -1,0 +1,211 @@
+/* ============================================================
+   Layout — estructura de la página: header, navegación, footer,
+   contenedores y grillas. Móvil primero: el menú arranca
+   colapsado y se despliega en el breakpoint de 768px.
+   ============================================================ */
+
+/* ===== Header ===== */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-6);
+  padding: var(--esp-5) var(--esp-7);
+  background: var(--color-encabezado);
+  border-bottom: 1px solid rgba(255, 213, 0, 0.28);
+  color: var(--color-blanco);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-4);
+  color: var(--color-blanco);
+}
+.brand:hover { text-decoration: none; }
+
+.brand-logo {
+  width: var(--alto-logo);
+  height: var(--alto-logo);
+  object-fit: contain;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.95rem;
+  line-height: 1.1;
+}
+
+.nav-toggle {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: var(--color-blanco);
+  font-size: 1.1rem;
+  border-radius: var(--radio-chico);
+  padding: var(--esp-2) var(--esp-5);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease);
+}
+.nav-toggle:hover { border-color: var(--color-primario); }
+
+/* ===== Navegación (colapsada en móvil) ===== */
+.site-nav {
+  display: none;
+  flex-direction: column;
+  gap: var(--esp-1);
+}
+
+.site-nav.open {
+  display: flex;
+  position: absolute;
+  top: 52px;
+  left: 0;
+  right: 0;
+  background: var(--color-superficie-alt);
+  border-bottom: 1px solid rgba(255, 213, 0, 0.35);
+  padding: var(--esp-5) var(--esp-7) 0.9rem;
+  box-shadow: var(--sombra);
+  z-index: 20;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.9);
+  padding: var(--esp-4) var(--esp-5);
+  border-radius: 6px;
+  font-weight: 500;
+}
+.nav-link:hover {
+  background: var(--tinte-blanco);
+  text-decoration: none;
+}
+.nav-link.on {
+  background: var(--tinte-primario);
+  color: var(--color-primario);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.social-link {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: var(--esp-1) 0.55rem;
+  border-radius: var(--radio-pill);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--color-blanco);
+  margin-left: var(--esp-2);
+  transition: background var(--dur) var(--ease);
+}
+.social-link:hover {
+  background: rgba(255, 213, 0, 0.22);
+  text-decoration: none;
+}
+
+/* ===== Contenido ===== */
+.site-main { min-height: 60vh; }
+
+.page {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: var(--esp-8) var(--esp-7);
+}
+
+.hero {
+  background: linear-gradient(180deg, var(--color-hero-inicio) 0%, var(--color-fondo) 100%);
+  border-top: 3px solid var(--color-primario);
+  padding: var(--esp-9) var(--esp-7);
+  text-align: center;
+}
+.hero h1 { margin-bottom: var(--esp-3); }
+.hero p {
+  opacity: 0.85;
+  max-width: 560px;
+  margin: 0 auto var(--esp-7);
+}
+
+/* Grilla de la home: una columna en móvil, tres desde 900px. */
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--esp-8);
+  margin-top: var(--esp-8);
+}
+.home-grid h2 {
+  color: var(--color-texto-suave);
+  font-size: 1rem;
+}
+
+/* ===== Footer ===== */
+.site-footer {
+  background: var(--color-pie);
+  color: rgba(238, 241, 255, 0.85);
+  border-top: 1px solid rgba(255, 213, 0, 0.25);
+  padding: 1.25rem var(--esp-7);
+  margin-top: var(--esp-9);
+}
+
+.footer-inner {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+}
+
+.footer-brand {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.footer-copy {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+/* ===== 768px: navegación horizontal y pie en fila ===== */
+@media (min-width: 768px) {
+  .nav-toggle { display: none; }
+
+  .site-nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.15rem;
+    position: static;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+  }
+  .site-nav.open {
+    position: static;
+    background: transparent;
+    padding: 0;
+  }
+
+  .brand-name { font-size: 1.15rem; }
+  .hero { padding: 3.5rem var(--esp-7); }
+  .hero h1 { font-size: 2.6rem; }
+
+  .footer-inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* ===== 900px: la home a tres columnas ===== */
+@media (min-width: 900px) {
+  .home-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ===== 1024px: ancho máximo ===== */
+@media (min-width: 1024px) {
+  .site-main,
+  .page { max-width: var(--ancho-max-lg); }
+}

@@ -1,0 +1,87 @@
+/* ============================================================
+   Tokens — Club Atlético Gualeguay, tema "Tribuna nocturna"
+   Colores oficiales del club: escudo azul #0226A6 + amarillo
+   #FDFE03; fixtures 2025 en azul marino #000159.
+
+   Este archivo solo declara variables: no tiene selectores.
+   Para cambiar el tema del sitio, tocá acá y nada más.
+
+   Breakpoints del proyecto. Las media queries no admiten
+   variables, así que se escriben a mano:
+     768px   navegación horizontal, dos columnas
+     900px   la home pasa a tres columnas
+     1024px  ancho máximo más amplio
+   ============================================================ */
+
+:root {
+  color-scheme: dark;
+
+  /* --- Tipografía --- */
+  --font-display: "Oswald", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-text: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fs-xs: 0.68rem;    /* etiquetas muy chicas (subtítulos de tarjeta) */
+  --fs-sm: 0.8rem;     /* metadatos */
+  --fs-base: 0.9rem;   /* botones y tablas */
+  --fs-md: 1.3rem;     /* h2 */
+  --fs-lg: 1.9rem;     /* h1 */
+  --lh-base: 1.5;
+  --lh-texto: 1.7;
+
+  /* --- Paleta del club --- */
+  --color-fondo: #060a21;          /* azul marino noche (fixtures)  */
+  --color-superficie: #0d1233;     /* tarjetas                     */
+  --color-superficie-alt: #151b49; /* nav móvil, hover             */
+  --color-encabezado: #040819;     /* fondo del header            */
+  --color-pie: #040818;            /* fondo del footer            */
+  --color-primario: #ffd500;       /* amarillo del escudo          */
+  --color-primario-oscuro: #c9a600;
+  --color-secundario: #2e52e0;     /* azul del escudo              */
+  --color-acento: #ffd500;
+  --color-texto: #eef1ff;
+  --color-texto-suave: #9ba4d6;
+  --color-blanco: #ffffff;         /* títulos y escudos            */
+  --color-tinta: #14102a;          /* texto sobre amarillo         */
+  --color-hero-inicio: #0b1136;
+  --color-borde: rgba(255, 255, 255, 0.12);
+
+  /* --- Colores de las zonas del torneo --- */
+  --color-iniciales: #c4caec;
+  --color-ganadores: #7fa8ff;
+  --color-perdedores: #c39bff;
+
+  /* --- Colores de estado de vida --- */
+  --color-v2: #63e09a;             /* 2 vidas: sigue entero     */
+  --color-elim: #ff8a8a;           /* eliminado                 */
+
+  /* --- Tintes que se repiten en varios componentes.
+     El resto de las transparencias va como rgba(...) literal en
+     su archivo: su opacidad exacta es parte de ese diseño. --- */
+  --tinte-primario: rgba(255, 213, 0, 0.16);
+  --tinte-blanco: rgba(255, 255, 255, 0.08);
+
+  /* --- Forma --- */
+  --radio: 10px;
+  --radio-chico: 8px;
+  --radio-pill: 999px;
+  --radio-escudo: 50%;
+  --sombra: 0 2px 12px rgba(0, 0, 0, 0.45);
+  --ancho-max: 960px;
+  --ancho-max-lg: 1080px;
+  --alto-escudo: 30px;
+  --alto-logo: 44px;
+
+  /* --- Espaciado: los pasos que usa el diseño --- */
+  --esp-1: 0.2rem;
+  --esp-2: 0.3rem;
+  --esp-3: 0.4rem;
+  --esp-4: 0.5rem;
+  --esp-5: 0.6rem;
+  --esp-6: 0.75rem;
+  --esp-7: 1rem;
+  --esp-8: 1.5rem;
+  --esp-9: 2.5rem;
+
+  /* --- Movimiento --- */
+  --dur: 160ms;
+  --ease: ease;
+}
