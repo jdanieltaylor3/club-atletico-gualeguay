@@ -7,8 +7,8 @@ Carpeta de entrada para los materiales que el club entrega. Los que ya se integr
 | Material | Estado | Dónde quedó |
 |---|---|---|
 | Escudo del club (`escudo-cag-f7.jpg`) | ✅ Integrado | `assets/img/escudo-club.jpg` |
-| Colores oficiales (azul #0226A6 + amarillo #FDFE03, tema oscuro) | ✅ Aplicados | `assets/css/styles.css` (`:root`) y `data/sitio.json` |
-| Escudos de equipos (`recursos/equipos/*.png`) | ⏳ Esperando el mapeo equipo → archivo | `assets/img/equipos/` (aún sin copiar) |
+| Colores oficiales (azul #0226A6 + amarillo #FDFE03, tema oscuro) | ✅ Aplicados | `assets/css/tokens.css` (paleta) y `data/sitio.json` |
+| Escudos de equipos | ✅ Copiados a `assets/img/equipos/` pero ⏳ **son PNG de ejemplo**, todavía no los reales | `assets/img/equipos/eq-*.png`; falta el mapeo equipo → escudo real en `data/torneos/*.json` (campo `"escudo"`) |
 | Fotos para noticias | ⏳ No hay todavía | — |
 | Fixtures del año pasado (paleta) | ✅ Usados solo como referencia de color | Se descartaron de `recursos/` |
 
