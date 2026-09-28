@@ -122,11 +122,41 @@
     });
   }
 
+  function renderFixture() {
+    const rondas = rondasAgrupadas();
+    if (!rondas.length) { $(estadoHTML("", "Todavía no hay partidos cargados.")); return; }
+    const nombres = equiposMap();
+    const html = rondas.map((r) => {
+      const zonas = Object.keys(ETIQUETA_ZONA).filter((z) => r.zonas[z]);
+      const secciones = zonas.map((z) => {
+        const [titulo, clase] = ETIQUETA_ZONA[z];
+        const cards = r.zonas[z]
+          .slice()
+          .sort((a, b) => (a.fecha || "").localeCompare(b.fecha || ""))
+          .map((p) => tarjetaPartido(p, nombres)).join("");
+        return `<h3 class="zona-titulo ${clase}">Ronda ${r.numero} · ${titulo}</h3>${cards}`;
+      }).join("");
+      return `<div class="fixture-ronda">${secciones}</div>`;
+    }).join("");
+    $("<h2>Fixture</h2>" + html);
+  }
+
+  function renderGoleadores() {
+    const lista = [...(torneo.goleadores || [])].sort((a, b) => b.goles - a.goles);
+    if (!lista.length) { $(estadoHTML("", "Aún no se cargaron goleadores.")); return; }
+    const nombres = equiposMap();
+    const filas = lista.map((x) =>
+      `<tr><td>${x.jugador}</td><td>${nombres[x.equipoId] || x.equipoId}</td><td><strong>${x.goles}</strong></td></tr>`
+    ).join("");
+    $('<h2>Goleadores</h2><table class="tabla"><thead><tr><th>Jugador</th><th>Equipo</th><th>Goles</th></tr></thead><tbody>' +
+      filas + "</tbody></table>");
+  }
+
   function renderVista(vista) {
     if (vista === "equipos") return renderEquipos();
     if (vista === "cuadro") return renderCuadro();
-    // renderFixture / renderGoleadores llegan en la Tarea 13
-    $(estadoHTML("", "Esta sección se habilita en el próximo paso del plan."));
+    if (vista === "fixture") return renderFixture();
+    if (vista === "goleadores") return renderGoleadores();
   }
 
   const cuadroEstado = { actual: null };
