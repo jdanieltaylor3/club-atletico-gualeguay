@@ -1,0 +1,10 @@
+# Dependencias y builds
+node_modules/
+dist/
+
+# Brainstorm companion (mockups temporales de diseño)
+.opencode/
+
+# Sistema / editor
+Thumbs.db
+.DS_Store
