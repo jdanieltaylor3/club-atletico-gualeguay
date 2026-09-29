@@ -2,7 +2,7 @@
 // Lee la configuración del DOM (data-torneo-src), carga el JSON y delega el
 // render a vistas-torneo.js. No sabe cómo se ve nada: solo cuándo se muestra.
 
-import { profundidadDePagina } from "./lib/rutas.js";
+import { profundidadDeRutaRelativa } from "./lib/rutas.js";
 import { rondasAgrupadas } from "./lib/data.js";
 import { estadoHTML } from "./lib/render.js";
 import { vistaCuadro, vistaFixture, vistaEquipos, vistaGoleadores } from "./vistas-torneo.js";
@@ -12,7 +12,10 @@ const origen = panel?.dataset.torneoSrc;
 if (panel && origen) iniciar(panel, origen);
 
 async function iniciar(panel, url) {
-  const profundidad = profundidadDePagina(location.pathname);
+  // La profundidad se deduce de la ruta relativa del JSON (../ por carpeta),
+  // no de location.pathname: así el sitio sirve igual en la raíz (localhost,
+  // dominio propio) o bajo una subcarpeta como GitHub Pages.
+  const profundidad = profundidadDeRutaRelativa(url);
   const tabs = [...document.querySelectorAll('.tabs [role="tab"]')];
   const estado = { torneo: null, vista: "cuadro", ronda: null };
 
