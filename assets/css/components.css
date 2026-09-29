@@ -91,6 +91,14 @@
   margin: 0 0 0.8rem;
 }
 
+/* El título de la categoría lleva subrayado amarillo, del ancho justo
+   del texto, para anclar la tarjeta. */
+.categoria h2 {
+  display: inline-block;
+  border-bottom: 2px solid var(--color-primario);
+  padding-bottom: var(--esp-2);
+}
+
 /* ===== Tarjeta de partido ===== */
 .tarjeta-partido {
   background: var(--color-superficie);

@@ -125,6 +125,22 @@
   object-fit: contain;
 }
 
+/* ===== Capa ambiente =====
+   Un <div aria-hidden> fijo detrás de todo, con dos brillos suaves (el azul
+   del escudo y un toque del amarillo). ambiente.js lo desplaza apenas al
+   hacer scroll: da profundidad al fondo sin distraer. El inset superior
+   negativo deja aire para que el desplazamiento no destape el borde. */
+.ambiente {
+  position: fixed;
+  inset: -140px 0 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(760px 520px at 84% 10%, rgba(255, 213, 0, 0.055), transparent 70%),
+    radial-gradient(1000px 680px at 8% 76%, rgba(46, 82, 224, 0.13), transparent 70%);
+  transform: translate3d(0, var(--amb-y, 0px), 0);
+}
+
 /* ===== Contenido ===== */
 .site-main { min-height: 60vh; }
 
@@ -132,6 +148,25 @@
   max-width: var(--ancho-max);
   margin: 0 auto;
   padding: var(--esp-8) var(--esp-7);
+}
+
+/* Ritmo de secciones: cada h2 que abre el contenido (hijo directo de
+   .page) separa su tramo del anterior con una línea fina y una marca
+   amarilla. Los h2 dentro de columnas o paneles no se ven afectados. */
+.page > h2 {
+  margin-top: var(--esp-9);
+  padding-top: var(--esp-8);
+  border-top: 1px solid var(--color-borde);
+  position: relative;
+}
+.page > h2::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 52px;
+  height: 3px;
+  background: var(--color-primario);
 }
 
 .hero {
@@ -146,8 +181,10 @@
 
 /* Fondo del hero según la página.
    Home: escudo del club como marca de agua tenue.
-   Contacto (.hero-contacto): foto del frente del club, completa y sin
-   recorte, con overlay oscuro para legibilidad. */
+   Contacto (.hero-contacto): la foto del frente del club ocupa todo el
+   ancho del hero (cover) y se recorta arriba y abajo; el hero es más alto
+   para que la imagen respire. El overlay oscuro sube para que el texto
+   se lea sobre la foto. */
 .hero::before,
 .hero::after {
   content: "";
@@ -166,16 +203,27 @@
 }
 .hero::after { display: none; }
 
+.hero-contacto {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 300px;
+}
 .hero-contacto::before {
   background-image: url("../img/foto-club.png");
-  background-size: contain;
-  background-position: center;
+  background-size: cover;
+  background-position: center 38%;
   background-repeat: no-repeat;
-  opacity: 0.55;
+  opacity: 0.5;
 }
 .hero-contacto::after {
   display: block;
-  background: linear-gradient(180deg, rgba(6, 10, 33, 0.45) 0%, rgba(6, 10, 33, 0.78) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(6, 10, 33, 0.55) 0%,
+    rgba(6, 10, 33, 0.72) 50%,
+    rgba(6, 10, 33, 0.92) 100%
+  );
 }
 
 .hero h1 { margin-bottom: var(--esp-3); }
@@ -211,12 +259,32 @@
   to { opacity: 1; transform: none; }
 }
 
-/* Grilla de la home: una columna en móvil, tres desde 900px. */
+/* Grilla de la home: una columna en móvil, tres desde 900px.
+   Cada columna es un panel con superficie, borde y aire: antes el texto
+   flotaba sobre el fondo y la página se leía vacía. */
 .home-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--esp-8);
   margin-top: var(--esp-8);
+}
+.home-grid > article {
+  background: linear-gradient(
+    180deg,
+    rgba(13, 18, 51, 0.92) 0%,
+    rgba(13, 18, 51, 0.55) 100%
+  );
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: var(--esp-7) var(--esp-7) var(--esp-6);
+  transition:
+    transform var(--dur-medio) var(--ease),
+    border-color var(--dur-medio) var(--ease);
+}
+.home-grid > article:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 213, 0, 0.4);
 }
 .home-grid h2 {
   color: var(--color-texto-suave);
@@ -279,6 +347,7 @@
   .brand-name { font-size: 1.15rem; }
   .hero { padding: 3.5rem var(--esp-7); }
   .hero h1 { font-size: 2.6rem; }
+  .hero-contacto { min-height: 420px; }
 
   .footer-inner {
     flex-direction: row;
