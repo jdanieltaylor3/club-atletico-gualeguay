@@ -292,10 +292,16 @@
   .home-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* ===== 1024px: ancho máximo ===== */
+/* ===== 1024px: ancho máximo =====
+   Solo se limita y centra el contenido (.page). .site-main y .hero
+   quedan a todo el ancho: antes también se limitaban, pero sin
+   margin auto, así que el cuerpo quedaba pegado a la izquierda y
+   descentrado en pantallas anchas. */
 @media (min-width: 1024px) {
-  .site-main,
-  .page { max-width: var(--ancho-max-lg); }
+  .page {
+    max-width: var(--ancho-max-lg);
+    margin-inline: auto;
+  }
 }
 
 /* ===== Sistema de movimiento =====

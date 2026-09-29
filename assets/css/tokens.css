@@ -44,6 +44,15 @@
   --color-hero-inicio: #0b1136;
   --color-borde: rgba(255, 255, 255, 0.12);
 
+  /* --- Fondo del sitio: capas decorativas ---
+     Componen el fondo de body (ver base.css). Son gradientes
+     estáticos: no hay imágenes ni animación. */
+  --fondo-alto: #0b1136;         /* arriba, junto al header   */
+  --fondo-medio: var(--color-fondo);
+  --fondo-bajo: #03061a;         /* al pie, más profundo      */
+  --fondo-halo: rgba(46, 82, 224, 0.22);  /* brillo del azul del escudo */
+  --fondo-textura: rgba(255, 255, 255, 0.02);
+
   /* --- Colores de las zonas del torneo --- */
   --color-iniciales: #c4caec;
   --color-ganadores: #7fa8ff;

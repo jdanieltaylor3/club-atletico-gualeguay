@@ -15,7 +15,16 @@ body {
   font-family: var(--font-text);
   line-height: var(--lh-base);
   color: var(--color-texto);
-  background: var(--color-fondo);
+  background-color: var(--fondo-medio);
+  /* Fondo en tres capas, todas estáticas (solo gradientes, sin imágenes
+     ni animación): un halo del azul del escudo arriba al centro, una
+     textura diagonal casi imperceptible y una caída vertical hacia un azul
+     más profundo. Le da profundidad al sitio sin competir con el contenido. */
+  background-image:
+    radial-gradient(1200px 700px at 50% 0, var(--fondo-halo), transparent 70%),
+    repeating-linear-gradient(115deg, var(--fondo-textura) 0 2px, transparent 2px 140px),
+    linear-gradient(180deg, var(--fondo-alto) 0%, var(--fondo-medio) 45%, var(--fondo-bajo) 100%);
+  background-repeat: no-repeat, repeat, no-repeat;
 }
 
 img { max-width: 100%; height: auto; }
