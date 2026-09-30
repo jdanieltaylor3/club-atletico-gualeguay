@@ -5,6 +5,10 @@ dist/
 # Brainstorm companion (mockups temporales de diseño)
 .opencode/
 
+# Material de trabajo: fotos y videos originales que se convierten a
+# assets/img y assets/video. Van al repo solo los archivos ya optimizados.
+recursos/
+
 # Sistema / editor
 Thumbs.db
 .DS_Store

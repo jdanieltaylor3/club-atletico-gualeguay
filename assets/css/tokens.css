@@ -53,6 +53,11 @@
   --fondo-halo: rgba(46, 82, 224, 0.22);  /* brillo del azul del escudo */
   --fondo-textura: rgba(255, 255, 255, 0.02);
 
+  /* Intensidad de las fotos de fondo de las secciones. El escudo de la
+     home está al 0.12; las fotos van apenas por encima para que se lean
+     como textura y no compitan con el texto. Subilo para verlas más. */
+  --foto-opacidad: 0.3;
+
   /* --- Colores de las zonas del torneo --- */
   --color-iniciales: #c4caec;
   --color-ganadores: #7fa8ff;
@@ -68,16 +73,26 @@
   --tinte-primario: rgba(255, 213, 0, 0.16);
   --tinte-blanco: rgba(255, 255, 255, 0.08);
 
-  /* --- Forma --- */
-  --radio: 10px;
-  --radio-chico: 8px;
-  --radio-pill: 999px;
+  /* --- Forma: cartel de club ---
+     Tres casos y ninguno accidental: lo impreso va recto (tarjetas, paneles,
+     fotos, mapa, botones), las etiquetas van en píldora y los escudos son
+     redondos. El sitio no lleva sombra: la profundidad la da el color de la
+     superficie, no una mancha oscura debajo. */
+  --radio: 0px;
+  --radio-tag: 999px;     /* solo badges de estado: vidas, penal, bye */
   --radio-escudo: 50%;
-  --sombra: 0 2px 12px rgba(0, 0, 0, 0.45);
+  --sombra: none;
+
+  /* Las reglas del club: arriba del pie y la que aparece bajo el header
+     cuando se despega. El amarillo nunca va translúcido: si marca algo, es
+     una regla de este grosor; si no hace falta, no está. */
+  --grosor-regla: 3px;
+
   --ancho-max: 960px;
   --ancho-max-lg: 1080px;
+  --alto-header: 76px;
   --alto-escudo: 30px;
-  --alto-logo: 44px;
+  --alto-logo: 48px;
   --alto-icono-red: 24px;  /* logotipos de redes en el header y el pie */
 
   /* --- Espaciado: los pasos que usa el diseño --- */

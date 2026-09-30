@@ -16,19 +16,23 @@
   letter-spacing: 0.04em;
   font-size: var(--fs-base);
   padding: 0.55rem 1.2rem;
-  border-radius: var(--radio-pill);
+  border-radius: var(--radio);
   transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease);
 }
 .btn:hover { text-decoration: none; filter: brightness(0.96); }
 .btn:active { transform: translateY(1px); }
 
-/* ===== Badges: estado de vida, categoría, penal y bye ===== */
+/* ===== Badges: estado de vida, categoría, penal y bye =====
+   Estas son las únicas cosas del sitio en píldora: son etiquetas, no bloques.
+   Cada estado tiene su color y su fondo, y todos los bordes usan la misma
+   intensidad (45%), así que la diferencia se lee en el color y no en un
+   borde un poco más o menos marcado. */
 .badge {
   display: inline-block;
   font-size: 0.66rem;
   font-weight: 700;
   padding: 0.12rem var(--esp-4);
-  border-radius: var(--radio-pill);
+  border-radius: var(--radio-tag);
   vertical-align: middle;
   background: rgba(255, 255, 255, 0.1);
   color: var(--color-iniciales);
@@ -38,7 +42,7 @@
 .badge.v2 {
   background: rgba(64, 220, 130, 0.16);
   color: var(--color-v2);
-  border-color: rgba(64, 220, 130, 0.35);
+  border-color: rgba(64, 220, 130, 0.45);
 }
 
 /* La "segunda vida" se anuncia una vez al aparecer: un anillo que se
@@ -63,22 +67,22 @@
 .badge.v1 {
   background: var(--tinte-primario);
   color: var(--color-primario);
-  border-color: rgba(255, 213, 0, 0.4);
+  border-color: rgba(255, 213, 0, 0.45);
 }
 .badge.elim {
   background: rgba(255, 110, 110, 0.16);
   color: var(--color-elim);
-  border-color: rgba(255, 110, 110, 0.4);
+  border-color: rgba(255, 110, 110, 0.45);
 }
 .badge.pen {
   background: var(--tinte-primario);
   color: #ffe266;
-  border-color: rgba(255, 213, 0, 0.35);
+  border-color: rgba(255, 213, 0, 0.45);
 }
 .badge.bye {
   background: var(--tinte-blanco);
   color: #aeb6e4;
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 /* ===== Categorías (índice de torneos) ===== */
@@ -112,7 +116,7 @@
 .tp-titulo {
   font-size: var(--fs-xs);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.12em;
   color: var(--color-texto-suave);
   margin-bottom: var(--esp-1);
 }
@@ -183,12 +187,12 @@
   background: var(--color-superficie);
   color: var(--color-texto);
   padding: 0.35rem 0.85rem;
-  border-radius: var(--radio-pill);
+  border-radius: var(--radio);
   cursor: pointer;
   transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
 }
 .tab:hover {
-  border-color: rgba(255, 213, 0, 0.5);
+  border-color: var(--color-primario);
   text-decoration: none;
 }
 .tab:disabled { opacity: 0.4; cursor: default; }
@@ -225,7 +229,7 @@
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.12em;
   margin-bottom: var(--esp-4);
   padding-bottom: var(--esp-2);
   border-bottom: 2px solid;
@@ -234,7 +238,10 @@
 .zona-titulo.ganadores { color: var(--color-ganadores); border-color: var(--color-secundario); }
 .zona-titulo.perdedores { color: var(--color-perdedores); border-color: #6a3fd0; }
 
-/* ===== Tabla de goleadores ===== */
+/* ===== Tabla de goleadores =====
+   El grosor dice la jerarquía: la cabecera lleva una regla de 2 px y las
+   filas una de 1 px. Antes la de cabecera era de 2 px pero al 12% de blanco,
+   más pesada de lo que se veía; ahora se lee. */
 .tabla {
   width: 100%;
   border-collapse: collapse;
@@ -243,7 +250,9 @@
 .tabla th {
   text-align: left;
   color: var(--color-texto-suave);
-  border-bottom: 2px solid var(--color-borde);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.28);
   padding: 0.35rem var(--esp-4);
 }
 .tabla td {
@@ -293,21 +302,20 @@
   background: var(--color-superficie-alt);
 }
 
-/* Hover de tarjetas (recomendado R1): lift + sombra y la imagen crece
-   dentro del borde (la tarjeta ya tiene overflow: hidden). Solo
-   transform y opacidad, nada que anime de forma permanente. */
+/* Hover de tarjetas: suben 2 px, el borde pasa a amarillo macizo y la imagen
+   crece dentro del borde (la tarjeta ya tiene overflow: hidden). El sitio no
+   usa sombra (--sombra: none), así que el hover se apoya solo en el borde.
+   Solo transform y opacidad, nada que anime de forma permanente. */
 .tarjeta-nota,
 .categoria {
   transition:
     transform var(--dur-medio) var(--ease),
-    border-color var(--dur-medio) var(--ease),
-    box-shadow var(--dur-medio) var(--ease);
+    border-color var(--dur-medio) var(--ease);
 }
 .tarjeta-nota:hover,
 .categoria:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 213, 0, 0.45);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
+  transform: translateY(-2px);
+  border-color: var(--color-primario);
 }
 .nota-img {
   transition: transform var(--dur-medio) var(--ease);
@@ -336,7 +344,33 @@
 /* ===== Contacto ===== */
 .contact-list { line-height: 2; }
 
-/* ===== Mapa (embed de Google) ===== */
+/* ===== Galería de fotos =====
+   Grilla de una, dos o tres columnas según el ancho. Cada foto se recorta a
+   4:3 para que la fila quede pareja; el height va en el HTML para no saltar
+   el layout al cargar (loading lazy). */
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: var(--esp-7);
+  margin: var(--esp-7) 0 var(--esp-8);
+}
+.galeria figure { margin: 0; }
+.galeria img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radio);
+  border: 1px solid var(--color-borde);
+  background: var(--color-superficie-alt);
+}
+.galeria figcaption {
+  margin-top: var(--esp-4);
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+}
+
+/* Mapa (embed de Google) */
 .mapa {
   display: block;
   width: 100%;

@@ -4,22 +4,48 @@
    colapsado y se despliega en el breakpoint de 768px.
    ============================================================ */
 
-/* ===== Header ===== */
+/* ===== Header =====
+   Cabecera tipo cartel: escudo + nombre en dos líneas ("Club Atlético" en
+   blanco, "Gualeguay" en amarillo) sobre una banda de 76 px. Va fija con
+   position: sticky. No flota translúcida ni con sombra: es opaca, como la
+   franja de arriba de un afiche. */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--esp-6);
-  padding: var(--esp-5) var(--esp-7);
+  height: var(--alto-header);
+  padding: 0 var(--esp-7);
   background: var(--color-encabezado);
-  border-bottom: 1px solid rgba(255, 213, 0, 0.28);
   color: var(--color-blanco);
+}
+
+/* La regla de 3 px del club aparece cuando la cabecera se despega. Quieto
+   hace de separador la del hero (más abajo, en .hero); así, al quedar
+   flotando, sigue marcando el borde de la cabecera. Sin ella el contenido
+   se metería debajo sin ningún filo que lo corte. */
+.site-header.is-stuck {
+  border-bottom: var(--grosor-regla) solid var(--color-primario);
+}
+
+/* En móvil la cabecera se esconde al bajar y vuelve al subir (lo decide
+   js/header.js). Se mueve con transform, nunca con display, para que entre
+   deslizándose. Sin JS la clase no llega a existir y la cabecera se queda
+   siempre visible. */
+@media (max-width: 767px) {
+  @media (prefers-reduced-motion: no-preference) {
+    .site-header { transition: transform var(--dur-medio) var(--ease); }
+    .site-header.oculto { transform: translateY(-100%); }
+  }
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: var(--esp-4);
+  gap: var(--esp-5);
   color: var(--color-blanco);
 }
 .brand:hover { text-decoration: none; }
@@ -30,26 +56,41 @@
   object-fit: contain;
 }
 
+/* El nombre en dos líneas, como el título de un cartel: la parte genérica
+   arriba en blanco, el nombre del club abajo más grande y en amarillo. */
 .brand-name {
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-display);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  font-size: 0.95rem;
-  line-height: 1.1;
+  letter-spacing: 0.02em;
+  font-size: 0.82rem;
+  line-height: 1.16;
+}
+.brand-name-b {
+  color: var(--color-primario);
+  font-size: 1.14rem;
 }
 
+/* Botón del menú: un cuadrado amarillo macizo con el ícono en tinta, como
+   el botón de una máquina expendedora. Sin borde: el color ya lo separa. */
 .nav-toggle {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: var(--color-blanco);
-  font-size: 1.1rem;
-  border-radius: var(--radio-chico);
-  padding: var(--esp-2) var(--esp-5);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  background: var(--color-primario);
+  color: var(--color-tinta);
+  font-size: 1.15rem;
+  line-height: 1;
+  border: none;
+  border-radius: 0;
   cursor: pointer;
-  transition: border-color var(--dur) var(--ease);
+  transition: filter var(--dur) var(--ease);
 }
-.nav-toggle:hover { border-color: var(--color-primario); }
+.nav-toggle:hover { filter: brightness(0.94); }
+.nav-toggle:active { transform: translateY(1px); }
 
 /* ===== Navegación (colapsada en móvil, sobre el contenido) =====
    Se oculta con opacidad (no display) para poder animar la apertura;
@@ -59,12 +100,12 @@
   flex-direction: column;
   gap: var(--esp-1);
   position: absolute;
-  top: 52px;
+  top: var(--alto-header);
   left: 0;
   right: 0;
   background: var(--color-superficie-alt);
-  border-bottom: 1px solid rgba(255, 213, 0, 0.35);
-  padding: var(--esp-5) var(--esp-7) 0.9rem;
+  border-bottom: var(--grosor-regla) solid var(--color-primario);
+  padding: var(--esp-5) var(--esp-7) var(--esp-6);
   box-shadow: var(--sombra);
   z-index: 20;
   opacity: 0;
@@ -85,31 +126,48 @@
   transition-delay: 0s;
 }
 
+/* Navegación: mayúsculas de tracking amplio, como las etiquetas de un
+   afiche. El hover solo pone la letra en amarillo (nada de fondos) y la
+   página en la que estás es un bloque amarillo macizo con la letra oscura:
+   el mismo lenguaje que la pestaña activa de un torneo. */
 .nav-link {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.82);
   padding: var(--esp-4) var(--esp-5);
-  border-radius: 6px;
+  font-family: var(--font-display);
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  line-height: 1.2;
 }
-.nav-link:hover {
-  background: var(--tinte-blanco);
+.nav-link:not(.on):hover {
+  color: var(--color-primario);
   text-decoration: none;
 }
 .nav-link.on {
-  background: var(--tinte-primario);
-  color: var(--color-primario);
+  background: var(--color-primario);
+  color: var(--color-tinta);
   font-weight: 700;
   text-decoration: none;
 }
 
 /* ===== Redes sociales: logotipos PNG sin fondo blanco =====
    Los logotipos se procesan sin fondo (tools/procesar-iconos-redes.py):
-   el logo llena todo el chip y se ve el fondo del sitio detrás. */
+   el logo llena todo el chip y se ve el fondo del sitio detrás.
+   En el header el bloque va con una regla que lo separa de la navegación:
+   son dos grupos distintos en la misma banda, sin cajas ni fondos. */
+.site-nav .redes {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-4);
+  margin-top: var(--esp-5);
+  padding-top: var(--esp-5);
+  border-top: 1px solid var(--color-borde);
+}
 .social-link {
   display: inline-block;
   width: var(--alto-icono-red);
   height: var(--alto-icono-red);
-  margin-left: var(--esp-2);
   line-height: 0;
   transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease);
 }
@@ -141,8 +199,121 @@
   transform: translate3d(0, var(--amb-y, 0px), 0);
 }
 
-/* ===== Contenido ===== */
-.site-main { min-height: 60vh; }
+/* ===== Secciones con foto de fondo =====
+   El fondo se extiende de borde a borde de la pantalla aunque la sección
+   esté limitada a 1080px: el pseudoelemento se estira a 100vw y se ancla al
+   centro. Cada variante elige su foto con la variable --foto.
+   La foto va tapada, con el mismo criterio que el escudo de la home: se
+   intuye de fondo pero no compite con el texto. La intensidad se regula
+   desde --foto-opacidad (tokens.css). */
+.seccion-foto {
+  position: relative;
+  isolation: isolate;
+}
+.seccion-foto::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: -1;
+  background-image: var(--foto);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: var(--foto-opacidad);
+}
+.seccion-foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 10, 33, 0.45) 0%,
+    rgba(6, 10, 33, 0.62) 100%
+  );
+}
+
+/* Variantes: cada sección del sitio elige su foto. */
+.seccion-cancha { --foto: url("../img/cancha-f7.jpg"); }
+.seccion-cancha::before { background-position: center 45%; }
+.seccion-cabina { --foto: url("../img/cancha-cabina.jpg"); }
+.seccion-cabina::before { background-position: center 42%; }
+.seccion-banco { --foto: url("../img/banco-suplentes.jpg"); }
+.seccion-banco::before { background-position: center 28%; }
+.seccion-club { --foto: url("../img/foto-club.png"); }
+.seccion-escudo { --foto: url("../img/escudo-tela.jpg"); }
+.seccion-escudo::before { background-position: center 35%; }
+.seccion-vestuarios { --foto: url("../img/vestuarios.jpg"); }
+.seccion-vestuarios::before { background-position: center 40%; }
+.seccion-arcos { --foto: url("../img/arcos.jpg"); }
+.seccion-arcos::before { background-position: center 45%; }
+
+/* ===== Secciones con video de fondo =====
+   Mismo criterio que las fotos: va de borde a borde, con la misma opacidad
+   (--foto-opacidad) y el mismo oscurecido, así el texto se lee igual.
+   El poster es un fotograma real del clip, así que la opacidad es la misma
+   que en las fotos también mientras carga y en los navegadores que no lo
+   reproducen. El video es decorativo: aria-hidden y sin tabindex para que el
+   teclado no lo encuentre. Con menos movimiento no se reproduce: la sección
+   queda con el fondo liso del sitio, como el resto de las animaciones, y
+   fondo-video.js evita incluso que se descargue. */
+.seccion-video {
+  position: relative;
+  isolation: isolate;
+  /* flow-root para que el fondo cubra la sección entera. Sin esto el margen
+     superior del primer hijo se escapa hacia arriba (el contenedor no tiene
+     padding ni borde, así que no lo frena) y empujaba la sección 24 px hacia
+     abajo: quedaba una franja de fondo plano entre el hero y el video. El
+     margen sigue estando, pero adentro, que es donde se quería. */
+  display: flow-root;
+}
+.video-fondo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.video-fondo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 10, 33, 0.45) 0%,
+    rgba(6, 10, 33, 0.62) 100%
+  );
+}
+.video-fondo video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 45%;
+  opacity: var(--foto-opacidad);
+}
+/* Con menos movimiento el video no corre: el CSS lo apaga (ver el bloque de
+   "Sistema de movimiento") y fondo-video.js le saca el autoplay para que
+   tampoco se descargue. */
+@media (prefers-reduced-motion: reduce) {
+  .video-fondo video { display: none; }
+}
+
+/* ===== Contenido =====
+   .site-main no lleva min-height a propósito. Con min-height: 60vh, las
+   páginas cortas (una edición de torneo, una nota) estiraban el main hasta la
+   altura mínima y dejaban una franja de fondo plano entre la última sección y
+   el pie: en la edición 26-27 eran 148 px de nada. Sin la regla el pie va
+   justo después del contenido y el fondo sobra por abajo, que es lo normal. */
 
 .page {
   max-width: var(--ancho-max);
@@ -181,10 +352,10 @@
 
 /* Fondo del hero según la página.
    Home: escudo del club como marca de agua tenue.
-   Contacto (.hero-contacto): la foto del frente del club ocupa todo el
-   ancho del hero (cover) y se recorta arriba y abajo; el hero es más alto
-   para que la imagen respire. El overlay oscuro sube para que el texto
-   se lea sobre la foto. */
+   Con foto (.hero-foto + la variante que elige la imagen): la foto ocupa
+   todo el ancho del hero (cover) y se recorta arriba y abajo; el hero es
+   más alto para que la imagen respire y el overlay oscuro sube para que
+   el texto se lea sobre la foto. */
 .hero::before,
 .hero::after {
   content: "";
@@ -203,27 +374,33 @@
 }
 .hero::after { display: none; }
 
-.hero-contacto {
+.hero-foto {
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 300px;
 }
-.hero-contacto::before {
-  background-image: url("../img/foto-club.png");
+.hero-foto::before {
   background-size: cover;
   background-position: center 38%;
   background-repeat: no-repeat;
-  opacity: 0.5;
+  opacity: 0.42;
 }
-.hero-contacto::after {
+.hero-foto::after {
   display: block;
   background: linear-gradient(
     180deg,
-    rgba(6, 10, 33, 0.55) 0%,
-    rgba(6, 10, 33, 0.72) 50%,
-    rgba(6, 10, 33, 0.92) 100%
+    rgba(6, 10, 33, 0.62) 0%,
+    rgba(6, 10, 33, 0.78) 50%,
+    rgba(6, 10, 33, 0.95) 100%
   );
+}
+
+/* Variantes: cada una elige su foto. */
+.hero-contacto::before { background-image: url("../img/foto-club.png"); }
+.hero-cancha::before {
+  background-image: url("../img/cancha-f7.jpg");
+  background-position: center 45%;
 }
 
 .hero h1 { margin-bottom: var(--esp-3); }
@@ -261,7 +438,9 @@
 
 /* Grilla de la home: una columna en móvil, tres desde 900px.
    Cada columna es un panel con superficie, borde y aire: antes el texto
-   flotaba sobre el fondo y la página se leía vacía. */
+   flotaba sobre el fondo y la página se leía vacía. La superficie es un
+   color plano, no un degradado que se transparente hacia abajo: al no haber
+   sombra, el panel tiene que sostenerse por sí mismo contra el video. */
 .home-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -269,11 +448,7 @@
   margin-top: var(--esp-8);
 }
 .home-grid > article {
-  background: linear-gradient(
-    180deg,
-    rgba(13, 18, 51, 0.92) 0%,
-    rgba(13, 18, 51, 0.55) 100%
-  );
+  background: rgba(13, 18, 51, 0.9);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio);
   box-shadow: var(--sombra);
@@ -283,21 +458,24 @@
     border-color var(--dur-medio) var(--ease);
 }
 .home-grid > article:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 213, 0, 0.4);
+  transform: translateY(-2px);
+  border-color: var(--color-primario);
 }
 .home-grid h2 {
   color: var(--color-texto-suave);
   font-size: 1rem;
 }
 
-/* ===== Footer ===== */
+/* ===== Footer =====
+   Sin margin-top: con él quedaba una franja de 40 px de fondo plano entre la
+   última sección y el pie, y se veía como un margen en todas las páginas.
+   Arriba, la regla de 3 px del club: es lo que marca la separación, y cierra
+   la página igual que la cierra arriba. */
 .site-footer {
   background: var(--color-pie);
   color: rgba(238, 241, 255, 0.85);
-  border-top: 1px solid rgba(255, 213, 0, 0.25);
+  border-top: var(--grosor-regla) solid var(--color-primario);
   padding: 1.25rem var(--esp-7);
-  margin-top: var(--esp-9);
 }
 
 .footer-inner {
@@ -318,6 +496,16 @@
 .footer-copy {
   font-size: 0.85rem;
   opacity: 0.75;
+}
+
+/* En el pie las redes no llevan regla: van con aire, sin estructura. */
+.footer-inner .redes {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-4);
+  margin: 0;
+  padding: 0;
+  border: none;
 }
 
 /* ===== 768px: navegación horizontal y pie en fila ===== */
@@ -344,10 +532,20 @@
     padding: 0;
   }
 
-  .brand-name { font-size: 1.15rem; }
+  /* En fila las redes se separan con una regla vertical, no horizontal. */
+  .site-nav .redes {
+    margin: 0 0 0 var(--esp-5);
+    padding: 0 0 0 var(--esp-5);
+    border-top: none;
+    border-left: 1px solid var(--color-borde);
+  }
+
+  .brand-name { font-size: 0.9rem; }
+  .brand-name-b { font-size: 1.28rem; }
+  .nav-link { font-size: 0.8rem; }
   .hero { padding: 3.5rem var(--esp-7); }
   .hero h1 { font-size: 2.6rem; }
-  .hero-contacto { min-height: 420px; }
+  .hero-foto { min-height: 420px; }
 
   .footer-inner {
     flex-direction: row;

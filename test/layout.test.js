@@ -1,6 +1,24 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { assemble, parsearPlantilla, renderRedes } from "../lib/layout.js";
+import { leerTexto } from "../lib/utils.js";
+
+const RAIZ = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
+const CSS_LAYOUT = leerTexto(path.join(RAIZ, "assets", "css", "layout.css"));
+const CSS_COMPONENTES = leerTexto(path.join(RAIZ, "assets", "css", "components.css"));
+const CSS_TOKENS = leerTexto(path.join(RAIZ, "assets", "css", "tokens.css"));
+const JS_HEADER = leerTexto(path.join(RAIZ, "assets", "js", "header.js"));
+
+// Saca el bloque de declaraciones de un selector, para poder preguntar por una
+// regla concreta sin depender del orden del archivo.
+function regla(selector) {
+  const esc = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const m = CSS_LAYOUT.match(new RegExp(`(?:^|\\})\\s*${esc}\\s*\\{([^}]*)\\}`, "m"));
+  assert.ok(m, `no se encontró la regla ${selector} en css/layout.css`);
+  return m[1];
+}
 
 test("assemble: inserta título y contenido", () => {
   const html = assemble({
@@ -89,4 +107,71 @@ test("parsearPlantilla: separa metadata y contenido", () => {
 
 test("parsearPlantilla: sin metadata lanza un error claro", () => {
   assert.throws(() => parsearPlantilla("<section>hola</section>"), /Falta metadata/);
+});
+
+/* Huecos entre secciones
+   Estas tres reglas dejaron franjas de fondo plano que se veían como un margen
+   entre bloques que en realidad van pegados: entre el hero y el video, y entre
+   la última sección y el pie. Salían de reglas que no tienen nada que ver con
+   separaciones y que conviene no volver a poner. */
+
+test("la sección de video contiene los márgenes de sus hijos", () => {
+  // Sin un contexto de formato propio, el margen superior del primer hijo se
+  // escapa hacia arriba y empuja la sección entera, dejando el fondo del sitio
+  // a la vista entre el hero y el video.
+  assert.match(regla(".seccion-video"), /display:\s*flow-root/);
+});
+
+test(".site-main no estira con min-height", () => {
+  // En las páginas cortas el main se estiraba hasta 60vh y dejaba hasta 148 px
+  // de fondo plano entre la última sección y el pie.
+  assert.doesNotMatch(CSS_LAYOUT, /\.site-main\s*\{[^}]*min-height/);
+});
+
+test("el pie no se separa con margin-top", () => {
+  // El filete de arriba ya marca la separación; el margen dejaba 40 px de fondo
+  // plano antes del pie en todas las páginas.
+  assert.doesNotMatch(regla(".site-footer"), /margin-top/);
+});
+
+/* Sistema de forma: cartel de club
+   Tres casos y ninguno accidental: lo impreso va recto, las etiquetas van en
+   píldora y los escudos son redondos. Ni radios abandonados a mano (el 6px
+   de .nav-link), ni sombras sueltas, ni píldoras en bloques impresos. */
+
+test("los bloques van rectos: --radio es 0, --sombra es none", () => {
+  assert.match(CSS_TOKENS, /--radio:\s*0px/);
+  assert.match(CSS_TOKENS, /--sombra:\s*none/);
+});
+
+test("no hay radios escritos a mano ni píldoras en bloques impresos", () => {
+  // El único radio literal permitido en los componentes es el de las
+  // etiquetas (--radio-tag), que se declara en tokens.css.
+  const radiosSueltos = CSS_COMPONENTES.match(/border-radius:\s*\d+px/g);
+  assert.equal(radiosSueltos, null, `radios a mano en componentes: ${radiosSueltos}`);
+  assert.doesNotMatch(CSS_LAYOUT, /border-radius:\s*\d+px/);
+});
+
+test("el header es de cartel: fijo arriba, con regla al despegarse", () => {
+  assert.match(regla(".site-header"), /position:\s*sticky/);
+  assert.match(regla(".site-header"), /top:\s*0/);
+  assert.match(regla(".site-header"), /--alto-header/);
+  const marca = regla(".site-header.is-stuck");
+  assert.match(marca, /--grosor-regla/);
+  assert.match(marca, /--color-primario/);
+});
+
+test("el pie cierra con la regla del club", () => {
+  const pie = regla(".site-footer");
+  assert.match(pie, /border-top:\s*var\(--grosor-regla\)\s+solid\s+var\(--color-primario\)/);
+});
+
+test("header.js: si no hay script, el header queda siempre visible", () => {
+  // La clase que esconde el header solo la agrega el script: el HTML de la
+  // plantilla no debe llevarla, y el script debe respetar el movimiento
+  // reducido (ahí no se esconde nunca).
+  const plantilla = leerTexto(path.join(RAIZ, "templates", "partials", "_header.html"));
+  assert.doesNotMatch(plantilla, /site-header[^>"]*oculto/);
+  assert.match(JS_HEADER, /prefers-reduced-motion/);
+  assert.match(JS_HEADER, /translateY/);
 });

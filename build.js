@@ -229,8 +229,22 @@ function listaNoticias(profundidadPagina) {
 function generarHome() {
   const { titulo, navActiva, contenido } = plantilla("index.html");
   escribirPagina("index.html", titulo, navActiva, rellenar(contenido, {
-    "<!-- CONTENIDO_HOME -->": [hero(), bloqueTorneo(), bloqueNoticias()].join("\n"),
+    "<!-- CONTENIDO_HOME -->": [hero(), homeVideo()].join("\n"),
   }));
+}
+
+// Las dos secciones de abajo (torneo y noticias) comparten un único video de
+// fondo: un solo elemento <video> que cubre las dos. Meter un video por
+// sección sería el mismo archivo descargado una vez pero decodificado dos
+// veces, y al hacer scroll se verían las dos copias playing en paralelo. Con
+// uno solo, además, el clip se recorre entero a medida que se baja.
+function homeVideo() {
+  return `
+    <div class="seccion-video">
+      ${fondoVideo("cancha-largo", "assets/img/video-cancha-largo.jpg")}
+      ${bloqueTorneo()}
+      ${bloqueNoticias()}
+    </div>`;
 }
 
 function hero() {
@@ -261,6 +275,33 @@ function opcionesTorneoHome(torneo, profundidad = 0) {
 function tarjetas(partidos, torneo, profundidad) {
   const opts = opcionesTorneoHome(torneo, profundidad);
   return partidos.map((p) => tarjetaPartido(p, opts)).join("");
+}
+
+// Fondo con video de una sección. El clip lleva la misma opacidad y el mismo
+// oscurecido que las fotos de fondo (ver .video-fondo en css/layout.css), y
+// el poster es un fotograma real del video: mientras carga, o si el
+// navegador no lo reproduce, se ve igual que una foto.
+//
+// Los dos clips de la cancha van unidos en un solo archivo
+// (assets/video/cancha-largo.mp4) y las dos secciones de la home usan ese
+// mismo video: el navegador lo descarga una vez y lo reproduce en las dos.
+//
+// El atributo media del <source> evita descargar el clip en pantallas chicas:
+// ahí queda el poster, que para un fondo decorativo es lo razonable. El .mp4
+// es H.264 sin audio, de ~2,2 MB, y va con el índice de reproducción al
+// principio (faststart) para que empiece a correr sin esperar el archivo entero.
+//
+// El video no lleva autoplay en el HTML a propósito: así el archivo no se
+// descarga hasta que fondo-video.js ve la sección en pantalla, y con menos
+// movimiento no se descarga nunca. Sin JS queda el poster, que es un
+// fotograma del propio clip: se ve la imagen, solo que quieta.
+function fondoVideo(nombre, poster, profundidad = 0) {
+  return `
+        <div class="video-fondo" aria-hidden="true">
+          <video muted loop playsinline preload="none" tabindex="-1" poster="${rutaAsset(poster, profundidad)}">
+            <source src="${rutaAsset(`assets/video/${nombre}.mp4`, profundidad)}" type="video/mp4" media="(min-width: 700px)">
+          </video>
+        </div>`;
 }
 
 function bloqueTorneo() {
