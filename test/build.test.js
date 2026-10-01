@@ -107,11 +107,28 @@ test("build: la home muestra el torneo vigente con escudos resueltos", () => {
   const html = leer("index.html");
   assert.match(html, /Última ronda · Libres 26\/27/);
   assert.match(html, /assets\/img\/equipos\/eq-1\.png/);
-  assert.doesNotMatch(html, /href="assets\/img/); // los escudos no son enlaces
+  assert.doesNotMatch(html, /<a[^>]+href="assets\/img/); // los escudos no son enlaces
 });
 
 test("build: la home formatea las fechas en español", () => {
   assert.match(leer("index.html"), /de octubre de 2026/);
+});
+
+test("build: el hero de la home lleva la cinta y el sello, con los datos reales", () => {
+  const html = leer("index.html");
+  const hero = html.match(/<section class="hero hero-afiche">([\s\S]*?)<\/section>/)?.[1] ?? "";
+  // Los dos decorativos del afiche, ocultos para el lector de pantalla.
+  assert.match(hero, /<div class="hero-cinta" aria-hidden="true">/);
+  assert.match(hero, /<div class="hero-sello" aria-hidden="true">/);
+  // La cinta repite el texto para que el bucle no se note: dos spans iguales.
+  const tramos = hero.match(/<div class="hero-cinta-pista">([\s\S]*?)<\/div>/)?.[1] ?? "";
+  const spans = tramos.match(/<span>[\s\S]*?<\/span>/g) ?? [];
+  assert.equal(spans.length, 2, "la cinta necesita dos copias para el bucle");
+  assert.equal(spans[0], spans[1], "las dos copias tienen que ser idénticas");
+  // Y los datos vienen de sitio.json, no escritos a mano.
+  assert.match(tramos, /Calle H\. IRYGOYEN 1490/);
+  assert.match(tramos, /Villaguay, Entre Ríos · 26\/27/);
+  assert.match(hero, /<b>F7<\/b><span>Nocturno · 26\/27<\/span>/);
 });
 
 test("build: el índice de torneos lista cada categoría y cada edición", () => {

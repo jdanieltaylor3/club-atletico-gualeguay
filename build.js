@@ -241,20 +241,63 @@ function generarHome() {
 function homeVideo() {
   return `
     <div class="seccion-video">
-      ${fondoVideo("cancha-largo", "assets/img/video-cancha-largo.jpg")}
+      ${fondoVideo("cancha-largo", "assets/img/video-cancha-vertical.jpg")}
       ${bloqueTorneo()}
       ${bloqueNoticias()}
     </div>`;
 }
 
+// El hero de la home, el afiche del club (aprobado): texto a la izquierda con el
+// escudo, la foto vertical a la derecha y, entre ambos, un bisel inclinado
+// seguido por la costura amarilla de 10 px — la firma del cartel. En el celu
+// cambia de idea (aprobado): sin foto, y la banda diagonal amarilla cruza el
+// hero entero como sello, con una flecha al pie que señala que abajo hay más.
+// En los dos anchos suma la cinta de datos al pie y el sello de F7 (aprobados:
+// mockup de opciones 1 y 5); el resto de las páginas conserva su hero centrado;
+// ver .hero-contacto/.hero-cancha). El protocolo es un <section class="hero
+// hero-afiche">: el CSS de layout.css le da la forma de afiche en compu y la
+// pila (banda diagonal) en el celu.
 function hero() {
   const s = sitio();
+  // El nombre en dos líneas, como la marca del header: "CLUB ATLÉTICO" /
+  // "GUALEGUAY". Se parte por el último espacio real del dato.
+  const palabras = s.nombre.trim().split(/\s+/);
+  const ultima = palabras.pop();
+  const primera = palabras.join(" ");
+  // La cinta del pie y el sello F7 (aprobados: opciones 1 y 5 del mockup del
+  // hueco). Los datos salen de sitio.json —dirección y edición reales— y "2
+  // vidas" es la regla del formato (vidasEquipo arranca en 2). Mayúsculas y
+  // espaciado los pone el CSS.
+  const edicion = s.edicionVigente.libres;
+  const cinta = [
+    "2 vidas",
+    "doble eliminación",
+    "fútbol 7 nocturno",
+    "canchas bajo luz",
+    s.contacto.direccion,
+    `${s.ciudad} · ${edicion}`,
+  ].join(" ★ ");
   return `
-    <section class="hero">
-      <h1>${escapeHtml(s.nombre)}</h1>
-      <p>${escapeHtml(s.ciudad)} — torneos de Fútbol 7, con la doble eliminación por vidas.</p>
-      <br>
-      <a class="btn" href="torneos/index.html">Ver torneos</a>
+    <section class="hero hero-afiche">
+      <div class="hero-cuerpo">
+        <img class="hero-escudo" src="${rutaAsset("assets/img/escudo-club.png", 0)}" alt="" width="110" height="110">
+        <h1>${escapeHtml(primera)}<br>${escapeHtml(ultima)}</h1>
+        <p>${escapeHtml(s.ciudad)} — torneos de Fútbol 7, con la doble eliminación por vidas.</p>
+        <a class="btn" href="torneos/index.html">Ver torneos</a>
+      </div>
+      <div class="hero-velo" aria-hidden="true"></div>
+      <div class="hero-costura" aria-hidden="true"></div>
+      <div class="hero-foto" aria-hidden="true">
+        <img src="${rutaAsset("assets/img/arcos.jpg", 0)}" alt="" width="1400" height="1866">
+      </div>
+      <div class="hero-scroll" aria-hidden="true"></div>
+      <!-- La cinta repite el mismo texto dos veces: el translateX(-50%) del
+           bucle vuelve al inicio exacto y no se nota la costura. -->
+      <div class="hero-cinta" aria-hidden="true"><div class="hero-cinta-pista">
+        <span>${escapeHtml(cinta)} ★</span>
+        <span>${escapeHtml(cinta)} ★</span>
+      </div></div>
+      <div class="hero-sello" aria-hidden="true"><b>F7</b><span>Nocturno · ${escapeHtml(edicion)}</span></div>
     </section>`;
 }
 
@@ -283,13 +326,11 @@ function tarjetas(partidos, torneo, profundidad) {
 // navegador no lo reproduce, se ve igual que una foto.
 //
 // Los dos clips de la cancha van unidos en un solo archivo
-// (assets/video/cancha-largo.mp4) y las dos secciones de la home usan ese
-// mismo video: el navegador lo descarga una vez y lo reproduce en las dos.
-//
-// El atributo media del <source> evita descargar el clip en pantallas chicas:
-// ahí queda el poster, que para un fondo decorativo es lo razonable. El .mp4
-// es H.264 sin audio, de ~2,2 MB, y va con el índice de reproducción al
-// principio (faststart) para que empiece a correr sin esperar el archivo entero.
+// (assets/video/cancha-largo.mp4), filmado en vertical: en compu el
+// object-fit corta la franja central a lo ancho y en el celu el clip ocupa
+// el alto entero de la sección. Se reproduce en todos los tamaños; el .mp4
+// es H.264 sin audio de ~2,2 MB y va con el índice al principio (faststart)
+// para que arranque sin esperar el archivo entero.
 //
 // El video no lleva autoplay en el HTML a propósito: así el archivo no se
 // descarga hasta que fondo-video.js ve la sección en pantalla, y con menos
@@ -299,7 +340,7 @@ function fondoVideo(nombre, poster, profundidad = 0) {
   return `
         <div class="video-fondo" aria-hidden="true">
           <video muted loop playsinline preload="none" tabindex="-1" poster="${rutaAsset(poster, profundidad)}">
-            <source src="${rutaAsset(`assets/video/${nombre}.mp4`, profundidad)}" type="video/mp4" media="(min-width: 700px)">
+            <source src="${rutaAsset(`assets/video/${nombre}.mp4`, profundidad)}" type="video/mp4">
           </video>
         </div>`;
 }

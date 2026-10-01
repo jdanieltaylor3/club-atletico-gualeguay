@@ -436,6 +436,375 @@
   to { opacity: 1; transform: none; }
 }
 
+/* ===== Home: hero afiche (corte diagonal + costura) =====
+   La home deja el hero centrado: texto a la izquierda con el escudo sobre un
+   degradado, la foto vertical a la derecha y, entre ambos, un bisel inclinado
+   seguido por la costura amarilla de 10 px — la firma del cartel. En el celu
+   cambia de idea (banda diagonal como sello, sin foto) y suma una flecha al
+   pie que avisa que abajo hay más contenido. En los dos anchos lleva la cinta
+   de datos al pie y el sello de F7. El resto de las páginas conserva
+   su hero centrado.
+   El prefijo .hero.hero-afiche sube la especificidad para ganarle a las
+   reglas base de .hero sin depender del orden de aparición. */
+.hero.hero-afiche {
+  display: flex;
+  padding: 0;
+  text-align: left;
+  min-height: 420px;
+}
+.hero.hero-afiche::before { background-image: none; }
+
+.hero.hero-afiche .hero-cuerpo {
+  width: 58%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--esp-4);
+  padding: var(--esp-9) var(--esp-7);
+  background: radial-gradient(
+    120% 160% at 10% 20%,
+    var(--color-superficie) 0%,
+    var(--color-hero-inicio) 75%
+  );
+}
+.hero.hero-afiche .hero-escudo {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  margin: 0;
+}
+.hero.hero-afiche h1 {
+  font-size: clamp(1.9rem, 4.4vw, 3.1rem);
+  line-height: 1.04;
+  margin-bottom: 0;
+}
+.hero.hero-afiche p {
+  margin: 0;
+  max-width: 30rem;
+}
+.hero.hero-afiche .btn { align-self: flex-start; }
+
+/* La foto: a la derecha, y su clip deja el bisel inclinado entre el texto y
+   la imagen (el borde izquierdo de la foto baja inclinado). El corte va de 28 %
+   arriba a 5 % abajo: 23 % del ancho de la foto (~124 px) en los 417 px de
+   alto, o sea ~16,5° de la vertical. Antes era de 24 % a 7 % —unos 12°— y el
+   usuario lo veía demasiado recto. */
+.hero.hero-afiche .hero-foto {
+  width: 42%;
+  min-height: 0;
+  display: block;
+  clip-path: polygon(28% 0, 100% 0, 100% 100%, 5% 100%);
+}
+.hero.hero-afiche .hero-foto::before,
+.hero.hero-afiche .hero-foto::after { display: none; }
+/* La foto es vertical (1400x1866) y entra por el ancho: escalada a 538 px
+   de ancho mide 717 px de alto, así que se recortan ~300 px. El recorte
+   decide todo lo que se ve, y con center top se veía casi solo cielo: la
+   cancha iluminada de la foto está entre el 50 % y el 70 % de alto
+   (saturación 82 contra 9 del cielo). Medido con las tres cajas de compu
+   (538, 672 y 806 px de ancho), el recorte con más cancha es center 85 %
+   —saturación 52 a 65, contra 23 del 0 %— y es el mismo porcentaje el
+   mejor en los tres anchos. */
+.hero.hero-afiche .hero-foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 85%;
+}
+
+/* Velo: un tinte que oscurece apenas el lado de la foto para que el texto
+   respire, y la costura va encima del velo, pegada al corte de la foto.
+   La costura es un <div> hermano de la foto (no un hijo): si fuera hijo, el
+   clip-path de la foto se lo llevaría puesto. */
+.hero.hero-afiche .hero-velo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, rgba(4, 8, 25, 0.35) 100%);
+}
+.hero.hero-afiche .hero-costura {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 42%;
+  z-index: 2;
+  pointer-events: none;
+  background: var(--color-primario);
+  /* La banda de 10 px que corre pegada al corte de la foto (misma caja: los
+     % del clip coinciden con los de .hero-foto). Antes eran 3 px y leía como
+     costura; el usuario la pidió más grande, como banda del cartel.
+     Los cuatro vértices van en orden de reloj: arriba-izq, arriba-der,
+     abajo-der, abajo-izq. Al revés (abajo-izq antes que abajo-der) el polígono
+     se cruza solo y el navegador lo rellena como dos triángulos que se tocan
+     en el medio: la banda se veía de 10 px en los extremos y de 0 en el
+     centro. Los dos bordes son paralelos y el desplazamiento horizontal es
+     siempre de 10 px, así que el ancho REAL —de canto, no de lado— es el mismo
+     de arriba abajo: 10 × cos(16,5°) = 9,6 px. No se estrangula. */
+  clip-path: polygon(calc(28% - 10px) 0, 28% 0, 5% 100%, calc(5% - 10px) 100%);
+}
+
+/* La costura viva: un brillo que baja despacio por la banda, como si la luz
+   pasara por el hilo. Solo transform + opacity, y el bloque de
+   prefers-reduced-motion en base.css la apaga con !important.
+   El brillo va sutil (0,6 y 18 % del alto): cuando era de 0,85 y 24 % metía una
+   franja blanca tan ancha que la banda parecía de pronto más gruesa ahí y más
+   angosta en el resto. Ahora barre, pero la banda no cambia de grosor. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero.hero-afiche .hero-costura::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -50%;
+    right: 50%;
+    height: 18%;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.6) 45%,
+      rgba(255, 255, 255, 0.6) 55%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    opacity: 0;
+    animation: costura-brillo 7s ease-in-out 2.5s infinite;
+    will-change: transform, opacity;
+  }
+}
+@keyframes costura-brillo {
+  0%   { opacity: 0; transform: translateY(-120%); }
+  20%  { opacity: 1; }
+  55%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(560%); }
+}
+
+/* En el celu la home cambia de idea (aprobada: "banda como sello"): sin foto.
+   El escudo, el nombre y el botón van sobre el degradado oscuro y la banda
+   amarilla diagonal cruza el hero entero — el sello del cartel, con el mismo
+   brillo que en compu. Al pie, una flecha que baja y sube: en el celu el hero
+   ocupa toda la pantalla y sin esa señal no se ve que la página sigue.
+   La foto queda solo en compu. */
+@media (max-width: 767px) {
+  .hero.hero-afiche {
+    flex-direction: column;
+    min-height: 480px;
+    /* el degradado pasa al HERO, no al cuerpo: el cuerpo tiene que quedar
+       transparente para que la banda se vea de lado a lado, entera */
+    background: radial-gradient(
+      140% 120% at 20% 0%,
+      var(--color-superficie) 0%,
+      var(--color-fondo) 75%
+    );
+  }
+  .hero.hero-afiche .hero-cuerpo {
+    width: 100%;
+    justify-content: center;
+    z-index: 3; /* el texto queda por encima de la banda diagonal */
+    padding: var(--esp-9) var(--esp-7);
+    background: transparent;
+  }
+  .hero.hero-afiche .hero-escudo { width: 96px; height: 96px; }
+  .hero.hero-afiche .hero-foto { display: none; }
+
+  /* La banda cruza por detrás del texto, así que la legibilidad se resuelve
+     sobre las letras y no sobre el fondo: un halo oscuro en el título y el
+     párrafo. Antes se oscurecía el hero entero con una viñeta para lograr lo
+     mismo y la banda quedaba apagada justo en el medio, que es
+     precisamente donde se leía más angosta. El halo no toca la banda. */
+  .hero.hero-afiche h1,
+  .hero.hero-afiche p {
+    text-shadow:
+      0 2px 14px rgba(4, 8, 25, 0.95),
+      0 0 4px rgba(4, 8, 25, 0.85);
+  }
+  /* El botón es amarillo y la banda también: sin separación se fundirían en un
+     solo bloque. El corte oscuro lo despega, como si la banda pasara por
+     detrás del botón. */
+  .hero.hero-afiche .btn {
+    box-shadow: 0 0 0 3px var(--color-fondo);
+  }
+
+  /* la banda diagonal como sello del cartel: cruza el hero de arriba a la
+     derecha hacia abajo a la izquierda, unos 6 % de ancho (~23 px en 390) */
+  .hero.hero-afiche .hero-costura {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: auto;
+    clip-path: polygon(72% 0, 78% 0, 18% 100%, 12% 100%);
+  }
+  /* el brillo de la banda corre también en el celu (la banda es protagonista) */
+  .hero.hero-afiche .hero-costura::after { display: block; }
+}
+
+/* ===== La cinta y el sello: los dos aprobados =====
+   Salieron del mockup del hueco (opciones 1 y 5), y están en compu y en el
+   celu. Son decorativos (aria-hidden) y repiten datos que ya están en el
+   texto y en las secciones de abajo, así que con prefers-reduced-motion
+   quietos no se pierde nada.
+   The z-index: la banda es 2, el texto del celu 3 y la flecha 4. La cinta y el
+   sello van en 3 (el sello después de la cinta: si alguna vez se cruzaran,
+   el sello queda arriba) y no tocan ni la banda ni la flecha. */
+.hero.hero-afiche .hero-cinta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--color-fondo);
+}
+.hero.hero-afiche .hero-cinta-pista {
+  display: flex;
+  width: max-content;
+}
+.hero.hero-afiche .hero-cinta span {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-primario);
+}
+/* El sello de F7. El desplazamiento y el giro viven en dos variables para que
+   la animación pueda usar el mismo transform en los dos lugares donde va:
+   arriba a la derecha en el celu, en el centro del hero en compu. */
+.hero.hero-afiche .hero-sello {
+  --dx: 0px;
+  --dy: 0px;
+  --giro: -8deg;
+  position: absolute;
+  top: 60px;
+  right: 24px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 10px 17px;
+  border: 3px solid var(--color-primario);
+  color: var(--color-primario);
+  background: rgba(6, 10, 33, 0.6);
+  transform: translate(var(--dx), var(--dy)) rotate(var(--giro));
+}
+.hero.hero-afiche .hero-sello b {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+.hero.hero-afiche .hero-sello span {
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Solo transform y opacity. La cinta va más lenta en compu porque el texto
+     es más largo y a 1280 se leía a destajo; el sello respira un grado y
+     medio a cada lado, como una tinta asentada. */
+  .hero.hero-afiche .hero-cinta-pista { animation: cinta-corre 30s linear infinite; }
+  .hero.hero-afiche .hero-sello { animation: sello-respira 5.4s ease-in-out infinite; }
+}
+@keyframes cinta-corre {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes sello-respira {
+  0%,
+  100% { transform: translate(var(--dx), var(--dy)) rotate(calc(var(--giro) - 1.5deg)); }
+  50%   { transform: translate(var(--dx), var(--dy)) rotate(calc(var(--giro) + 1.5deg)); }
+}
+/* En compu el sello va arriba del todo, centrado y pegado al borde (opción B3
+   del mockup de posiciones): la caja arranca a 23 px del techo y queda en el
+   aire que hay entre el borde y el título, sin cruzarse con el escudo que
+   está a la izquierda ni con el nombre. Antes iba en el centro del hero
+   (top 50 %), y a media altura se leía como que flotaba en el medio.
+   La cinta pasa al pie de verdad. */
+@media (min-width: 768px) {
+  .hero.hero-afiche .hero-cinta-pista { animation-duration: 44s; }
+  .hero.hero-afiche .hero-sello {
+    --dx: -50%;
+    --dy: -50%;
+    top: 64px;
+    left: 50%;
+    right: auto;
+  }
+}
+
+/* En el celu la cinta no va al pie —abajo está la flecha— sino en la franja
+   vacía entre el botón y la flecha: 78 px del borde de abajo. */
+@media (max-width: 767px) {
+  .hero.hero-afiche .hero-cinta {
+    bottom: 78px;
+    height: 42px;
+  }
+  .hero.hero-afiche .hero-cinta span { font-size: 0.76rem; letter-spacing: 0.14em; }
+}
+/* En pantallas muy angostas (360 px para abajo) el sello bajaba hasta tocar la
+   primera línea del título por 3 px. Sube 16 px y el roce desaparece. */
+@media (max-width: 360px) {
+  .hero.hero-afiche .hero-sello { top: 44px; }
+}
+
+/* ===== Celular: la señal de que abajo hay más =====
+   Una rayita con punta de flecha, del amarillo del escudo, que baja y sube al
+   pie del hero. Es decorativa (aria-hidden), no tapa nada y solo existe en
+   pantallas chicas; con prefers-reduced-motion la apaga el bloque de
+   base.css y queda quieta, siempre visible. Va centrada con margen y no con
+   transform, para que la animación use solo translateY. */
+.hero.hero-afiche .hero-scroll { display: none; }
+@media (max-width: 767px) {
+  .hero.hero-afiche .hero-scroll {
+    display: block;
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    margin-left: -11px;
+    width: 22px;
+    height: 34px;
+    z-index: 4;
+    pointer-events: none;
+  }
+  /* la rayita */
+  .hero.hero-afiche .hero-scroll::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--grosor-regla);
+    height: 18px;
+    margin-left: calc(var(--grosor-regla) / -2);
+    background: var(--color-primario);
+  }
+  /* la punta, recta como todo lo demás: es el cartel del club, sin redondeos */
+  .hero.hero-afiche .hero-scroll::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background: var(--color-primario);
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero.hero-afiche .hero-scroll {
+    animation: scroll-baja 2.4s ease-in-out infinite;
+  }
+}
+@keyframes scroll-baja {
+  0%,
+  100% { transform: translateY(0); opacity: 0.5; }
+  50%      { transform: translateY(7px); opacity: 1; }
+}
+
 /* Grilla de la home: una columna en móvil, tres desde 900px.
    Cada columna es un panel con superficie, borde y aire: antes el texto
    flotaba sobre el fondo y la página se leía vacía. La superficie es un
