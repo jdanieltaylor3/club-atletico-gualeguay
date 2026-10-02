@@ -62,11 +62,14 @@ test("badge: texto escapado y clase opcional", () => {
   assert.match(render.badge("<b>", "pen"), /&lt;b&gt;/);
 });
 
-test("tarjetaPartido: partido por jugar muestra vs, fecha, hora y cancha", () => {
+test("tarjetaPartido: partido por jugar muestra vs, fecha y hora (sin cancha)", () => {
   const html = render.tarjetaPartido(
     { estado: "por jugar", equipoA: "eq1", equipoB: "eq2", fecha: "2026-10-04", hora: "19:00", cancha: "Cancha 1" },
     { nombres: NOMBRES, equipos: EQUIPOS });
-  assert.match(html, /2026-10-04 19:00 · Cancha 1/);
+  assert.match(html, /2026-10-04 19:00/);
+  // El club tiene una sola cancha: aunque el dato venga, no se repite en la
+  // tarjeta (ver lib/render.js).
+  assert.doesNotMatch(html, /Cancha/);
   assert.match(html, /<strong>vs<\/strong>/);
   assert.match(html, /Amistad FC/);
 });

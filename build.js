@@ -47,6 +47,12 @@ const noticias = () =>
   (cache.noticias ??= [...leerJSON(path.join(DIR_DATA, "noticias.json"))]
     .sort((a, b) => b.fecha.localeCompare(a.fecha)));
 
+// Portada por defecto de las noticias que todavía no tienen foto propia: la
+// foto del trofeo (ver tools/preparar-trofeo.py). Es preferible a un recuadro
+// gris: el torneo es lo que da sentido al sitio y la copa es el premio, así que
+// una nota sin foto igual muestra algo del club.
+const PORTADA_POR_DEFECTO = "assets/img/trofeo.jpg";
+
 // --- Salida ---
 
 function escribirPagina(rutaRel, titulo, navActiva, contenido) {
@@ -100,11 +106,18 @@ function prepararDist() {
 
 // --- Páginas ---
 
-// Páginas escritas a mano en templates/ (sin datos).
+// Páginas escritas a mano en templates/ (HTML fijo). Instalaciones muestra la
+// dirección de data/sitio.json (igual que contacto): el dato vive en un solo
+// lugar y no se hardcodea.
 function generarManuscritas() {
   for (const nombre of ["instalaciones.html", "404.html"]) {
     const { titulo, navActiva, contenido } = plantilla(nombre);
-    escribirPagina(nombre, titulo, navActiva, contenido);
+    const html = nombre === "instalaciones.html"
+      ? rellenar(contenido, {
+          "<!-- DIRECCION -->": escapeHtml(sitio().contacto.direccion),
+        })
+      : contenido;
+    escribirPagina(nombre, titulo, navActiva, html);
   }
 }
 
@@ -155,24 +168,31 @@ function selectorEdiciones(activo, lista) {
 // categoría nueva es crear su JSON, no tocar este archivo.
 function generarTorneosIndex() {
   const grupos = data.categorias(torneos());
+  const botones = Object.entries(grupos)
+    .flatMap(([categoria, lista]) => lista.map((t) => botonEdicion(categoria, lista, t)));
   const contenido = rellenar(plantilla("torneos-index.html").contenido, {
-    "<!-- CATEGORIAS -->": Object.entries(grupos)
-      .map(([categoria, lista]) => renderCategoria(categoria, lista))
-      .join("\n"),
+    "<!-- CATEGORIAS -->": botones.length
+      ? `<div class="torneos">${botones.join("\n")}</div>`
+      : '<p class="nota-meta">Todavía no hay torneos cargados.</p>',
   });
   const { titulo, navActiva } = plantilla("torneos-index.html");
   escribirPagina("torneos/index.html", titulo, navActiva, contenido);
 }
 
-function renderCategoria(categoria, lista) {
-  const items = lista
-    .map((t) => `<li><a href="${categoria}/${slugEdicion(t.edicion)}/index.html">` +
-      `Edición ${escapeHtml(t.edicion)}</a>${t.estado === "vigente" ? " " + badge("vigente", "v2") : ""}</li>`)
-    .join("");
-  return `<article class="categoria" data-reveal>
-    <h2>${escapeHtml(data.nombreCategoria(categoria, lista))}</h2>
-    <ul>${items || "<li>Sin ediciones cargadas.</li>"}</ul>
-  </article>`;
+// Una edición del índice de torneos: un botón grande con la categoría y la
+// edición. La pieza entera es un solo enlace (mismo criterio que la tarjeta de
+// nota): el nombre de la categoría es el texto que anuncia el destino y la
+// flecha va decorativa, para no repetir el enlace en el árbol de accesibilidad.
+// Una categoría puede tener varias ediciones: cada una es su propio botón.
+function botonEdicion(categoria, lista, t) {
+  return `<a class="boton-torneo" href="${categoria}/${slugEdicion(t.edicion)}/index.html" data-reveal>
+    <span class="bt-texto">
+      <span class="bt-nombre">${escapeHtml(data.nombreCategoria(categoria, lista))}</span>
+      <span class="bt-edicion">Edición <b class="bt-num">${escapeHtml(t.edicion)}</b></span>
+    </span>
+    ${t.estado === "vigente" ? badge("vigente", "v2") : ""}
+    <span class="bt-flecha" aria-hidden="true">&rarr;</span>
+  </a>`;
 }
 
 // Noticias: el listado agrupado por año + una página por noticia.
@@ -190,13 +210,52 @@ function generarNoticias() {
       rellenar(detalle.contenido, {
         "<!-- NOTICIA_TITULO -->": escapeHtml(n.titulo),
         "<!-- NOTICIA_META -->": `${formatFecha(n.fecha)} · ${badge(n.categoria)}`,
-        "<!-- NOTICIA_IMAGEN -->": n.imagen
-          ? `<img class="nota-img" src="${rutaAsset(n.imagen, 1)}" alt="${escapeHtml(n.titulo)}">`
-          : "",
+        "<!-- NOTICIA_IMAGEN -->": imagenNota(n, 1, { alt: n.titulo, lazy: false }),
         "<!-- NOTICIA_CONTENIDO -->": cuerpoNoticia(n),
       }));
   }
   return noticias().length;
+}
+
+// La imagen del detalle de la nota. Si la nota no tiene foto propia, va la
+// portada por defecto (el trofeo) y el alt queda vacío: no es una foto de la
+// noticia, es un relleno decorativo, así que no tiene nada que anunciarle a un
+// lector de pantalla. Con foto real, el alt es el título. Las tarjetas usan
+// tarjetaNota (más abajo), que arma la imagen distinto.
+function imagenNota(n, profundidad, { alt = "", lazy = true } = {}) {
+  const propia = Boolean(n.imagen);
+  const src = rutaAsset(propia ? n.imagen : PORTADA_POR_DEFECTO, profundidad);
+  const clase = propia ? "nota-img" : "nota-img nota-img--sin-foto";
+  return `<img class="${clase}" src="${src}" alt="${propia ? escapeHtml(alt) : ""}"` +
+    (lazy ? ` loading="lazy"` : "") + ">";
+}
+
+// Tarjeta de una nota (la comparten el listado y la home). Dos formas:
+//   - con foto propia: la foto va arriba, en una banda apaisada de 180 px;
+//   - sin foto: la portada por defecto (el trofeo) va como una placa vertical al
+//     costado del texto, porque la foto es vertical (186x504) y recortada en una
+//     banda de 180 px quedaría diminuta (ver .nota-placa en components.css).
+// `prefijoHref` resuelve el enlace relativo (la home necesita "noticias/") y
+// `conBadge` agrega la categoría al pie de la nota (solo el listado).
+function tarjetaNota(n, profundidad, { separador = "", prefijoHref = "", conBadge = false } = {}) {
+  const href = `${prefijoHref}${slugify(n.titulo)}-${n.id}.html`;
+  const meta = conBadge ? `${formatFecha(n.fecha)} ${badge(n.categoria)}` : formatFecha(n.fecha);
+  const cuerpo = `<div class="tarjeta-nota-body">
+        <h3><a href="${href}">${escapeHtml(n.titulo)}</a></h3>
+        <p class="nota-meta">${meta}</p>
+        <p>${escapeHtml(n.resumen)}</p>
+      </div>`;
+  const clase = n.imagen ? "tarjeta-nota" : "tarjeta-nota tarjeta-nota--sin-foto";
+  const adentro = n.imagen
+    ? `<img class="nota-img" src="${rutaAsset(n.imagen, profundidad)}" alt="" loading="lazy">
+      ${cuerpo}`
+    : `<div class="nota-placa">
+        <img class="nota-placa-img" src="${rutaAsset(PORTADA_POR_DEFECTO, profundidad)}" alt="" loading="lazy">
+        ${cuerpo}
+      </div>`;
+  return `${separador}<article class="${clase}" data-reveal>
+      ${adentro}
+    </article>`;
 }
 
 // Los párrafos de la nota están separados por líneas en blanco.
@@ -214,14 +273,7 @@ function listaNoticias(profundidadPagina) {
     const anio = n.fecha.slice(0, 4);
     const separador = anio !== anioActual ? `<h2 class="archivo-anio">${anio}</h2>` : "";
     anioActual = anio;
-    return `${separador}<article class="tarjeta-nota" data-reveal>
-      ${n.imagen ? `<img class="nota-img" src="${rutaAsset(n.imagen, profundidadPagina)}" alt="" loading="lazy">` : ""}
-      <div class="tarjeta-nota-body">
-        <h3><a href="${slugify(n.titulo)}-${n.id}.html">${escapeHtml(n.titulo)}</a></h3>
-        <p class="nota-meta">${formatFecha(n.fecha)} ${badge(n.categoria)}</p>
-        <p>${escapeHtml(n.resumen)}</p>
-      </div>
-    </article>`;
+    return tarjetaNota(n, profundidadPagina, { separador, conBadge: true });
   }).join("");
 }
 
@@ -251,10 +303,13 @@ function homeVideo() {
 // escudo, la foto vertical a la derecha y, entre ambos, un bisel inclinado
 // seguido por la costura amarilla de 10 px — la firma del cartel. En el celu
 // cambia de idea (aprobado): sin foto, y la banda diagonal amarilla cruza el
-// hero entero como sello, con una flecha al pie que señala que abajo hay más.
-// En los dos anchos suma la cinta de datos al pie y el sello de F7 (aprobados:
-// mockup de opciones 1 y 5); el resto de las páginas conserva su hero centrado;
-// ver .hero-contacto/.hero-cancha). El protocolo es un <section class="hero
+// hero entero como sello. Los dos anchos suman la cinta de datos y la flecha al
+// pie que señala que abajo hay más (la flecha nació en el celu y ahora va
+// también en compu, corrida sobre la cinta; ver layout.css). El sello de F7 va
+// solo en compu: en el celu no entra sin apretar el escudo contra el título, y
+// el dato ya está en el texto y en la cinta. El resto de las páginas conserva
+// su hero centrado; ver .hero-contacto/.hero-cancha). El protocolo es un
+// <section class="hero
 // hero-afiche">: el CSS de layout.css le da la forma de afiche en compu y la
 // pila (banda diagonal) en el celu.
 function hero() {
@@ -273,7 +328,7 @@ function hero() {
     "2 vidas",
     "doble eliminación",
     "fútbol 7 nocturno",
-    "canchas bajo luz",
+    "cancha bajo luz",
     s.contacto.direccion,
     `${s.ciudad} · ${edicion}`,
   ].join(" ★ ");
@@ -372,14 +427,9 @@ function bloqueTorneo() {
 }
 
 function bloqueNoticias() {
-  const items = noticias().slice(0, 3).map((n) => `
-        <article class="tarjeta-nota" data-reveal>
-          <div class="tarjeta-nota-body">
-            <h3><a href="noticias/${slugify(n.titulo)}-${n.id}.html">${escapeHtml(n.titulo)}</a></h3>
-            <p class="nota-meta">${formatFecha(n.fecha)}</p>
-            <p>${escapeHtml(n.resumen)}</p>
-          </div>
-        </article>`).join("");
+  const items = noticias().slice(0, 3)
+    .map((n) => tarjetaNota(n, 0, { prefijoHref: "noticias/" }))
+    .join("");
 
   return `
     <section class="page">

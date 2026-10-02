@@ -9,6 +9,9 @@ dist/
 # assets/img y assets/video. Van al repo solo los archivos ya optimizados.
 recursos/
 
+# Capturas locales de iteración: no van al repo.
+pagina.png
+
 # Sistema / editor
 Thumbs.db
 .DS_Store

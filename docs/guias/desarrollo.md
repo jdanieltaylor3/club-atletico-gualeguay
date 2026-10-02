@@ -69,6 +69,15 @@ Los 5 módulos puros (`texto`, `rutas`, `data`, `torneo-modelo`, `render`) los c
 
 Los breakpoints (768 / 900 / 1024 px) se usan a mano porque las media queries no admiten variables; están documentados en `tokens.css`.
 
+### Tipografía
+
+Dos familias, con un reparto explícito:
+
+- **Oswald** (`--font-display`): la identidad de cartel del club. Títulos, navegación, botones del índice de torneos y etiquetas en mayúsculas.
+- **Archivo** (`--font-text-moderna`): el texto corrido de las páginas interiores (torneos, noticias, instalaciones y contacto). La home mantiene la letra de sistema (`--font-text`); el cuerpo de una nota (`.nota-cuerpo`) también, para que la lectura larga no se agrande.
+
+El `<body>` lleva `data-pagina` con la sección activa (lo completa `assemble`, ver `lib/layout.js`). La regla de `base.css` pasa `.site-main` a Archivo salvo en `data-pagina="inicio"`, así la home queda intacta sin duplicar plantillas. Las dos familias se cargan desde Google Fonts en `_head.html`.
+
 ## Cómo ejecutar y probar
 
 Requisito: Node.js ≥ 18 (local se usa cualquier versión actual).
@@ -106,7 +115,7 @@ En `data/noticias.json`, copiar un bloque y ajustar:
 
 - `id` único y creciente.
 - `contenido`: cada párrafo separado por una línea en blanco.
-- La imagen va en `assets/img/` (o cualquier ruta del sitio); sin imagen real usá `assets/img/placeholder-N.svg`.
+- La imagen va en `assets/img/` (o cualquier ruta del sitio) y se muestra como una banda apaisada arriba de la tarjeta (180 px de alto, recortada con `cover`). **Sin `imagen`, la nota muestra la portada por defecto** (`assets/img/trofeo.jpg`, la copa del torneo): en las tarjetas va como una placa vertical al costado del texto y en el detalle como una placa contenida sobre el navy, siempre con `alt` vacío, porque no es una foto de la nota. La foto del trofeo se regenera con `python tools/preparar-trofeo.py` desde `recursos/fotos/trofeo.png`.
 
 Regenerar con `node build.js`. La home y el índice de noticias se actualizan solos.
 
@@ -118,11 +127,12 @@ En `data/torneos/<categoria>-<edicion>.json`, buscar el partido en `rondas` y aj
 { "id": "r1-p1", "equipoA": "eq-1", "equipoB": "eq-2",
   "estado": "jugado",
   "resultado": { "golesA": 2, "golesB": 1 },
-  "penales": null, "fecha": "2026-10-03", "hora": "20:30", "cancha": "Cancha 1" }
+  "penales": null, "fecha": "2026-10-03", "hora": "20:30" }
 ```
 
 - `estado`: `por jugar` | `jugado` | `pase-libre`.
 - `penales`: solo si fue empate y se definió por penales, p. ej. `{ "a": 3, "b": 2 }`. Marca el badge *Pen*. Sin penales: `null`.
+- La cancha **no** va en el partido: el club tiene una sola cancha de fútbol 7, así que repetirla en cada tarjeta no agrega nada. Si algún día hacen falta más, el campo se agrega al JSON y a `lineaMeta` en `lib/render.js`.
 
 Regenerar con `node build.js`: la tarjeta, el cuadro y la home se actualizan.
 
@@ -138,12 +148,16 @@ Todo vive en `data/sitio.json` (un solo lugar, igual que las noticias):
 "contacto": { "email": "...", "telefono": "...", "direccion": "..." }
 ```
 
-- El logo de cada red se muestra en el encabezado y el pie (reemplaza las siglas IG/FB/WA originales). `icono` es la ruta al logotipo dentro del sitio; para cambiar un logo, reemplazás el archivo en `assets/img/iconos/` o apuntás `icono` a otro archivo.
-- Los logotipos son PNG sin fondo (el logo llena el chip y se ve el fondo del sitio atrás). Si entran fondos blancos, correr `python tools/procesar-iconos-redes.py`: recorta el blanco, lo vuelve transparente y regenera los PNG (requiere Pillow).
+- La silueta de cada red se muestra en el encabezado y el pie (reemplaza las siglas IG/FB/WA originales). `icono` es la ruta al PNG dentro del sitio; para cambiar una silueta, reemplazás el archivo en `assets/img/iconos/` o apuntás `icono` a otro archivo.
+- Los PNG son **blancos sobre transparente** y el color no lo tiene el archivo: el `<span class="social-icon">` pinta su fondo con `--color-primario` y usa el PNG como máscara (`mask-image`). Por eso un mismo archivo sirve para cualquier color y no hay que regenerar nada al cambiar el color de las redes.
+- Para regenerar las siluetas desde los logos oficiales a color: `python tools/siluetas-redes.py` (requiere Pillow). Los logos a color de origen van en `recursos/iconos-redes/` (no se versiona) y el script escribe en `assets/img/iconos/` con el mismo nombre, así que `data/sitio.json` no cambia. Se recuperan del historial con `git show 7d18408:assets/img/iconos/<red>.png`.
+- El escudo del club también se procesa con script, pero **no** con un simple "sacar el blanco": `python tools/quitar-fondo-escudo.py` saca solo el fondo de la foto (el blanco que toca el borde) para que las letras blancas de adentro queden opacas. Si se borra todo lo blanco por umbral, el escudo queda perforado.
 - La página de Contacto se arma con el bloque `contacto` del mismo JSON. Para ocultar un dato (ej. un teléfono que todavía no hay), el valor es `"-----"`.
 - Regenerar con `node build.js`.
 
 ## Cómo agregar un torneo
+
+El índice de Torneos (`torneos/index.html`) se genera solo: cada edición es un botón grande (`botonEdicion` en `build.js`) con el nombre de su categoría y su edición, y toda la pieza es el enlace. Agregar una categoría o una edición nueva no requiere tocar el índice.
 
 ### Una edición nueva (misma categoría)
 

@@ -5,7 +5,6 @@
     "fecha": "2026-09-20",
     "resumen": "Se sorteó la ronda inicial con más de 60 equipos en total.",
     "categoria": "torneo",
-    "imagen": "assets/img/placeholder-1.svg",
     "contenido": "El Club Atlético Gualeguay dio inicio a la temporada 26/27.\n\nCon 60 equipos en categoría Libre y 20 en Veteranos, la primera ronda se juega este fin de semana.\n\nLos resultados se cargan jornada a jornada por la comisión."
   },
   {
@@ -14,7 +13,7 @@
     "fecha": "2026-09-15",
     "resumen": "Se acondicionaron las canchas y la iluminación de la sede.",
     "categoria": "club",
-    "imagen": "assets/img/placeholder-2.svg",
+    "imagen": "assets/img/cancha-f7.jpg",
     "contenido": "La comisión trabajó durante la semana para dejar las canchas en condiciones.\n\nLa iluminación de la cancha principal fue renovada."
   }
 ]

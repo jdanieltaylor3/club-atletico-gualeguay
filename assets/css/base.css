@@ -27,6 +27,25 @@ body {
   background-repeat: no-repeat, repeat, no-repeat;
 }
 
+/* Tipografía de las páginas interiores. La home se queda con la letra de
+   sistema; torneos, noticias, instalaciones y contacto usan Archivo para el
+   texto corrido. El <body> lleva data-pagina con la sección activa (ver
+   lib/layout.js) y la navegación y los títulos siguen en Oswald
+   (--font-display). Se cambia font-family en .site-main y no la variable
+   --font-text: el font-family del body ya está resuelto y los hijos lo
+   heredan, así que pisar la variable a mitad del árbol no haría nada. */
+body[data-pagina]:not([data-pagina="inicio"]) .site-main {
+  font-family: var(--font-text-moderna);
+}
+/* El texto corrido va un punto más grande para que no se lea como letra chica.
+   Solo los párrafos de entrada de una sección (.page > p) y la lista de
+   contacto: las fechas, el "volver" y el cuerpo de una nota quedan afuera, son
+   lectura larga o etiquetas y ahí el tamaño chico es el correcto. */
+body[data-pagina]:not([data-pagina="inicio"]) .page > p:not(.nota-meta):not(.nota-volver),
+body[data-pagina]:not([data-pagina="inicio"]) .contact-list {
+  font-size: 1.06rem;
+}
+
 img { max-width: 100%; height: auto; }
 
 ::selection {

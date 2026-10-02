@@ -46,6 +46,18 @@ test("assemble: marca nav activa solo en la sección correspondiente", () => {
   assert.doesNotMatch(html, /class="nav-link on" href="index\.html"/);
 });
 
+test("assemble: marca la página en el body para la tipografía", () => {
+  assert.match(
+    assemble({ titulo: "X", contenido: "", navActiva: "torneos", anio: 2026 }),
+    /<body data-pagina="torneos">/
+  );
+  // Sin nav (404) el atributo queda vacío pero presente, y no sobrevive el
+  // placeholder.
+  const sinNav = assemble({ titulo: "X", contenido: "", anio: 2026 });
+  assert.match(sinNav, /<body data-pagina="">/);
+  assert.doesNotMatch(sinNav, /\{\{PAGINA\}\}/);
+});
+
 test("assemble: assetsRoot se aplica a estilos, scripts y al contenido de la plantilla", () => {
   const html = assemble({
     titulo: "X",
@@ -77,13 +89,19 @@ test("renderRedes: lista vacía y escapado de URLs", () => {
   assert.match(renderRedes([{ url: 'x" onclick="1', icono: "IG" }]), /&quot;/);
 });
 
-test("renderRedes: pinta el logotipo en vez del texto IG/FB/WA", () => {
+test("renderRedes: pinta la silueta como máscara en vez del texto IG/FB/WA", () => {
   const html = renderRedes(
     [{ nombre: "Instagram", url: "https://ig", icono: "assets/img/iconos/instagram.png" }],
     "../../"
   );
   assert.match(html, /aria-label="Instagram"/);
-  assert.match(html, /<img class="social-icon" src="\.\.\/\.\.\/assets\/img\/iconos\/instagram\.png" alt="" width="24" height="24">/);
+  // El glifo es un <span> decorativo: el color lo pone el CSS y el PNG va de
+  // máscara, así que no lleva src ni width/height.
+  assert.match(
+    html,
+    /<span class="social-icon" aria-hidden="true" style="-webkit-mask-image:url\('\.\.\/\.\.\/assets\/img\/iconos\/instagram\.png'\);mask-image:url\('\.\.\/\.\.\/assets\/img\/iconos\/instagram\.png'\)"><\/span>/
+  );
+  assert.doesNotMatch(html, /<img/);
   assert.doesNotMatch(html, /IG/);
 });
 
@@ -95,7 +113,9 @@ test("assemble: los iconos de redes resuelven assetsRoot en header y pie", () =>
     assetsRoot: "../",
     redes: [{ nombre: "WhatsApp", url: "https://wa.me/54", icono: "assets/img/iconos/whatsapp.png" }],
   });
-  assert.match(html, /src="\.\.\/assets\/img\/iconos\/whatsapp\.png"/);
+  assert.match(html, /mask-image:url\('\.\.\/assets\/img\/iconos\/whatsapp\.png'\)/);
+  // Header y pie: dos apariciones del mismo icono, con la misma ruta.
+  assert.equal(html.match(/assets\/img\/iconos\/whatsapp\.png/g).length, 4);
 });
 
 test("parsearPlantilla: separa metadata y contenido", () => {

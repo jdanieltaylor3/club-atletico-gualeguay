@@ -16,8 +16,8 @@
       "numero": 1,
       "zona": "iniciales",
       "partidos": [
-        { "id": "r1-p1", "equipoA": "eq-1", "equipoB": "eq-2", "estado": "jugado", "resultado": { "golesA": 1, "golesB": 1 }, "penales": { "a": 4, "b": 5 }, "fecha": "2026-10-03", "hora": "17:00", "cancha": "Cancha 3" },
-        { "id": "r1-p2", "equipoA": "eq-3", "equipoB": "eq-4", "estado": "por jugar", "fecha": "2026-10-04", "hora": "17:00", "cancha": "Cancha 2" }
+        { "id": "r1-p1", "equipoA": "eq-1", "equipoB": "eq-2", "estado": "jugado", "resultado": { "golesA": 1, "golesB": 1 }, "penales": { "a": 4, "b": 5 }, "fecha": "2026-10-03", "hora": "17:00" },
+        { "id": "r1-p2", "equipoA": "eq-3", "equipoB": "eq-4", "estado": "por jugar", "fecha": "2026-10-04", "hora": "17:00" }
       ]
     }
   ],

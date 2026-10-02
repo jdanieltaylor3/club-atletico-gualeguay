@@ -151,9 +151,12 @@
   text-decoration: none;
 }
 
-/* ===== Redes sociales: logotipos PNG sin fondo blanco =====
-   Los logotipos se procesan sin fondo (tools/procesar-iconos-redes.py):
-   el logo llena todo el chip y se ve el fondo del sitio detrás.
+/* ===== Redes sociales: siluetas en color del cartel =====
+   Cada red es un PNG blanco sobre transparente (tools/siluetas-redes.py, 6 KB
+   los tres en vez de 232 KB de logos oficiales a color). El <span> del glifo
+   pinta su fondo con el color del club y usa el PNG como máscara, así el
+   glifo toma el color de acá y no del archivo. Por eso no hay width/height
+   en el HTML: el tamaño lo fija --alto-icono-red en ambos ejes.
    En el header el bloque va con una regla que lo separa de la navegación:
    son dos grupos distintos en la misma banda, sin cajas ni fondos. */
 .site-nav .redes {
@@ -180,7 +183,9 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  background-color: var(--color-primario);
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
 }
 
 /* ===== Capa ambiente =====
@@ -309,11 +314,31 @@
 }
 
 /* ===== Contenido =====
-   .site-main no lleva min-height a propósito. Con min-height: 60vh, las
-   páginas cortas (una edición de torneo, una nota) estiraban el main hasta la
-   altura mínima y dejaban una franja de fondo plano entre la última sección y
-   el pie: en la edición 26-27 eran 148 px de nada. Sin la regla el pie va
-   justo después del contenido y el fondo sobra por abajo, que es lo normal. */
+   Pie pegado abajo: el body es una columna que mide al menos una pantalla y el
+   main crece para llenar lo que sobre. Así, en una página corta (el índice de
+   torneos, una nota) el pie queda al borde inferior de la pantalla en vez de
+   flotar a mitad de camino. El fondo del body (tres capas, ver base.css) llena
+   el hueco, así que no se ve una franja plana. */
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.site-main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+/* La última sección se estira para absorber el alto que sobra. En las páginas
+   con .seccion-foto (torneos, una nota, instalaciones, contacto, una edición)
+   el pseudoelemento de la foto llega así hasta el pie en vez de dejar a la
+   vista el azul del body. Va por :last-of-type de .page y no por :last-child
+   porque la página de edición lleva su <script> después de la sección, dentro
+   del main. */
+.site-main > .page:last-of-type {
+  flex: 1 0 auto;
+}
 
 .page {
   max-width: var(--ancho-max);
@@ -745,54 +770,58 @@
     height: 42px;
   }
   .hero.hero-afiche .hero-cinta span { font-size: 0.76rem; letter-spacing: 0.14em; }
-}
-/* En pantallas muy angostas (360 px para abajo) el sello bajaba hasta tocar la
-   primera línea del título por 3 px. Sube 16 px y el roce desaparece. */
-@media (max-width: 360px) {
-  .hero.hero-afiche .hero-sello { top: 44px; }
+  /* El sello de F7 no va en el celu: entre el escudo y el título no entra sin
+     apretarlos, y el dato "F7 Nocturno" ya está en el texto del hero y en la
+     cinta. En compu sí va, centrado arriba, donde hay aire de sobra. */
+  .hero.hero-afiche .hero-sello { display: none; }
 }
 
-/* ===== Celular: la señal de que abajo hay más =====
+/* ===== La señal de que abajo hay más =====
    Una rayita con punta de flecha, del amarillo del escudo, que baja y sube al
-   pie del hero. Es decorativa (aria-hidden), no tapa nada y solo existe en
-   pantallas chicas; con prefers-reduced-motion la apaga el bloque de
-   base.css y queda quieta, siempre visible. Va centrada con margen y no con
-   transform, para que la animación use solo translateY. */
-.hero.hero-afiche .hero-scroll { display: none; }
-@media (max-width: 767px) {
-  .hero.hero-afiche .hero-scroll {
-    display: block;
-    position: absolute;
-    bottom: 1.5rem;
-    left: 50%;
-    margin-left: -11px;
-    width: 22px;
-    height: 34px;
-    z-index: 4;
-    pointer-events: none;
-  }
-  /* la rayita */
-  .hero.hero-afiche .hero-scroll::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: var(--grosor-regla);
-    height: 18px;
-    margin-left: calc(var(--grosor-regla) / -2);
-    background: var(--color-primario);
-  }
-  /* la punta, recta como todo lo demás: es el cartel del club, sin redondeos */
-  .hero.hero-afiche .hero-scroll::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 12px;
-    background: var(--color-primario);
-    clip-path: polygon(50% 100%, 0 0, 100% 0);
-  }
+   pie del hero. Es decorativa (aria-hidden), no tapa nada y va igual en el
+   celu y en compu: en el celu nació abajo de todo (1.5rem del borde, con la
+   cinta de datos subida a 78 px para dejarle el lugar); en compu la cinta sí
+   vive pegada al pie, así que la flecha se corre a 60 px —los 44 px de la
+   cinta más 16 de aire— y queda sobre el borde de arriba de la cinta, lejos
+   del botón, que va a la izquierda del todo. Con prefers-reduced-motion la
+   apaga el bloque de base.css y queda quieta, siempre visible. Va centrada con
+   margen y no con transform, para que la animación use solo translateY. */
+.hero.hero-afiche .hero-scroll {
+  display: block;
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  margin-left: -11px;
+  width: 22px;
+  height: 34px;
+  z-index: 4;
+  pointer-events: none;
+}
+/* la rayita */
+.hero.hero-afiche .hero-scroll::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--grosor-regla);
+  height: 18px;
+  margin-left: calc(var(--grosor-regla) / -2);
+  background: var(--color-primario);
+}
+/* la punta, recta como todo lo demás: es el cartel del club, sin redondeos */
+.hero.hero-afiche .hero-scroll::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background: var(--color-primario);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+@media (min-width: 768px) {
+  /* 44 px de la cinta + 16 de aire, así la punta nunca la toca. */
+  .hero.hero-afiche .hero-scroll { bottom: 60px; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero.hero-afiche .hero-scroll {

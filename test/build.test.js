@@ -49,7 +49,7 @@ test("build: no deja marcadores sin reemplazar en ninguna página", () => {
 });
 
 test("build: no deja placeholders de assets sin resolver", () => {
-  for (const p of paginas()) assert.doesNotMatch(leer(p), /ASSETS_ROOT|\{\{ACTIVO:/, `placeholder sin resolver en ${p}`);
+  for (const p of paginas()) assert.doesNotMatch(leer(p), /ASSETS_ROOT|\{\{/, `placeholder sin resolver en ${p}`);
 });
 
 test("build: .nojekyll para que GitHub Pages no toque los assets", () => {
@@ -131,12 +131,17 @@ test("build: el hero de la home lleva la cinta y el sello, con los datos reales"
   assert.match(hero, /<b>F7<\/b><span>Nocturno · 26\/27<\/span>/);
 });
 
-test("build: el índice de torneos lista cada categoría y cada edición", () => {
+test("build: el índice de torneos tiene un botón por edición", () => {
   const html = leer("torneos/index.html");
-  assert.match(html, /<h2>Libres<\/h2>/);
-  assert.match(html, /<h2>Veteranos<\/h2>/);
-  assert.match(html, /href="libres\/26-27\/index\.html"/);
+  // Una edición = un botón con la categoría y la edición adentro.
+  assert.match(html, /class="bt-nombre">Libres</);
+  assert.match(html, /class="bt-nombre">Veteranos</);
+  assert.match(html, /href="libres\/26-27\/index\.html" data-reveal/);
+  assert.match(html, /href="veteranos\/26-27\/index\.html" data-reveal/);
+  assert.match(html, /class="bt-num">26\/27</);
   assert.match(html, /badge v2">vigente</);
+  // La lista vieja (paneles con <h2> y <ul>) ya no está.
+  assert.doesNotMatch(html, /class="categoria"/);
 });
 
 test("build: el selector marca la edición activa y la identifica como actual", () => {
@@ -157,14 +162,23 @@ test("build: la lista de noticias agrupa por año y enlaza al detalle", () => {
   const html = leer("noticias/index.html");
   assert.match(html, /class="archivo-anio">2026</);
   assert.match(html, /href="arranco-la-edicion-26-27-de-los-torneos-1\.html"/);
-  assert.match(html, /\.\.\/assets\/img\/placeholder-1\.svg/);
+  // Nota sin foto propia: la portada por defecto (el trofeo) va como placa al
+  // costado del texto, con la tarjeta marcada y el alt vacío (no es una foto de
+  // la noticia, es un relleno).
+  assert.match(html, /class="tarjeta-nota tarjeta-nota--sin-foto" data-reveal>/);
+  assert.match(html, /class="nota-placa-img" src="\.\.\/assets\/img\/trofeo\.jpg" alt=""/);
+  // Nota con foto propia: la banda apaisada de siempre, en diferido.
+  assert.match(html, /class="nota-img" src="\.\.\/assets\/img\/cancha-f7\.jpg" alt="" loading="lazy"/);
+  assert.doesNotMatch(html, /placeholder/);
 });
 
 test("build: el detalle de la noticia arma los párrafos y la imagen", () => {
   const html = leer("noticias/arranco-la-edicion-26-27-de-los-torneos-1.html");
   assert.match(html, /<h1[^>]*>Arrancó la edición 26\/27 de los torneos<\/h1>/);
   assert.ok((html.match(/<p>/g) || []).length >= 3, "esperaba al menos 3 párrafos");
-  assert.match(html, /\.\.\/assets\/img\/placeholder-1\.svg/);
+  assert.match(html, /class="nota-img nota-img--sin-foto" src="\.\.\/assets\/img\/trofeo\.jpg" alt=""/);
+  // En el detalle la portada no se carga en diferido: es la imagen de arriba.
+  assert.doesNotMatch(html, /nota-img--sin-foto[^>]*loading="lazy"/);
 });
 
 test("build: la home y el detalle escapan los datos que vienen del JSON", () => {

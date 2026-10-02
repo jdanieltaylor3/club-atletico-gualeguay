@@ -85,23 +85,74 @@
   border-color: rgba(255, 255, 255, 0.14);
 }
 
-/* ===== Categorías (índice de torneos) ===== */
-.categoria {
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
-  box-shadow: var(--sombra);
-  padding: var(--esp-7) 1.1rem;
-  margin: 0 0 0.8rem;
+/* ===== Índice de torneos: un botón por edición =====
+   Cada edición es un botón grande; la pieza entera es el enlace (no hay un
+   enlace adentro), así el pulgar tiene un área de clic grande y el árbol de
+   accesibilidad un solo destino. La barra amarilla de la izquierda es la misma
+   marca que separa las secciones; al pasar el mouse se enciende el borde y la
+   flecha avanza. El nombre va en Oswald y la edición en la letra de texto. */
+.torneos {
+  display: grid;
+  gap: var(--esp-6);
+  margin: var(--esp-7) 0 var(--esp-8);
+}
+@media (min-width: 768px) {
+  .torneos { grid-template-columns: 1fr 1fr; }
 }
 
-/* El título de la categoría lleva subrayado amarillo, del ancho justo
-   del texto, para anclar la tarjeta. */
-.categoria h2 {
-  display: inline-block;
-  border-bottom: 2px solid var(--color-primario);
-  padding-bottom: var(--esp-2);
+.boton-torneo {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-6);
+  padding: var(--esp-7) 1.1rem;
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-left: 3px solid var(--color-primario);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  color: var(--color-blanco);
+  transition:
+    background var(--dur-medio) var(--ease),
+    border-color var(--dur-medio) var(--ease);
 }
+.boton-torneo:hover {
+  background: var(--color-superficie-alt);
+  border-color: var(--color-primario);
+  text-decoration: none;
+}
+
+.bt-texto { flex: 1; min-width: 0; }
+.bt-nombre {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.bt-edicion {
+  display: block;
+  margin-top: var(--esp-4);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-texto-suave);
+}
+/* El número de edición con cifras tabulares: 26/27 se alinea con 25/26 si
+   mañana hay más de una edición por categoría. */
+.bt-num {
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--color-primario);
+  font-weight: 600;
+}
+.bt-flecha {
+  color: var(--color-primario);
+  font-size: 1.7rem;
+  line-height: 1;
+  transition: transform var(--dur-medio) var(--ease);
+}
+.boton-torneo:hover .bt-flecha { transform: translateX(5px); }
 
 /* ===== Tarjeta de partido ===== */
 .tarjeta-partido {
@@ -284,6 +335,7 @@
 }
 
 .tarjeta-nota {
+  position: relative;
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio);
@@ -291,6 +343,18 @@
   overflow: hidden;
 }
 .tarjeta-nota a:hover { text-decoration: none; }
+/* Toda la tarjeta es el enlace. El <a> vive en el título (es el nombre de la
+   nota, lo que un lector de pantalla tiene que oír), y su ::after se estira
+   sobre la tarjeta entera: mismo enlace, misma área de clic, sin duplicar el
+   link en el HTML ni en el árbol de accesibilidad. La tarjeta ya era
+   position: relative (lo necesita este ::after) y ya tenía el hover de borde
+   amarillo, así que ahora el hover dice la verdad. */
+.tarjeta-nota h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.tarjeta-nota:focus-within { border-color: var(--color-primario); }
 
 .tarjeta-nota-body { padding: 0.7rem 0.9rem; }
 
@@ -302,18 +366,52 @@
   background: var(--color-superficie-alt);
 }
 
+/* Portada por defecto en el detalle de la nota: la nota que todavía no tiene
+   foto propia muestra la del trofeo, entera y sin recortar. Es una foto
+   vertical de 186x504 y el tope nítido es ~186 px de ancho, así que va
+   contenida en una banda más alta que la de una foto apaisada. El fondo de la
+   foto es negro (luminancia 6 a 9) y la banda usa el navy más oscuro del tema
+   (#040819, luminancia 9): el borde de la foto se funde solo y se lee como una
+   placa, no como un rectángulo pegado. */
+.nota-img--sin-foto {
+  object-fit: contain;
+  height: 300px;
+  background: var(--color-encabezado);
+}
+
+/* Nota sin foto propia en una tarjeta: la portada por defecto va como una placa
+   al costado del texto, no como la banda de arriba. La foto es vertical
+   (186x504) y su tope nítido es ~186 px de ancho: a 132 px va 1:1 con el
+   original, sin agrandar ni recortar. En pantallas muy angostas la placa se
+   achica con el ancho de la pantalla para no dejar el texto en un hilo. */
+.tarjeta-nota--sin-foto .nota-placa {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 0.9rem;
+}
+.tarjeta-nota--sin-foto .nota-placa-img {
+  flex: none;
+  width: min(132px, 34vw);
+  height: auto;
+  display: block;
+  border-radius: calc(var(--radio) - 3px);
+}
+.tarjeta-nota--sin-foto .tarjeta-nota-body { padding: 0; }
+
 /* Hover de tarjetas: suben 2 px, el borde pasa a amarillo macizo y la imagen
    crece dentro del borde (la tarjeta ya tiene overflow: hidden). El sitio no
    usa sombra (--sombra: none), así que el hover se apoya solo en el borde.
-   Solo transform y opacidad, nada que anime de forma permanente. */
-.tarjeta-nota,
-.categoria {
+   Solo transform y opacidad, nada que anime de forma permanente.
+   Los botones de torneos (.boton-torneo) no suben: una lista de botones que
+   se levanta se ve nerviosa. Ahí el hover es el borde amarillo y la flecha que
+   avanza, para no prometer un clic que no existe. */
+.tarjeta-nota {
   transition:
     transform var(--dur-medio) var(--ease),
     border-color var(--dur-medio) var(--ease);
 }
-.tarjeta-nota:hover,
-.categoria:hover {
+.tarjeta-nota:hover {
   transform: translateY(-2px);
   border-color: var(--color-primario);
 }
