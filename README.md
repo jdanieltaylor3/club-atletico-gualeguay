@@ -9,7 +9,7 @@ Sitio 100% estático (HTML + CSS + JS vanilla) con generador mínimo en Node **s
 - `node --test` → corre los tests (descubrimiento por defecto; `node --test test/` con barra falla en Windows).
 - Servir por HTTP (nunca `file://`): `npx serve dist` o cualquier servidor estático.
 
-> Guía de desarrollo completa (estructura, propósito de cada módulo, cómo agregar contenido, cómo agregar un torneo, regla de vidas): [`docs/guias/desarrollo.md`](docs/guias/desarrollo.md)
+> Guía de desarrollo completa (estructura, propósito de cada módulo, cómo agregar contenido, cómo agregar un torneo, regla de ganadores y perdedores): [`docs/guias/desarrollo.md`](docs/guias/desarrollo.md)
 
 ## Estructura
 
@@ -28,7 +28,7 @@ dist/               Salida del build (ignorada por git)
 Puntos clave de la arquitectura:
 
 - **Los JSON son la única fuente de verdad**: nada de contenido hardcodeado en el código.
-- **El markup de tarjetas, escudos, vidas y zonas se genera una sola vez** en `lib/render.js` y el navegador reúsa la misma pieza (el build la copia a `dist/assets/js/lib/`).
+- **El markup de tarjetas, escudos, estado de los equipos y zonas se genera una sola vez** en `lib/render.js` y el navegador reúsa la misma pieza (el build la copia a `dist/assets/js/lib/`).
 - **Rutas relativas + `.nojekyll`** (lo escribe el build): el sitio funciona igual en GitHub Pages y Cloudflare Pages, desde cualquier carpeta.
 - **`npm` no es necesario**: el generador y los tests usan solo el runtime de Node (`node build.js`, `node --test`).
 - **CSS por capas** con todos los tokens (paleta del club, escalas, forma, movimiento) en `assets/css/tokens.css`.

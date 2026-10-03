@@ -6,7 +6,7 @@ import {
   rondasAgrupadas, mapaNombres, mapaEquipos, goleadoresOrdenados, ETIQUETA_ZONA,
 } from "./lib/data.js";
 import { tarjetaPartido, tarjetaEquipo, tablaGoleadores, estadoHTML, zonaHTML } from "./lib/render.js";
-import { mostrarVidas } from "./lib/torneo-modelo.js";
+import { mostrarEstado } from "./lib/torneo-modelo.js";
 
 // Base de las tarjetas de partido: el mapa de equipos y la profundidad de la
 // página (para resolver las rutas de los escudos).
@@ -16,7 +16,7 @@ function baseRender(torneo, profundidad, zona) {
     equipos: mapaEquipos(torneo.equipos),
     torneo,
     profundidad,
-    conVidas: mostrarVidas(zona),
+    conEstado: mostrarEstado(zona),
   };
 }
 
@@ -62,11 +62,15 @@ export function vistaFixture(torneo, profundidad) {
   return "<h2>Fixture</h2>" + html;
 }
 
-// --- Equipos: escudo, nombre y vidas restantes ---
+// --- Equipos: escudo, nombre y estado (GAN./PER./ELIM.) ---
+// La grilla se abre según la cantidad: 1 columna hasta 10 equipos, 2 de 11 a
+// 30 y 3 con más de 30. En teléfono el CSS la mantiene en una columna.
 export function vistaEquipos(torneo, profundidad) {
   if (!torneo.equipos.length) return estadoHTML("Todavía no hay equipos cargados.");
+  const total = torneo.equipos.length;
+  const cols = total > 30 ? 3 : total > 10 ? 2 : 1;
   const lista = torneo.equipos.map((e) => tarjetaEquipo(e, profundidad, torneo)).join("");
-  return "<h2>Equipos</h2>" + lista;
+  return `<h2>Equipos</h2><div class="equipos-grid cols-${cols}">${lista}</div>`;
 }
 
 // --- Goleadores ---

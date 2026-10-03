@@ -51,7 +51,7 @@ Estética buscada: institucional + deportiva + moderna + dinámica + elegante.
 | ID | Animación | Cómo |
 |----|-----------|------|
 | R1 | Hover de tarjetas (noticias, categorías) | lift `-3px` + borde + sombra; imagen escala 1.04 dentro del `overflow:hidden` de `.tarjeta-nota` |
-| R2 | Badge "2ª vida" (v2) | anillo `::after` (transform+opacity) que se expande y desvanece una sola vez, 2.2 s |
+| R2 | Badges verdes (GAN. y "vigente") | anillo `::after` (transform+opacity) que se expande y desvanece una sola vez, 2.2 s |
 
 ### 3. Opcionales (descartadas por criterio del usuario)
 

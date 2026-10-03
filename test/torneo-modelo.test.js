@@ -29,38 +29,45 @@ test("ladoGanador: sin resultado, sin estado jugado o empatado sin penales devue
   assert.equal(modelo.ladoGanador({ estado: "jugado", resultado: { golesA: 1, golesB: 1 } }), null);
 });
 
-test("vidasEquipo: todos arrancan con 2 vidas", () => {
-  assert.equal(modelo.vidasEquipo(torneoDe([]), "eq-1"), 2);
+test("chancesEquipo: todos arrancan con 2 chances", () => {
+  assert.equal(modelo.chancesEquipo(torneoDe([]), "eq-1"), 2);
 });
 
-test("vidasEquipo: perder en Ronda 1 consume una vida", () => {
+test("chancesEquipo: perder en Ronda 1 consume una chance", () => {
   const t = torneoDe([perdido("iniciales")]);
-  assert.equal(modelo.vidasEquipo(t, "eq-1"), 1);
-  assert.equal(modelo.vidasEquipo(t, "eq-2"), 2);
+  assert.equal(modelo.chancesEquipo(t, "eq-1"), 1);
+  assert.equal(modelo.chancesEquipo(t, "eq-2"), 2);
 });
 
-test("vidasEquipo: perder en zona perdedores elimina", () => {
-  assert.equal(modelo.vidasEquipo(torneoDe([perdido("perdedores", 2)]), "eq-1"), 0);
+test("chancesEquipo: perder en zona perdedores elimina", () => {
+  assert.equal(modelo.chancesEquipo(torneoDe([perdido("perdedores", 2)]), "eq-1"), 0);
 });
 
-test("vidasEquipo: nunca baja de 0 vidas", () => {
+test("chancesEquipo: nunca baja de 0 chances", () => {
   const t = torneoDe([perdido("iniciales"), perdido("ganadores", 2)]);
-  assert.equal(modelo.vidasEquipo(t, "eq-1"), 0);
+  assert.equal(modelo.chancesEquipo(t, "eq-1"), 0);
 });
 
-test("vidasEquipo: no cuenta partidos no jugados", () => {
+test("chancesEquipo: no cuenta partidos no jugados", () => {
   const t = torneoDe([{ numero: 1, zona: "iniciales", partidos: [
     { equipoA: "eq-1", equipoB: "eq-2", estado: "por jugar", fecha: "2026-10-04" },
   ] }]);
-  assert.equal(modelo.vidasEquipo(t, "eq-1"), 2);
+  assert.equal(modelo.chancesEquipo(t, "eq-1"), 2);
 });
 
-test("vidasEquipo: un equipo que no aparece en los partidos conserva sus 2 vidas", () => {
-  assert.equal(modelo.vidasEquipo(torneoDe([perdido("iniciales")]), "eq-99"), 2);
+test("chancesEquipo: un equipo que no aparece en los partidos conserva sus 2 chances", () => {
+  assert.equal(modelo.chancesEquipo(torneoDe([perdido("iniciales")]), "eq-99"), 2);
 });
 
-test("mostrarVidas: solo a partir de las zonas ganadores/perdedores", () => {
-  assert.equal(modelo.mostrarVidas("iniciales"), false);
-  assert.equal(modelo.mostrarVidas("ganadores"), true);
-  assert.equal(modelo.mostrarVidas("perdedores"), true);
+test("estadoEquipo: 2 chances es ganadores, 1 perdedores y 0 eliminado", () => {
+  assert.equal(modelo.estadoEquipo(torneoDe([]), "eq-1"), "ganadores");
+  assert.equal(modelo.estadoEquipo(torneoDe([perdido("iniciales")]), "eq-1"), "perdedores");
+  assert.equal(modelo.estadoEquipo(torneoDe([perdido("perdedores", 2)]), "eq-1"), "eliminado");
+  assert.equal(modelo.estadoEquipo(torneoDe([perdido("iniciales")]), "eq-99"), "ganadores");
+});
+
+test("mostrarEstado: solo a partir de las zonas ganadores/perdedores", () => {
+  assert.equal(modelo.mostrarEstado("iniciales"), false);
+  assert.equal(modelo.mostrarEstado("ganadores"), true);
+  assert.equal(modelo.mostrarEstado("perdedores"), true);
 });

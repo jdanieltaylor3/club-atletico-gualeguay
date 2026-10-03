@@ -8,7 +8,7 @@
 
 ## 1. Contexto y objetivo
 
-Web institucional del **Club Atlético Gualeguay** (Villaguay, Entre Ríos, Argentina). El contenido deportivo principal son dos torneos de Fútbol 7 con sistema de doble eliminación por vidas:
+Web institucional del **Club Atlético Gualeguay** (Villaguay, Entre Ríos, Argentina). El contenido deportivo principal son dos torneos de Fútbol 7 con sistema de doble eliminación:
 
 - **Libres** (~60 equipos)
 - **Veteranos** (~20 equipos)
@@ -25,7 +25,7 @@ Ambos usan el mismo sistema general y el mismo modelo de datos. El sitio debe mo
 
 ### Excluido (fuera de alcance, no introducir)
 - Backend, base de datos, autenticación, usuarios, servidor, CMS, framework.
-- Vista de posiciones/tabla de vidas (descartada por el usuario).
+- Vista de posiciones/tabla de estado (descartada por el usuario).
 - Planteles/jugadores por equipo y tarjetas (descartados en v1).
 
 ## 3. Hallazgos de descubrimiento
@@ -39,19 +39,19 @@ Ambos usan el mismo sistema general y el mismo modelo de datos. El sitio debe mo
 | Ampliaciones | Histórico de ediciones, patrocinadores, más torneos/categorías |
 | Idiomas | Español |
 
-## 4. Reglas del torneo (doble eliminación con vidas)
+## 4. Reglas del torneo (doble eliminación)
 
-1. Todos los equipos comienzan con **2 vidas**; cada derrota cuesta 1 vida; al perder las 2, el equipo queda eliminado.
-2. **Ronda 1:** cruces pareados por sorteo → ganadores a **Zona Ganadores** (2 vidas), perdedores a **Zona Perdedores** (1 vida).
-3. **Zona Ganadores:** el que gana continúa (conserva vidas); el que pierde baja a Zona Perdedores (queda con 1 vida).
+1. Todos los equipos comienzan con **2 chances**; cada derrota cuesta 1 chance; al perder las 2, el equipo queda eliminado.
+2. **Ronda 1:** cruces pareados por sorteo → ganadores a **Zona Ganadores** (2 chances), perdedores a **Zona Perdedores** (1 chance).
+3. **Zona Ganadores:** el que gana continúa (conserva sus chances); el que pierde baja a Zona Perdedores (queda con 1 chance).
 4. **Zona Perdedores:** cada partido es de eliminación directa (el perdedor queda eliminado); recibe los "descensos" de Ganadores.
 5. Las rondas continúan hasta que queda **un finalista por zona**.
-6. **Final al mejor de 2:** el finalista de Ganadores (2 vidas) es campeón ganando 1 partido; el de Perdedores (1 vida) necesita ganar 2.
+6. **Final al mejor de 2:** el finalista de Ganadores (2 chances) es campeón ganando 1 partido; el de Perdedores (1 chance) necesita ganar 2.
 7. **Empates:** siempre se resuelven por **penales**; nunca queda partido empatado.
 8. **Número impar** en una zona → **pase libre (bye)**, sorteado/definido por el club.
 9. Los **cruces de cada ronda los carga el club** (no se generan automáticamente).
 10. Datos por partido: **resultado + horario + cancha + goles/goleadores**.
-11. No se muestra tabla de posiciones/vidas (decisión de producto).
+11. No se muestra tabla de posiciones/estado (decisión de producto).
 
 ## 5. Mapa del sitio y navegación
 
@@ -143,10 +143,10 @@ Identidad (nombre, colores, escudo), redes sociales, edición vigente por catego
 
 ## 9. Componentes reutilizables
 
-- **Badges:** vidas (2 vidas / 1 vida / eliminado), zona (ganadores / perdedores), penales, pase libre.
+- **Badges:** estado del equipo (GAN. / PER. / ELIM.), zona (ganadores / perdedores), penales, pase libre.
 - **Tarjeta de partido** (3 estados): por jugar · jugado (resultado) · jugado por penales.
 - **Controles:** navegador de ronda (◀ Ronda N ▶), tabs (Equipos/Fixture/Cuadro/Goleadores), selector de edición.
-- **Paneles:** tabla de goleadores, lista de equipos con badge de vidas, tarjeta de noticia.
+- **Paneles:** tabla de goleadores, lista de equipos con badge de estado, tarjeta de noticia.
 - **Layouts:** header (escudo + nav + redes), footer, hero + CTA, breadcrumb.
 - Validados visualmente en el companion (pantalla 4). El mismo set sirve para Libres y Veteranos.
 

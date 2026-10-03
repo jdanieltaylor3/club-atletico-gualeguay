@@ -22,7 +22,7 @@
 .btn:hover { text-decoration: none; filter: brightness(0.96); }
 .btn:active { transform: translateY(1px); }
 
-/* ===== Badges: estado de vida, categoría, penal y bye =====
+/* ===== Badges: estado del equipo, categoría, penal y bye =====
    Estas son las únicas cosas del sitio en píldora: son etiquetas, no bloques.
    Cada estado tiene su color y su fondo, y todos los bordes usan la misma
    intensidad (45%), así que la diferencia se lee en el color y no en un
@@ -39,32 +39,14 @@
   border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
-.badge.v2 {
+/* Estado del equipo. Las etiquetas visibles son cortas (GAN. / PER. / ELIM.)
+   para que entren al lado del nombre; el nombre completo va en title/aria. */
+.badge.gan {
   background: rgba(64, 220, 130, 0.16);
-  color: var(--color-v2);
+  color: var(--color-gan);
   border-color: rgba(64, 220, 130, 0.45);
 }
-
-/* La "segunda vida" se anuncia una vez al aparecer: un anillo que se
-   expande y se desvanece (transform + opacity, sin persistir). */
-.badge.v2 { position: relative; }
-.badge.v2::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  border: 2px solid rgba(64, 220, 130, 0.6);
-  opacity: 0;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .badge.v2::after { animation: anillo-v2 2.2s ease-out; }
-}
-@keyframes anillo-v2 {
-  0% { opacity: 0; transform: scale(0.85); }
-  30% { opacity: 1; }
-  100% { opacity: 0; transform: scale(1.5); }
-}
-.badge.v1 {
+.badge.per {
   background: var(--tinte-primario);
   color: var(--color-primario);
   border-color: rgba(255, 213, 0, 0.45);
@@ -73,6 +55,37 @@
   background: rgba(255, 110, 110, 0.16);
   color: var(--color-elim);
   border-color: rgba(255, 110, 110, 0.45);
+}
+
+/* El badge verde —GAN. en las tarjetas y "vigente" en el índice/home— se
+   anuncia una vez al aparecer: un anillo que se expande y se desvanece
+   (transform + opacity, sin persistir). */
+.badge.gan,
+.badge.vigente {
+  position: relative;
+}
+.badge.vigente {
+  background: rgba(64, 220, 130, 0.16);
+  color: var(--color-vigente);
+  border-color: rgba(64, 220, 130, 0.45);
+}
+.badge.gan::after,
+.badge.vigente::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 2px solid rgba(64, 220, 130, 0.6);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .badge.gan::after,
+  .badge.vigente::after { animation: anillo-verde 2.2s ease-out; }
+}
+@keyframes anillo-verde {
+  0% { opacity: 0; transform: scale(0.85); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.5); }
 }
 .badge.pen {
   background: var(--tinte-primario);
@@ -218,6 +231,25 @@
   font-weight: 800;
   letter-spacing: 0.02em;
   border: none;
+}
+
+/* ===== Grilla de la vista Equipos =====
+   En teléfono siempre una columna (los nombres son largos y se apilarían).
+   Desde 768px se abren dos columnas, y desde 1024px tres si hay más de 30
+   equipos; la clase cols-N la pone vistaEquipos() según la cantidad. */
+.equipos-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--esp-5);
+}
+/* En la grilla el espaciado lo da el gap, no el margen de la tarjeta. */
+.equipos-grid .tarjeta-partido { margin: 0; }
+@media (min-width: 768px) {
+  .equipos-grid.cols-2,
+  .equipos-grid.cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .equipos-grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /* ===== Tabs (vistas del torneo) ===== */

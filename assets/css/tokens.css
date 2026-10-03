@@ -67,9 +67,12 @@
   --color-ganadores: #7fa8ff;
   --color-perdedores: #c39bff;
 
-  /* --- Colores de estado de vida --- */
-  --color-v2: #63e09a;             /* 2 vidas: sigue entero     */
+  /* --- Colores de estado del equipo (badges GAN./PER./ELIM.) --- */
+  --color-gan: #63e09a;            /* en ganadores              */
   --color-elim: #ff8a8a;           /* eliminado                 */
+
+  /* Verde del badge "vigente" del índice de torneos y la home. */
+  --color-vigente: #63e09a;
 
   /* --- Tintes que se repiten en varios componentes.
      El resto de las transparencias va como rgba(...) literal en
@@ -83,7 +86,7 @@
      redondos. El sitio no lleva sombra: la profundidad la da el color de la
      superficie, no una mancha oscura debajo. */
   --radio: 0px;
-  --radio-tag: 999px;     /* solo badges de estado: vidas, penal, bye */
+  --radio-tag: 999px;     /* solo badges: estado, vigente, penal, bye */
   --radio-escudo: 50%;
   --sombra: none;
 

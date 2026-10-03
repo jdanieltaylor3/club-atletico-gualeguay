@@ -4,7 +4,7 @@ Cómo está armado el sitio, por qué y cómo agregarle contenido sin romper nad
 
 ## Arquitectura en una frase
 
-Un generador Node sin dependencias que lee `data/*.json`, los rellena en `templates/*.html` y escribe `dist/`. El navegador no recibe JSON: recibe HTML ya armado. La lógica de dominio (tarjetas, escudos, vidas, zonas) vive en módulos ES **compartidos** entre el build y el navegador, en `lib/`.
+Un generador Node sin dependencias que lee `data/*.json`, los rellena en `templates/*.html` y escribe `dist/`. El navegador no recibe JSON: recibe HTML ya armado. La lógica de dominio (tarjetas, escudos, estados, zonas) vive en módulos ES **compartidos** entre el build y el navegador, en `lib/`.
 
 ```
 data/*.json  ──►  build.js (orquestador)  ──►  dist/  (HTML + CSS + JS + assets)
@@ -15,7 +15,7 @@ templates/*.html ──►  relleno por lib/layout.js
 assets/* ──►  se copian tal cual, sin proceso
 ```
 
-Regla de oro: **el HTML de las tarjetas de partido, escudos, badges de vidas, zonas y tablas se genera una sola vez** en `lib/render.js` (junto con el build) y `assets/js/vistas-torneo.js` la reúsa en el navegador para las vistas dinámicas. Si tocás una tarjeta, cambiás la misma pieza en los dos lados.
+Regla de oro: **el HTML de las tarjetas de partido, escudos, badges de estado, zonas y tablas se genera una sola vez** en `lib/render.js` (junto con el build) y `assets/js/vistas-torneo.js` la reúsa en el navegador para las vistas dinámicas. Si tocás una tarjeta, cambiás la misma pieza en los dos lados.
 
 ## Estructura
 
@@ -40,9 +40,9 @@ Regla de oro: **el HTML de las tarjetas de partido, escudos, badges de vidas, zo
 |---|---|---|
 | `texto.js` | build + navegador | `escapeHtml`, `slugify`, `formatFecha` (ISO → texto en español). |
 | `rutas.js` | build + navegador | Rutas relativas: slug de edición, ruta de la página de una edición, `assetsRoot` (cuánto subir según la profundidad de la página), `rutaAsset`. Todo el sitio funciona desde cualquier subcarpeta de GitHub/Cloudflare Pages. |
-| `torneo-modelo.js` | build + navegador | Reglas de negocio: `ladoGanador` (qué lado ganó un partido), `vidasEquipo` (las 2 vidas de la Ronda 1; la zona Perdedores elimina) y `mostrarVidas`. |
+| `torneo-modelo.js` | build + navegador | Reglas de negocio: `ladoGanador` (qué lado ganó un partido), `chancesEquipo` (las 2 chances del arranque; la zona Perdedores elimina), `estadoEquipo` (ganadores/perdedores/eliminado) y `mostrarEstado`. |
 | `data.js` | build + navegador | Consultas sobre los JSON: `mapaEquipos`, `rondasAgrupadas` (zonas en orden canónico `iniciales → ganadores → perdedores`, descartando zonas sin partidos), `proximosPartidos`, `recientesPartidos`, `goleadoresOrdenados`, `edicionesDe`, `categorias`, `nombreCategoria`. |
-| `render.js` | build + navegador | HTML de las piezas: `iniciales`, `escudoHtml`, `badgeVidas`, `badge`, `tarjetaPartido` (con opts `formatearFecha` y `omitirSiPaseLibre`), `tarjetaEquipo`, `tablaGoleadores`, `estadoHTML`, `zonaHTML`. **Una sola fuente de verdad para el markup.** |
+| `render.js` | build + navegador | HTML de las piezas: `iniciales`, `escudoHtml`, `badgeEstado`, `badge`, `tarjetaPartido` (con opts `formatearFecha` y `omitirSiPaseLibre`), `tarjetaEquipo`, `tablaGoleadores`, `estadoHTML`, `zonaHTML`. **Una sola fuente de verdad para el markup.** |
 | `utils.js` | solo build | E/S de archivos: `leerJSON`, `leerTexto`, `escribirArchivo`, `existe`. |
 | `layout.js` | solo build | `assemble` (une página + partials y resuelve `ASSETS_ROOT` en todo el HTML), `renderRedes`, `parsearPlantilla`. |
 
@@ -172,17 +172,18 @@ El índice de Torneos (`torneos/index.html`) se genera solo: cada edición es un
 2. En `data/sitio.json`, agregar la categoría a `edicionVigente`, p. ej. `"femenino": "26/27"`.
 3. `node build.js` → la home, el índice de torneos y el selector la toman sola. **No hay que tocar código.**
 
-### La regla de las vidas (por qué el cuadro funciona como funciona)
+### La regla de ganadores, perdedores y eliminados (por qué el cuadro funciona como funciona)
 
-- Ronda 1: cada equipo tiene **2 vidas**. Pierde una con cada derrota; si pierde las dos, queda eliminado.
-- Ronda 2 en zona Ganadores: el que gana **avanza**, el que pierde **baja a Perdedores** (no se elimina).
-- Zona Perdedores: una derrota más y quedás eliminado (0 vidas).
+- Ronda 1 (zona Iniciales): cada equipo arranca con **2 chances**. Pierde una con cada derrota; si pierde las dos, queda eliminado.
+- Zona Ganadores: el que gana **avanza**; el que pierde **baja a Perdedores** (no se elimina).
+- Zona Perdedores: una derrota más y quedás eliminado (0 chances).
+- El estado visible sale de esas chances: **GAN.** (2, en ganadores), **PER.** (1, en perdedores) y **ELIM.** (0).
 
-Todo eso vive en `lib/torneo-modelo.js` (`vidasEquipo`, `ladoGanador`) y se reúsa tal cual en el navegador. Cambiás la regla ahí y los tests (`test/torneo-modelo.test.js`) la protegen en el build y en la página.
+Todo eso vive en `lib/torneo-modelo.js` (`chancesEquipo`, `estadoEquipo`, `ladoGanador`) y se reúsa tal cual en el navegador. Cambiás la regla ahí y los tests (`test/torneo-modelo.test.js`) la protegen en el build y en la página.
 
 ## Cómo agregar escudos reales
 
-1. Los 6 PNGs `assets/img/equipos/eq-*.png` son de ejemplo.
+1. Los escudos van en `assets/img/equipos/` (PNG o SVG) y el build los copia tal cual.
 2. Entregar las imágenes reales (ver `recursos/LEEME-cargar-escudos.md`) con el mapeo **equipo → archivo**.
 3. Copiarlas a `assets/img/equipos/` y ajustar el campo `"escudo"` de cada equipo en `data/torneos/*.json`.
 4. Si un equipo no tiene `"escudo"`, se muestra un círculo con sus iniciales (`equipo-escudo.fallback`) — no rompe nada.

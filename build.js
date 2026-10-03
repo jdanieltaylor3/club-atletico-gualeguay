@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Generador del sitio. Es un orquestador: lee data/, aplica las plantillas de
 // templates/ y escribe dist/. No sabe cómo se ve un partido ni cómo se calcula
-// una vida: eso vive en lib/ y lo comparte con el navegador.
+// el estado de un equipo: eso vive en lib/ y lo comparte con el navegador.
 //
 // Para agregar una página nueva: una función generarX() que llame a
 // escribirPagina() y una línea más en main().
@@ -190,7 +190,7 @@ function botonEdicion(categoria, lista, t) {
       <span class="bt-nombre">${escapeHtml(data.nombreCategoria(categoria, lista))}</span>
       <span class="bt-edicion">Edición <b class="bt-num">${escapeHtml(t.edicion)}</b></span>
     </span>
-    ${t.estado === "vigente" ? badge("vigente", "v2") : ""}
+    ${t.estado === "vigente" ? badge("vigente", "vigente") : ""}
     <span class="bt-flecha" aria-hidden="true">&rarr;</span>
   </a>`;
 }
@@ -320,12 +320,12 @@ function hero() {
   const ultima = palabras.pop();
   const primera = palabras.join(" ");
   // La cinta del pie y el sello F7 (aprobados: opciones 1 y 5 del mockup del
-  // hueco). Los datos salen de sitio.json —dirección y edición reales— y "2
-  // vidas" es la regla del formato (vidasEquipo arranca en 2). Mayúsculas y
+  // hueco). Los datos salen de sitio.json —dirección y edición reales— y la
+  // regla del formato (doble eliminación) va escrita en palabras. Mayúsculas y
   // espaciado los pone el CSS.
   const edicion = s.edicionVigente.libres;
   const cinta = [
-    "2 vidas",
+    "ganadores y perdedores",
     "doble eliminación",
     "fútbol 7 nocturno",
     "cancha bajo luz",
@@ -337,7 +337,7 @@ function hero() {
       <div class="hero-cuerpo">
         <img class="hero-escudo" src="${rutaAsset("assets/img/escudo-club.png", 0)}" alt="" width="110" height="110">
         <h1>${escapeHtml(primera)}<br>${escapeHtml(ultima)}</h1>
-        <p>${escapeHtml(s.ciudad)} — torneos de Fútbol 7, con la doble eliminación por vidas.</p>
+        <p>${escapeHtml(s.ciudad)} — torneos de Fútbol 7, con sistema de doble eliminación.</p>
         <a class="btn" href="torneos/index.html">Ver torneos</a>
       </div>
       <div class="hero-velo" aria-hidden="true"></div>
@@ -356,14 +356,14 @@ function hero() {
     </section>`;
 }
 
-// Opciones de render de las tarjetas de la home: sin badges de vidas, con la
+// Opciones de render de las tarjetas de la home: sin badges de estado, con la
 // fecha en español y sin los pases libres (no aportan a un resumen).
 function opcionesTorneoHome(torneo, profundidad = 0) {
   return {
     nombres: data.mapaNombres(torneo.equipos),
     equipos: data.mapaEquipos(torneo.equipos),
     torneo: null,
-    conVidas: false,
+    conEstado: false,
     profundidad,
     formatearFecha: formatFecha,
     omitirSiPaseLibre: true,
@@ -430,7 +430,7 @@ function tarjetaVigente(torneo, lista) {
         <article data-reveal>
           <h2 class="home-torneo-titulo">
             <a href="${url}">${nombre} · Edición ${escapeHtml(torneo.edicion)}</a>
-            ${torneo.estado === "vigente" ? badge("vigente", "v2") : ""}
+            ${torneo.estado === "vigente" ? badge("vigente", "vigente") : ""}
           </h2>
           ${seccion("Próximos partidos", tarjetas(data.proximosPartidos(torneo), torneo, 0), "Todavía no hay partidos programados.")}
           ${seccion("Resultados recientes", tarjetas(data.recientesPartidos(torneo), torneo, 0), "Todavía no hay resultados cargados.")}

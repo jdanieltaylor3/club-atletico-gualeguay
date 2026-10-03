@@ -149,7 +149,7 @@ test("build: el índice de torneos tiene un botón por edición", () => {
   assert.match(html, /href="libres\/26-27\/index\.html" data-reveal/);
   assert.match(html, /href="veteranos\/26-27\/index\.html" data-reveal/);
   assert.match(html, /class="bt-num">26\/27</);
-  assert.match(html, /badge v2">vigente</);
+  assert.match(html, /badge vigente">vigente</);
   // La lista vieja (paneles con <h2> y <ul>) ya no está.
   assert.doesNotMatch(html, /class="categoria"/);
 });

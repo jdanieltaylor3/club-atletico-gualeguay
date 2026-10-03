@@ -1229,10 +1229,10 @@ git commit -m "feat: shell de edición de torneo generado con selector de edicio
     return `<div class="estado${tipo === "error" ? " error" : ""}"><p>${mensaje}</p></div>`;
   }
 
-  function badgeVidas(vidas) {
-    if (vidas >= 2) return '<span class="badge v2">2 vidas</span>';
-    if (vidas === 1) return '<span class="badge v1">1 vida</span>';
-    return '<span class="badge elim">Eliminado</span>';
+  function badgeEstado(estado) {
+    if (estado === "ganadores") return '<span class="badge gan">GAN.</span>';
+    if (estado === "perdedores") return '<span class="badge per">PER.</span>';
+    return '<span class="badge elim">ELIM.</span>';
   }
 
   function equiposMap() {
@@ -1249,23 +1249,30 @@ git commit -m "feat: shell de edición de torneo generado con selector de edicio
     return null;
   }
 
-  function vidasEquipo(equipoId) {
-    let vidas = 2;
+  function chancesEquipo(equipoId) {
+    let chances = 2;
     for (const ronda of torneo.rondas) {
       for (const p of ronda.partidos) {
         if (p.estado !== "jugado") continue;
         const ganador = ganaEquipo(p, equipoId);
-        if (ganador === "A" && p.equipoB === equipoId) vidas -= 1;
-        if (ganador === "B" && p.equipoA === equipoId) vidas -= 1;
+        if (ganador === "A" && p.equipoB === equipoId) chances -= 1;
+        if (ganador === "B" && p.equipoA === equipoId) chances -= 1;
       }
     }
-    return Math.max(vidas, 0);
+    return Math.max(chances, 0);
+  }
+
+  function estadoEquipo(equipoId) {
+    const chances = chancesEquipo(equipoId);
+    if (chances >= 2) return "ganadores";
+    if (chances === 1) return "perdedores";
+    return "eliminado";
   }
 
   function renderEquipos() {
     const lista = torneo.equipos.map((e) =>
       `<div class="tarjeta-partido"><div class="tp-fila">` +
-      `<span class="tp-equipo">${e.nombre}</span>${badgeVidas(vidasEquipo(e.id))}` +
+      `<span class="tp-equipo">${e.nombre}</span>${badgeEstado(estadoEquipo(e.id))}` +
       `</div></div>`
     ).join("");
     $("<h2>Equipos</h2>" + (lista || estadoHTML("", "Todavía no hay equipos cargados.")));
@@ -1305,14 +1312,14 @@ node build.js
 # python -m http.server 8080 --directory dist   (o el equivalente)
 # Abrir http://localhost:8080/torneos/libres/26-27/ y verificar:
 # - La vista por defecto muestra "Esta sección se habilita…"
-# - Clic en "Equipos" lista los 6 equipos con badges de vidas (Ronda 1 jugada aplica -1 vida a los perdedores)
+# - Clic en "Equipos" lista los 6 equipos con badges de estado (Ronda 1 jugada: los perdedores pasan a PER.)
 ```
 
 - [ ] **Paso 3: Commit**
 
 ```bash
 git add assets/js/torneo.js
-git commit -m "feat: base de torneo.js, fetch de datos y vista Equipos con vidas"
+git commit -m "feat: base de torneo.js, fetch de datos y vista Equipos con estados"
 ```
 
 ---
@@ -1352,7 +1359,7 @@ Insertar después de `renderEquipos()`:
       ? `${p.fecha} ${p.hora} · ${p.cancha}`
       : "Fecha y cancha a definir";
     const eq = (id) => id ? nombres[id] : '<span class="tp-equipo vacio">por definir</span>';
-    const badge = (id) => (id ? badgeVidas(vidasEquipo(id)) : "");
+    const badge = (id) => (id ? badgeEstado(estadoEquipo(id)) : "");
     const resultado = p.estado === "jugado" ? textoResultado(p) : "<strong>vs</strong>";
     return `<div class="tarjeta-partido"><div class="tp-titulo">${meta}</div>` +
       `<div class="tp-fila"><span class="tp-equipo">${eq(p.equipoA)} ${badge(p.equipoA)}</span>` +
@@ -1406,7 +1413,7 @@ Insertar después de `renderEquipos()`:
 
 - [ ] **Paso 3: Agregar `textoResultado`**
 
-Insertar después de `vidasEquipo()`:
+Insertar después de `estadoEquipo()`:
 
 ```js
   function textoResultado(partido) {
@@ -1425,7 +1432,7 @@ node build.js
 # - Vista Cuadro por defecto: Ronda 2 con columnas Ganadores/Perdedores (o la última con datos)
 # - Ronda 1 muestra "Cruces iniciales" en una columna
 # - Partido por penales muestra el badge; pase libre muestra "Bye"
-# - Los equipos perdedores de Ronda 1 figuran con "1 vida"; los ganadores con "2 vidas"
+# - Los equipos perdedores de Ronda 1 figuran PER.; los ganadores, GAN.
 # - Navegador ◀ ▶ cambia de ronda
 ```
 
@@ -1776,7 +1783,7 @@ function generarHome() {
   const hero = `
     <section class="hero">
       <h1>${escapeHtml(sitio.nombre)}</h1>
-      <p>${escapeHtml(sitio.ciudad)} — torneos de Fútbol 7, con la doble eliminación por vidas.</p>
+      <p>${escapeHtml(sitio.ciudad)} — torneos de Fútbol 7, con sistema de doble eliminación.</p>
       <br>
       <a class="btn" href="torneos/index.html">Ver torneos</a>
     </section>`;
@@ -1839,7 +1846,7 @@ Ruta: `torneos/index.html`. Presenta las dos categorías con la edición vigente
 <!-- PAGINA: Torneos (Fútbol 7) | Club Atlético Gualeguay | torneos -->
 <section class="page">
   <h1>Torneos (Fútbol 7)</h1>
-  <p>El club organiza dos torneos por temporada con sistema de doble eliminación por vidas: zona de ganadores con dos vidas y zona de perdedores donde una derrota elimina.</p>
+  <p>El club organiza dos torneos por temporada con sistema de doble eliminación: los equipos que ganan siguen en la zona de ganadores y los que pierden pasan a la de perdedores, donde una derrota más los elimina.</p>
   <!-- CATEGORIAS -->
 </section>
 ```
@@ -2045,7 +2052,7 @@ python -m http.server 8080 --directory dist
 Checklist:
 
 - [ ] Home: hero, última ronda, próximos, resultados, noticias; links correctos
-- [ ] Torneos → Libres 26/27: Cuadro (ronda navegable, ganadores/perdedores, penales, bye, badges de vidas), Fixture, Equipos, Goleadores
+- [ ] Torneos → Libres 26/27: Cuadro (ronda navegable, ganadores/perdedores, penales, bye, badges de estado), Fixture, Equipos, Goleadores
 - [ ] Selector de ediciones en la página de torneo
 - [ ] Noticias: listado con archivo por año y detalle
 - [ ] Instalaciones y Contacto (datos y redes, sin formulario)

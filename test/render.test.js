@@ -50,10 +50,11 @@ test("escudoHtml: escapa el nombre en el alt", () => {
   assert.match(html, /&quot;/);
 });
 
-test("badgeVidas: 2 vidas, 1 vida o eliminado", () => {
-  assert.match(render.badgeVidas(2), /2 vidas/);
-  assert.match(render.badgeVidas(1), /1 vida/);
-  assert.match(render.badgeVidas(0), /Eliminado/);
+test("badgeEstado: GAN., PER. o ELIM. con su clase", () => {
+  assert.equal(render.badgeEstado("ganadores"), '<span class="badge gan" title="Ganadores" aria-label="Ganadores">GAN.</span>');
+  assert.equal(render.badgeEstado("perdedores"), '<span class="badge per" title="Perdedores" aria-label="Perdedores">PER.</span>');
+  assert.equal(render.badgeEstado("eliminado"), '<span class="badge elim" title="Eliminado" aria-label="Eliminado">ELIM.</span>');
+  assert.equal(render.badgeEstado("desconocido"), "");
 });
 
 test("badge: texto escapado y clase opcional", () => {
@@ -106,18 +107,19 @@ test("tarjetaPartido: con penales muestra el desempate en un badge", () => {
   assert.match(html, /badge pen">3-2 pen\.</);
 });
 
-test("tarjetaPartido: con vidas agrega un badge por equipo", () => {
+test("tarjetaPartido: con estado agrega un badge por equipo", () => {
+  // El partido lo gana eq2: eq1 queda con 1 chance (perdedores) y eq2 con 2 (ganadores).
   const html = render.tarjetaPartido(
     { equipoA: "eq1", equipoB: "eq2", estado: "por jugar" },
-    { nombres: NOMBRES, equipos: EQUIPOS, torneo: TORNEO, conVidas: true });
-  assert.match(html, /2 vidas/);
-  assert.match(html, /1 vida/);
+    { nombres: NOMBRES, equipos: EQUIPOS, torneo: TORNEO, conEstado: true });
+  assert.match(html, /badge per[^>]*>PER\./);
+  assert.match(html, /badge gan[^>]*>GAN\./);
 });
 
-test("tarjetaPartido: sin conVidas no muestra badges aunque haya torneo", () => {
+test("tarjetaPartido: sin conEstado no muestra badges aunque haya torneo", () => {
   const html = render.tarjetaPartido({ equipoA: "eq1", equipoB: "eq2", estado: "por jugar" },
-    { nombres: NOMBRES, equipos: EQUIPOS, torneo: TORNEO, conVidas: false });
-  assert.doesNotMatch(html, /badge v2/);
+    { nombres: NOMBRES, equipos: EQUIPOS, torneo: TORNEO, conEstado: false });
+  assert.doesNotMatch(html, /badge gan/);
 });
 
 test("tarjetaPartido: pase libre muestra el equipo que pasa", () => {
@@ -148,12 +150,12 @@ test("tarjetaPartido: escapa los nombres de equipo que vienen del JSON", () => {
   assert.match(html, /&lt;script&gt;/);
 });
 
-test("tarjetaEquipo: fila con escudo, nombre y badge de vidas", () => {
-  // eq1 perdió una vez en zona ganadores → 1 vida; eq2 sigue con 2.
-  assert.match(render.tarjetaEquipo(EQUIPOS.eq1, 0, TORNEO), /1 vida/);
+test("tarjetaEquipo: fila con escudo, nombre y badge de estado", () => {
+  // eq1 perdió una vez en zona ganadores → perdedores; eq2 sigue en ganadores.
+  assert.match(render.tarjetaEquipo(EQUIPOS.eq1, 0, TORNEO), /badge per[^>]*>PER\./);
   assert.match(render.tarjetaEquipo(EQUIPOS.eq1, 0, TORNEO), /Amistad FC/);
   assert.match(render.tarjetaEquipo(EQUIPOS.eq1, 0, TORNEO), /<img class="equipo-escudo"/);
-  assert.match(render.tarjetaEquipo({ id: "eq2", nombre: "Centenario" }, 0, TORNEO), /2 vidas/);
+  assert.match(render.tarjetaEquipo({ id: "eq2", nombre: "Centenario" }, 0, TORNEO), /badge gan[^>]*>GAN\./);
   assert.doesNotMatch(render.tarjetaEquipo(EQUIPOS.eq1, 0, null), /badge/);
 });
 
