@@ -401,29 +401,41 @@ function fondoVideo(nombre, poster, profundidad = 0) {
 }
 
 function bloqueTorneo() {
-  const torneo = data.torneoVigente(sitio(), torneos(), "libres");
-  if (!torneo) return '<section class="page"><p>Todavía no se cargó el torneo vigente.</p></section>';
+  const lista = torneos();
+  const vigentes = Object.keys(sitio().edicionVigente || {})
+    .map((categoria) => data.torneoVigente(sitio(), lista, categoria))
+    .filter(Boolean);
 
-  const url = rutaPaginaEdicion(torneo).replace("/index.html", "");
-  const bloque = (titulo, partidos, vacio) =>
-    `<h2>${titulo}</h2>\n          ${partidos || `<p class="nota-meta">${vacio}</p>`}`;
+  if (!vigentes.length) {
+    return '<section class="page"><p>Todavía no se cargó el torneo vigente.</p></section>';
+  }
 
   return `
       <section class="page home-grid">
-        <article data-reveal>
-          ${bloque(`Última ronda · ${escapeHtml(torneo.nombre)} ${escapeHtml(torneo.edicion)}`,
-            tarjetas(data.ultimaRondaPartidos(torneo), torneo, 0), "Los cruces se cargan ronda a ronda.")}
-          <p><a href="${url}">Ver cuadro completo →</a></p>
-        </article>
-        <article data-reveal>
-          ${bloque("Próximos partidos", tarjetas(data.proximosPartidos(torneo), torneo, 0),
-            "Todavía no hay partidos programados.")}
-        </article>
-        <article data-reveal>
-          ${bloque("Resultados recientes", tarjetas(data.recientesPartidos(torneo), torneo, 0),
-            "Todavía no hay resultados cargados.")}
-        </article>
+        ${vigentes.map((torneo) => tarjetaVigente(torneo, lista)).join("\n")}
       </section>`;
+}
+
+// Una edición vigente en la home: el nombre de la categoría y la edición son el
+// enlace a esa edición (su ::after se estira sobre la tarjeta entera, ver
+// layout.css), con el badge de vigente y las tres listas: última ronda,
+// próximos partidos y resultados recientes.
+function tarjetaVigente(torneo, lista) {
+  const url = rutaPaginaEdicion(torneo).replace(/index\.html$/, "");
+  const nombre = escapeHtml(data.nombreCategoria(torneo.categoria, lista));
+  const seccion = (titulo, partidos, vacio) =>
+    `<h3>${titulo}</h3>\n          ${partidos || `<p class="nota-meta">${vacio}</p>`}`;
+
+  return `
+        <article data-reveal>
+          <h2 class="home-torneo-titulo">
+            <a href="${url}">${nombre} · Edición ${escapeHtml(torneo.edicion)}</a>
+            ${torneo.estado === "vigente" ? badge("vigente", "v2") : ""}
+          </h2>
+          ${seccion("Última ronda", tarjetas(data.ultimaRondaPartidos(torneo), torneo, 0), "Los cruces se cargan ronda a ronda.")}
+          ${seccion("Próximos partidos", tarjetas(data.proximosPartidos(torneo), torneo, 0), "Todavía no hay partidos programados.")}
+          ${seccion("Resultados recientes", tarjetas(data.recientesPartidos(torneo), torneo, 0), "Todavía no hay resultados cargados.")}
+        </article>`;
 }
 
 function bloqueNoticias() {

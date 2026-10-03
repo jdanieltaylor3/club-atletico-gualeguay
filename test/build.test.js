@@ -103,9 +103,11 @@ test("build: cada página tiene un solo h1 y su título", () => {
   }
 });
 
-test("build: la home muestra el torneo vigente con escudos resueltos", () => {
+test("build: la home muestra las ediciones vigentes con escudos resueltos", () => {
   const html = leer("index.html");
-  assert.match(html, /Última ronda · Libres 26\/27/);
+  assert.match(html, /Libres · Edición 26\/27/);
+  assert.match(html, /Veteranos · Edición 26\/27/);
+  assert.match(html, /Última ronda/);
   assert.match(html, /assets\/img\/equipos\/eq-1\.png/);
   assert.doesNotMatch(html, /<a[^>]+href="assets\/img/); // los escudos no son enlaces
 });

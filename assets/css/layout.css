@@ -846,6 +846,7 @@ body {
   margin-top: var(--esp-8);
 }
 .home-grid > article {
+  position: relative;
   background: rgba(13, 18, 51, 0.9);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio);
@@ -859,9 +860,33 @@ body {
   transform: translateY(-2px);
   border-color: var(--color-primario);
 }
-.home-grid h2 {
+/* Toda la tarjeta de una edición vigente es el enlace a esa edición. El <a>
+   vive en el <h2> (es lo que se anuncia: categoría + edición) y su ::after se
+   estira sobre la tarjeta, igual que en las tarjetas de nota. El badge de
+   vigente va al lado del título y no captura clics: son del enlace. */
+.home-torneo-titulo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--esp-4);
   color: var(--color-texto-suave);
-  font-size: 1rem;
+  font-size: 1.05rem;
+}
+.home-torneo-titulo .badge { pointer-events: none; }
+.home-grid h2 a { color: inherit; text-decoration: none; }
+.home-grid h2 a:hover { text-decoration: underline; }
+.home-grid h2 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+/* Las tres listas dentro de cada tarjeta. */
+.home-grid h3 {
+  color: var(--color-texto-suave);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: var(--esp-6) 0 var(--esp-3);
 }
 
 /* ===== Footer =====
@@ -954,7 +979,7 @@ body {
 
 /* ===== 900px: la home a tres columnas ===== */
 @media (min-width: 900px) {
-  .home-grid { grid-template-columns: repeat(3, 1fr); }
+  .home-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ===== 1024px: ancho máximo =====
