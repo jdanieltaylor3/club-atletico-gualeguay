@@ -359,36 +359,120 @@
   background: rgba(255, 90, 90, 0.08);
 }
 
-/* ===== Noticias ===== */
+/* ===== Noticias =====
+   La página lleva un fondo azul propio y apenas animado (ver .seccion-noticias
+   en layout.css). Acá vive el título centrado y la tarjeta, que es el foco:
+   superficie sólida y un marco amarillo que gira solo, sin robarle lectura al
+   texto. */
 .noticias-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--esp-7);
 }
 
+/* Título del listado: centrado, en mayúsculas, con la letra moderna (Space
+   Grotesk) y el acento amarillo del club debajo. Es lo único del sitio con esta
+   familia. Se pasa a mayúsculas por CSS (no en el HTML) para que un lector de
+   pantalla siga leyendo la palabra normal y no deletree las siglas. */
+.noticias-titulo {
+  font-family: var(--font-titulo);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 9vw, 5rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  margin: var(--esp-8) 0 var(--esp-9);
+}
+.noticias-titulo::after {
+  content: "";
+  display: block;
+  width: 3.5rem;
+  height: 4px;
+  margin: var(--esp-5) auto 0;
+  background: var(--color-primario);
+}
+
+/* Tarjeta (la comparten el listado de noticias y la home). */
 .tarjeta-nota {
   position: relative;
   background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
   border-radius: var(--radio);
   box-shadow: var(--sombra);
   overflow: hidden;
+}
+
+/* ===== Marco amarillo animado de las tarjetas =====
+   Lo comparten todas las tarjetas del sitio: las de nota (.tarjeta-nota) y las
+   de partido y equipo (.tarjeta-partido). El marco son dos pseudoelementos en
+   z-index negativo: el ::before (el gradiente cónico amarillo que gira) queda
+   detrás del ::after (la superficie maciza, recortada 3 px), así solo se ve el
+   anillo del borde. Van en negativo para no posicionar el contenido: si el
+   contenido fuera position:relative, el enlace estirado del título de la nota
+   (ver más abajo) tomaría al cuerpo como contenedor y el clic dejaría de cubrir
+   la foto. El isolation crea el contexto de apilado para que ese negativo no se
+   escape detrás del fondo de la sección. */
+.tarjeta-nota,
+.tarjeta-partido {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 3px;
+  border: 0;
+}
+/* La tarjeta de partido ya trae su propio aire interno; el 3 px del marco se
+   suma al padding para que el texto no toque el anillo. */
+.tarjeta-partido {
+  padding: calc(var(--esp-5) + 3px) calc(0.8rem + 3px);
+}
+.tarjeta-nota::before,
+.tarjeta-partido::before {
+  content: "";
+  position: absolute;
+  inset: -150%;
+  z-index: -2;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 213, 0, 0.22) 0deg,
+    rgba(255, 213, 0, 0.9) 28deg,
+    rgba(255, 213, 0, 0.22) 78deg,
+    rgba(255, 213, 0, 0.22) 208deg,
+    rgba(255, 213, 0, 0.9) 258deg,
+    rgba(255, 213, 0, 0.22) 308deg
+  );
+}
+.tarjeta-nota::after,
+.tarjeta-partido::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -1;
+  background: var(--color-superficie);
 }
 .tarjeta-nota a:hover { text-decoration: none; }
 /* Toda la tarjeta es el enlace. El <a> vive en el título (es el nombre de la
    nota, lo que un lector de pantalla tiene que oír), y su ::after se estira
    sobre la tarjeta entera: mismo enlace, misma área de clic, sin duplicar el
-   link en el HTML ni en el árbol de accesibilidad. La tarjeta ya era
-   position: relative (lo necesita este ::after) y ya tenía el hover de borde
-   amarillo, así que ahora el hover dice la verdad. */
+   link en el HTML ni en el árbol de accesibilidad. La tarjeta es
+   position: relative (lo necesita este ::after) y el contenido no está
+   posicionado a propósito, para que el ::after siga cubriendo todo. */
 .tarjeta-nota h3 a::after {
   content: "";
   position: absolute;
   inset: 0;
 }
-.tarjeta-nota:focus-within { border-color: var(--color-primario); }
+.tarjeta-nota:focus-within,
+.tarjeta-partido:focus-within {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 3px;
+}
 
 .tarjeta-nota-body { padding: 0.7rem 0.9rem; }
+
+/* La foto de arriba de la tarjeta vive en un contenedor con recorte propio: al
+   hacer zoom en el hover, la imagen se recorta ahí y no tapa los 3 px del
+   marco amarillo. */
+.nota-media { overflow: hidden; }
 
 .nota-img {
   width: 100%;
@@ -431,26 +515,43 @@
 }
 .tarjeta-nota--sin-foto .tarjeta-nota-body { padding: 0; }
 
-/* Hover de tarjetas: suben 2 px, el borde pasa a amarillo macizo y la imagen
-   crece dentro del borde (la tarjeta ya tiene overflow: hidden). El sitio no
-   usa sombra (--sombra: none), así que el hover se apoya solo en el borde.
-   Solo transform y opacidad, nada que anime de forma permanente.
-   Los botones de torneos (.boton-torneo) no suben: una lista de botones que
-   se levanta se ve nerviosa. Ahí el hover es el borde amarillo y la flecha que
-   avanza, para no prometer un clic que no existe. */
+/* Hover de las tarjetas de nota: suben 2 px y el marco se acelera; la imagen
+   crece dentro de su contenedor (.nota-media), que la recorta para no tapar el
+   borde. Los botones de torneos (.boton-torneo) no suben: una lista de botones
+   que se levanta se ve nerviosa. Ahí el hover es el borde amarillo y la flecha
+   que avanza, para no prometer un clic que no existe. */
 .tarjeta-nota {
-  transition:
-    transform var(--dur-medio) var(--ease),
-    border-color var(--dur-medio) var(--ease);
+  transition: transform var(--dur-medio) var(--ease);
 }
-.tarjeta-nota:hover {
+/* El reveal deja transform: none en .visible con más especificidad que un
+   :hover a secas (html.js-reveal [data-reveal].visible), así que el hover
+   repite ese selector para poder levantar la tarjeta después de la entrada. */
+.tarjeta-nota:hover,
+html.js-reveal [data-reveal].tarjeta-nota.visible:hover {
   transform: translateY(-2px);
-  border-color: var(--color-primario);
 }
 .nota-img {
   transition: transform var(--dur-medio) var(--ease);
 }
 .tarjeta-nota:hover .nota-img { transform: scale(1.04); }
+
+/* El marco gira lento siempre y se acelera con el mouse o el teclado en las
+   tarjetas que son un enlace. Solo transform; con menos movimiento no hay
+   animación (base.css la apaga con !important) y el anillo queda quieto. */
+@keyframes borde-nota {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tarjeta-nota::before,
+  .tarjeta-partido::before {
+    animation: borde-nota 12s linear infinite;
+    will-change: transform;
+  }
+  .tarjeta-nota:hover::before,
+  .tarjeta-nota:focus-within::before {
+    animation-duration: 3s;
+  }
+}
 
 .nota-meta {
   font-size: var(--fs-sm);
@@ -463,12 +564,6 @@
 .nota-cuerpo {
   line-height: var(--lh-texto);
   color: var(--color-texto);
-}
-
-.archivo-anio {
-  margin-top: var(--esp-8);
-  border-bottom: 2px solid var(--color-acento);
-  padding-bottom: var(--esp-1);
 }
 
 /* ===== Contacto ===== */

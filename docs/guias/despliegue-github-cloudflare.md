@@ -71,7 +71,7 @@ Cuando el run termine en ✓, el sitio queda en línea en:
 
 - [ ] Abrir la raíz: hero, última ronda / próximos / resultados / noticias con estilo.
 - [ ] `Torneos → Libres 26/27`: las 4 pestañas (Cuadro, Fixture, Equipos, Goleadores) cargan el JSON por `fetch`.
-- [ ] Una noticia de detalle y el listado con archivo por año.
+- [ ] Una noticia de detalle y su listado.
 - [ ] `Instalaciones` y `Contacto` (datos y redes, sin formulario).
 - [ ] Ruta inexistente → página 404 personalizada (GitHub Pages la toma de `404.html`).
 - [ ] Consola del navegador: **cero errores** (en especial nada de 404 de `assets/` ni de los JSON).

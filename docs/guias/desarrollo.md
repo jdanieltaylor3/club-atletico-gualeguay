@@ -71,12 +71,13 @@ Los breakpoints (768 / 900 / 1024 px) se usan a mano porque las media queries no
 
 ### Tipografía
 
-Dos familias, con un reparto explícito:
+Tres familias, con un reparto explícito:
 
 - **Oswald** (`--font-display`): la identidad de cartel del club. Títulos, navegación, botones del índice de torneos y etiquetas en mayúsculas.
 - **Archivo** (`--font-text-moderna`): el texto corrido de las páginas interiores (torneos, noticias, instalaciones y contacto). La home mantiene la letra de sistema (`--font-text`); el cuerpo de una nota (`.nota-cuerpo`) también, para que la lectura larga no se agrande.
+- **Space Grotesk** (`--font-titulo`): solo el título centrado del listado de noticias (`/noticias/`, `.noticias-titulo`). Es la única pieza del sitio con esta familia.
 
-El `<body>` lleva `data-pagina` con la sección activa (lo completa `assemble`, ver `lib/layout.js`). La regla de `base.css` pasa `.site-main` a Archivo salvo en `data-pagina="inicio"`, así la home queda intacta sin duplicar plantillas. Las dos familias se cargan desde Google Fonts en `_head.html`.
+El `<body>` lleva `data-pagina` con la sección activa (lo completa `assemble`, ver `lib/layout.js`). La regla de `base.css` pasa `.site-main` a Archivo salvo en `data-pagina="inicio"`, así la home queda intacta sin duplicar plantillas. Las tres familias se cargan desde Google Fonts en `_head.html`.
 
 ## Cómo ejecutar y probar
 

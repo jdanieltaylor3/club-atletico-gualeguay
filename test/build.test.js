@@ -168,9 +168,10 @@ test("build: el selector marca la edición activa y la identifica como actual", 
     "con varias ediciones, las demás deben enlazarse como ..");
 });
 
-test("build: la lista de noticias agrupa por año y enlaza al detalle", () => {
+test("build: la lista de noticias enlaza al detalle", () => {
   const html = leer("noticias/index.html");
-  assert.match(html, /class="archivo-anio">2026</);
+  // El listado no corta por año: la fecha va en cada tarjeta.
+  assert.doesNotMatch(html, /archivo-anio/);
   assert.match(html, /href="arranco-la-edicion-26-27-de-los-torneos-1\.html"/);
   // Nota sin foto propia: la portada por defecto (el trofeo) va como placa al
   // costado del texto, con la tarjeta marcada y el alt vacío (no es una foto de

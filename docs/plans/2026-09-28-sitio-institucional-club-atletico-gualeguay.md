@@ -33,7 +33,7 @@
 | `templates/partials/_scripts.html` | Carga de `main.js` y del JS de página |
 | `templates/torneo-edicion.html` | Shell de edición (tabs + slots + JSON embed) |
 | `templates/index.html` | Home (hero + última ronda + próximos + resultados + noticias) |
-| `templates/noticias-index.html` | Listado + archivo de noticias |
+| `templates/noticias-index.html` | Listado de noticias |
 | `templates/noticia.html` | Detalle de nota |
 | `templates/torneos-index.html` | Presentación de torneos + histórico de ediciones |
 | `templates/instalaciones.html` | Página manuscrita (modo B) |
@@ -65,7 +65,7 @@
 11. JS `torneo.js`: vista Equipos
 12. JS `torneo.js`: vista Cuadro (rondas por zona, badges, penales, pase libre, navegador de ronda)
 13. JS `torneo.js`: vista Fixture + Goleadores + estados (carga/error/vacío)
-14. Noticias: listado + detalle + archivo por fecha
+14. Noticias: listado + detalle
 15. Home: template `index.html` + generación
 16. Torneos: presentación + histórico de ediciones
 17. Despliegue: GitHub Actions, Cloudflare Pages, README
@@ -1519,13 +1519,13 @@ git commit -m "feat: vistas Fixture y Goleadores y estados de carga/error/vacío
 
 ---
 
-### Tarea 14: Noticias — listado, detalle y archivo por fecha
+### Tarea 14: Noticias — listado y detalle
 
 **Archivos:**
 - Crear: `templates/noticias-index.html`, `templates/noticia.html`
 - Modificar: `build.js`
 
-Ruta generada: `noticias/index.html` (listado = archivo por año) y `noticias/<slug>.html` (detalle). `slug = slugify(titulo) + "-" + id`.
+Ruta generada: `noticias/index.html` (listado) y `noticias/<slug>.html` (detalle). `slug = slugify(titulo) + "-" + id`.
 
 - [ ] **Paso 1: Crear las plantillas**
 
@@ -1533,9 +1533,11 @@ Ruta generada: `noticias/index.html` (listado = archivo por año) y `noticias/<s
 
 ```html
 <!-- PAGINA: Noticias | Club Atlético Gualeguay | noticias -->
-<section class="page">
-  <h1>Noticias</h1>
-  <div class="noticias-grid"><!-- LISTA_NOTICIAS --></div>
+<section class="seccion-noticias">
+  <div class="page">
+    <h1 class="noticias-titulo">Noticias</h1>
+    <div class="noticias-grid"><!-- LISTA_NOTICIAS --></div>
+  </div>
 </section>
 ```
 
@@ -1543,13 +1545,17 @@ Ruta generada: `noticias/index.html` (listado = archivo por año) y `noticias/<s
 
 ```html
 <!-- PAGINA: <!-- NOTICIA_TITULO --> | Club Atlético Gualeguay | noticias -->
-<article class="page nota">
-  <p class="nota-volver"><a href="index.html">← Volver a noticias</a></p>
-  <h1><!-- NOTICIA_TITULO --></h1>
-  <p class="nota-meta"><!-- NOTICIA_META --></p>
-  <!-- NOTICIA_IMAGEN -->
-  <div class="nota-cuerpo"><!-- NOTICIA_CONTENIDO --></div>
-</article>
+<section class="seccion-noticias">
+  <div class="page">
+    <article class="nota">
+      <p class="nota-volver"><a href="index.html">← Volver a noticias</a></p>
+      <h1><!-- NOTICIA_TITULO --></h1>
+      <p class="nota-meta"><!-- NOTICIA_META --></p>
+      <!-- NOTICIA_IMAGEN -->
+      <div class="nota-cuerpo"><!-- NOTICIA_CONTENIDO --></div>
+    </article>
+  </div>
+</section>
 ```
 
 - [ ] **Paso 2: Agregar los builders a `build.js`**
@@ -1583,13 +1589,9 @@ function cuerpoNoticia(n) {
 function renderListaNoticias(assetsRoot) {
   const noticias = leerNoticias();
   if (!noticias.length) return '<p>Todavía no hay noticias publicadas.</p>';
-  let anioActual = null;
   return noticias.map((n) => {
-    const anio = n.fecha.slice(0, 4);
-    const separador = anio !== anioActual ? `<h2 class="archivo-anio">${anio}</h2>` : "";
-    anioActual = anio;
     const imagen = n.imagen ? `<img class="nota-img" src="${assetsRoot}${n.imagen}" alt="" loading="lazy">` : "";
-    return `${separador}<article class="tarjeta-nota">
+    return `<article class="tarjeta-nota">
       ${imagen}
       <div class="tarjeta-nota-body">
         <h3><a href="${slugNoticia(n)}.html">${escapeHtml(n.titulo)}</a></h3>
@@ -1642,7 +1644,7 @@ Agregar al final de `styles.css`:
 .nota-img { width: 100%; height: 180px; object-fit: cover; display: block; background: var(--color-secundario); }
 .nota-meta { font-size: 0.8rem; color: var(--color-texto-suave); display: flex; gap: 0.5rem; align-items: center; }
 .nota-cuerpo { line-height: 1.7; }
-.archivo-anio { margin-top: 1.5rem; border-bottom: 2px solid var(--color-acento); padding-bottom: 0.2rem; }
+.noticias-titulo { font-family: var(--font-titulo); text-transform: uppercase; text-align: center; }
 @media (min-width: 768px) { .noticias-grid { grid-template-columns: repeat(2, 1fr); } }
 ```
 
@@ -1653,7 +1655,7 @@ node build.js
 Test-Path dist\noticias\index.html
 Get-ChildItem dist\noticias\*.html | Select-Object Name
 # Esperado: index.html + 2 páginas de detalle (slug de cada nota)
-# Abrir /noticias/: ingred original separado por año 2026
+# Abrir /noticias/: listado sin agrupar por año
 # Abrir un detalle: título, fecha, badge de categoría, imagen placeholder y 3 párrafos
 ```
 
@@ -1661,7 +1663,7 @@ Get-ChildItem dist\noticias\*.html | Select-Object Name
 
 ```bash
 git add templates/noticias-index.html templates/noticia.html build.js assets/css/styles.css
-git commit -m "feat: noticias con listado, detalle y archivo por año"
+git commit -m "feat: noticias con listado y detalle"
 ```
 
 ---
@@ -2054,7 +2056,7 @@ Checklist:
 - [ ] Home: hero, última ronda, próximos, resultados, noticias; links correctos
 - [ ] Torneos → Libres 26/27: Cuadro (ronda navegable, ganadores/perdedores, penales, bye, badges de estado), Fixture, Equipos, Goleadores
 - [ ] Selector de ediciones en la página de torneo
-- [ ] Noticias: listado con archivo por año y detalle
+- [ ] Noticias: listado y detalle
 - [ ] Instalaciones y Contacto (datos y redes, sin formulario)
 - [ ] 404 para rutas inexistentes
 - [ ] Mobile (≤375px): hamburguesa, tabs deslizables, sin scroll horizontal

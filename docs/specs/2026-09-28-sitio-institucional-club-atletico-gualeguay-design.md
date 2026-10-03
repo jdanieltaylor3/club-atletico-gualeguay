@@ -65,7 +65,7 @@ Inicio (home)
 │       ├── Edición 26/27 (vigente)
 │       └── Ediciones anteriores (archivo)
 ├── Noticias
-│   ├── Listado + archivo por fecha
+│   ├── Listado de noticias
 │   └── Nota (detalle)
 ├── Instalaciones / Sede
 ├── Contacto
@@ -178,7 +178,7 @@ El repositorio contiene fuentes (`data/`, `templates/`, `assets/`, páginas manu
 
 ## 12. Noticias e institucional
 
-- Noticias en `data/noticias.json` → listado + detalle + archivo por fecha (generadas por build).
+- Noticias en `data/noticias.json` → listado + detalle (generadas por build). El listado y el detalle comparten el fondo azul propio; el listado lleva el título centrado en mayúsculas. Las tarjetas del listado, de la home y de partidos/equipos del resto del sitio comparten el marco amarillo animado.
 - Institucional: Instalaciones/Sede y Contacto manuscritos (modo B), con header/footer compartidos.
 - Contacto: datos de contacto + redes sociales (sin formulario: GitHub Pages no permite envío de mensajes, se descartó la idea de "mensaje rápido").
 

@@ -23,6 +23,9 @@
      una grotesca actual, en vez de la letra de sistema. Los títulos siguen en
      Oswald. El cuerpo de las notas queda en el tamaño chico de siempre. */
   --font-text-moderna: "Archivo", "Segoe UI", system-ui, sans-serif;
+  /* Título del listado de noticias: Space Grotesk, una grotesca actual, para
+     el único título del sitio que va centrado y moderno. */
+  --font-titulo: "Space Grotesk", "Archivo", system-ui, sans-serif;
   --fs-xs: 0.68rem;    /* etiquetas muy chicas (subtítulos de tarjeta) */
   --fs-sm: 0.8rem;     /* metadatos */
   --fs-base: 0.9rem;   /* botones y tablas */

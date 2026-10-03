@@ -243,8 +243,6 @@
 }
 
 /* Variantes: cada sección del sitio elige su foto. */
-.seccion-cancha { --foto: url("../img/cancha-f7.jpg"); }
-.seccion-cancha::before { background-position: center 45%; }
 .seccion-cabina { --foto: url("../img/cancha-cabina.jpg"); }
 .seccion-cabina::before { background-position: center 42%; }
 .seccion-banco { --foto: url("../img/banco-suplentes.jpg"); }
@@ -256,6 +254,59 @@
 .seccion-vestuarios::before { background-position: center 40%; }
 .seccion-arcos { --foto: url("../img/arcos.jpg"); }
 .seccion-arcos::before { background-position: center 45%; }
+
+/* ===== Noticias: fondo azul propio =====
+   El listado de noticias no usa foto: lleva un fondo azul propio, apenas
+   animado, para que no se sienta vacío sin robarle protagonismo a las
+   tarjetas. La sección es full-width (no .page) y el .page de adentro centra
+   el contenido; así el fondo llega de borde a borde sin usar 100vw. El
+   ::before arma el azul de base (con el halo del escudo arriba) y el ::after
+   suma tres brillos que derivan muy lento. El overflow: hidden del contenedor
+   recorta el scale del ::after para que no genere scroll horizontal. Todo el
+   movimiento es transform/opacidad y se apaga con prefers-reduced-motion
+   (base.css), así que con menos movimiento queda un azul quieto. Al ser la
+   única sección de la página, se estira hasta el pie (ver la regla de
+   .site-main). */
+.seccion-noticias {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.site-main > .seccion-noticias {
+  flex: 1 0 auto;
+}
+.seccion-noticias::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.014) 0 2px, transparent 2px 140px),
+    radial-gradient(120% 70% at 50% 0%, rgba(46, 82, 224, 0.28) 0%, transparent 62%),
+    linear-gradient(180deg, #081336 0%, #050a26 52%, #040819 100%);
+  background-repeat: repeat, no-repeat, no-repeat;
+}
+.seccion-noticias::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 30% at 24% 20%, rgba(46, 82, 224, 0.22), transparent 70%),
+    radial-gradient(38% 26% at 78% 34%, rgba(46, 82, 224, 0.16), transparent 72%),
+    radial-gradient(52% 34% at 52% 86%, rgba(20, 40, 140, 0.2), transparent 74%);
+}
+@keyframes noticias-brillo {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.75; }
+  to { transform: translate3d(-2.5%, 2%, 0) scale(1.08); opacity: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .seccion-noticias::after {
+    animation: noticias-brillo 28s var(--ease) infinite alternate;
+    will-change: transform, opacity;
+  }
+}
 
 /* ===== Secciones con video de fondo =====
    Mismo criterio que las fotos: va de borde a borde, con la misma opacidad

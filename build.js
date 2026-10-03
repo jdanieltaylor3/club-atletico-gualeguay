@@ -237,7 +237,7 @@ function imagenNota(n, profundidad, { alt = "", lazy = true } = {}) {
 //     banda de 180 px quedaría diminuta (ver .nota-placa en components.css).
 // `prefijoHref` resuelve el enlace relativo (la home necesita "noticias/") y
 // `conBadge` agrega la categoría al pie de la nota (solo el listado).
-function tarjetaNota(n, profundidad, { separador = "", prefijoHref = "", conBadge = false } = {}) {
+function tarjetaNota(n, profundidad, { prefijoHref = "", conBadge = false } = {}) {
   const href = `${prefijoHref}${slugify(n.titulo)}-${n.id}.html`;
   const meta = conBadge ? `${formatFecha(n.fecha)} ${badge(n.categoria)}` : formatFecha(n.fecha);
   const cuerpo = `<div class="tarjeta-nota-body">
@@ -247,13 +247,15 @@ function tarjetaNota(n, profundidad, { separador = "", prefijoHref = "", conBadg
       </div>`;
   const clase = n.imagen ? "tarjeta-nota" : "tarjeta-nota tarjeta-nota--sin-foto";
   const adentro = n.imagen
-    ? `<img class="nota-img" src="${rutaAsset(n.imagen, profundidad)}" alt="" loading="lazy">
+    ? `<div class="nota-media">
+        <img class="nota-img" src="${rutaAsset(n.imagen, profundidad)}" alt="" loading="lazy">
+      </div>
       ${cuerpo}`
     : `<div class="nota-placa">
         <img class="nota-placa-img" src="${rutaAsset(PORTADA_POR_DEFECTO, profundidad)}" alt="" loading="lazy">
         ${cuerpo}
       </div>`;
-  return `${separador}<article class="${clase}" data-reveal>
+  return `<article class="${clase}" data-reveal>
       ${adentro}
     </article>`;
 }
@@ -268,13 +270,9 @@ function cuerpoNoticia(n) {
 
 function listaNoticias(profundidadPagina) {
   if (!noticias().length) return '<p class="nota-meta">Todavía no hay noticias publicadas.</p>';
-  let anioActual = null;
-  return noticias().map((n) => {
-    const anio = n.fecha.slice(0, 4);
-    const separador = anio !== anioActual ? `<h2 class="archivo-anio">${anio}</h2>` : "";
-    anioActual = anio;
-    return tarjetaNota(n, profundidadPagina, { separador, conBadge: true });
-  }).join("");
+  return noticias()
+    .map((n) => tarjetaNota(n, profundidadPagina, { conBadge: true }))
+    .join("");
 }
 
 // Home: héroe + resumen del torneo vigente + últimas noticias.
