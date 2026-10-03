@@ -418,8 +418,8 @@ function bloqueTorneo() {
 
 // Una edición vigente en la home: el nombre de la categoría y la edición son el
 // enlace a esa edición (su ::after se estira sobre la tarjeta entera, ver
-// layout.css), con el badge de vigente y las tres listas: última ronda,
-// próximos partidos y resultados recientes.
+// layout.css), con el badge de vigente y las dos listas: próximos partidos y
+// resultados recientes.
 function tarjetaVigente(torneo, lista) {
   const url = rutaPaginaEdicion(torneo).replace(/index\.html$/, "");
   const nombre = escapeHtml(data.nombreCategoria(torneo.categoria, lista));
@@ -432,7 +432,6 @@ function tarjetaVigente(torneo, lista) {
             <a href="${url}">${nombre} · Edición ${escapeHtml(torneo.edicion)}</a>
             ${torneo.estado === "vigente" ? badge("vigente", "v2") : ""}
           </h2>
-          ${seccion("Última ronda", tarjetas(data.ultimaRondaPartidos(torneo), torneo, 0), "Los cruces se cargan ronda a ronda.")}
           ${seccion("Próximos partidos", tarjetas(data.proximosPartidos(torneo), torneo, 0), "Todavía no hay partidos programados.")}
           ${seccion("Resultados recientes", tarjetas(data.recientesPartidos(torneo), torneo, 0), "Todavía no hay resultados cargados.")}
         </article>`;
