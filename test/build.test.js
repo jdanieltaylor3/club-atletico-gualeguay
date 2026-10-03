@@ -103,17 +103,25 @@ test("build: cada página tiene un solo h1 y su título", () => {
   }
 });
 
-test("build: la home muestra las ediciones vigentes con escudos resueltos", () => {
+test("build: la home muestra las ediciones vigentes", () => {
   const html = leer("index.html");
   assert.match(html, /Libres · Edición 26\/27/);
   assert.match(html, /Veteranos · Edición 26\/27/);
   assert.match(html, /Próximos partidos/);
-  assert.match(html, /assets\/img\/equipos\/eq-1\.png/);
   assert.doesNotMatch(html, /<a[^>]+href="assets\/img/); // los escudos no son enlaces
 });
 
-test("build: la home formatea las fechas en español", () => {
-  assert.match(leer("index.html"), /de octubre de 2026/);
+test("build: la home refleja si hay o no partidos cargados", () => {
+  const html = leer("index.html");
+  if (/class="tarjeta-partido"/.test(html)) {
+    // Con partidos: escudos resueltos y fechas en español.
+    assert.match(html, /assets\/img\/equipos\//);
+    assert.match(html, /de \p{L}+ de \d{4}/u);
+  } else {
+    // Sin partidos (arranque de temporada): avisos de vacío.
+    assert.match(html, /Todavía no hay partidos programados/);
+    assert.match(html, /Todavía no hay resultados cargados/);
+  }
 });
 
 test("build: el hero de la home lleva la cinta y el sello, con los datos reales", () => {

@@ -5,21 +5,7 @@
   "temporada": "26/27",
   "edicion": "26/27",
   "estado": "vigente",
-  "equipos": [
-    { "id": "eq-1", "nombre": "Veteranos A", "escudo": "assets/img/equipos/eq-1.png" },
-    { "id": "eq-2", "nombre": "Veteranos B", "escudo": "assets/img/equipos/eq-2.png" },
-    { "id": "eq-3", "nombre": "Ex-River", "escudo": "assets/img/equipos/eq-3.png" },
-    { "id": "eq-4", "nombre": "La Vieja Guardia", "escudo": "assets/img/equipos/eq-4.png" }
-  ],
-  "rondas": [
-    {
-      "numero": 1,
-      "zona": "iniciales",
-      "partidos": [
-        { "id": "r1-p1", "equipoA": "eq-1", "equipoB": "eq-2", "estado": "jugado", "resultado": { "golesA": 1, "golesB": 1 }, "penales": { "a": 4, "b": 5 }, "fecha": "2026-10-03", "hora": "17:00" },
-        { "id": "r1-p2", "equipoA": "eq-3", "equipoB": "eq-4", "estado": "por jugar", "fecha": "2026-10-04", "hora": "17:00" }
-      ]
-    }
-  ],
+  "equipos": [],
+  "rondas": [],
   "goleadores": []
 }

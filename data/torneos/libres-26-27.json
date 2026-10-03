@@ -5,41 +5,39 @@
   "temporada": "26/27",
   "edicion": "26/27",
   "estado": "vigente",
-  "equipos": [
-    { "id": "eq-1", "nombre": "Amistad FC", "escudo": "assets/img/equipos/eq-1.png" },
-    { "id": "eq-2", "nombre": "Centenario", "escudo": "assets/img/equipos/eq-2.png" },
-    { "id": "eq-3", "nombre": "La Picada", "escudo": "assets/img/equipos/eq-3.png" },
-    { "id": "eq-4", "nombre": "Río Uruguay", "escudo": "assets/img/equipos/eq-4.png" },
-    { "id": "eq-5", "nombre": "Los Amigos", "escudo": "assets/img/equipos/eq-5.png" },
-    { "id": "eq-6", "nombre": "San Martín", "escudo": "assets/img/equipos/eq-6.png" }
+  "equipos": [ { "id": "eq-1", "nombre": "La Esquina De Tia Norma", "escudo": "assets/img/equipos/LAESQUINATIANORMA.png" },
+  { "id": "eq-2", "nombre": "Deportivo LT", "escudo": "assets/img/equipos/DEPORTIVOLT.png" },
+  { "id": "eq-3", "nombre": "Tu Bazar En Linea", "escudo": "assets/img/equipos/TUBAZARENLINEA.png" },
+  { "id": "eq-4", "nombre": "Estudio Jurídico Grabiel Demora", "escudo": "assets/img/equipos/ESTUDIOJURIDICOGRABIELDEMORA.png" },
+  { "id": "eq-5", "nombre": "Rincóncito", "escudo": "assets/img/equipos/RINCONCITO.png" },
+  { "id": "eq-6", "nombre": "Granja Don Horacio", "escudo": "assets/img/equipos/GRANJADONHORACIO.png" },
+  { "id": "eq-7", "nombre": "Perforaciones Kranevitter", "escudo": "assets/img/equipos/PERFORACIONESKRANEVITTER.png" },
+  { "id": "eq-8", "nombre": "El Rejunte", "escudo": "assets/img/equipos/ELREJUNTE.png" },
+  { "id": "eq-9", "nombre": "Enzo Leiva Construcciones", "escudo": "assets/img/equipos/ENZOLEIVACONSTRUCCIONES.png" },
+  { "id": "eq-10", "nombre": "Mecanica Eckerdt", "escudo": "assets/img/equipos/MECANICAECKERDT.png" },
+  { "id": "eq-11", "nombre": "Gym Sparta", "escudo": "assets/img/equipos/GYMSPARTA.png" },
+  { "id": "eq-12", "nombre": "Centro Equipamientos", "escudo": "assets/img/equipos/CENTROEQUIPAMIENTOS.png" },
+  { "id": "eq-13", "nombre": "Kiosco Bri-Enzo", "escudo": "assets/img/equipos/KIOSCOBRI-ENZO.png" },
+  { "id": "eq-14", "nombre": "Barrio Illia", "escudo": "assets/img/equipos/BARRIOILLIA.png" },
+  { "id": "eq-15", "nombre": "Barrio Don Paulo", "escudo": "assets/img/equipos/BARRIODONPAULO.png" },
+  { "id": "eq-16", "nombre": "Corazon De Belen", "escudo": "assets/img/equipos/CORAZONDEBELEN.png" },
+  { "id": "eq-17", "nombre": "Don Bosco", "escudo": "assets/img/equipos/DONBOSCO.png" },
+  { "id": "eq-18", "nombre": "F5 Villaguay", "escudo": "assets/img/equipos/F5VILLAGUAY.png" },
+  { "id": "eq-19", "nombre": "Gimnasio Argentino", "escudo": "assets/img/equipos/GIMNASIOARGENTINO.png" },
+  { "id": "eq-20", "nombre": "Barreto Hnos. Chapa y Pintura", "escudo": "assets/img/equipos/BARRETOHNOSCHAPAYPINTURA.png" },
+  { "id": "eq-21", "nombre": "Black Barber", "escudo": "assets/img/equipos/BLACKBARBER.png" },
+  { "id": "eq-22", "nombre": "Kiosco Bender", "escudo": "assets/img/equipos/KIOSCOBENDER.png" },
+  { "id": "eq-23", "nombre": "La MDN", "escudo": "assets/img/equipos/LAMDN.png" },
+  { "id": "eq-24", "nombre": "La Nueva Provincia", "escudo": "assets/img/equipos/LANUEVAPROVINCIA.png" },
+  { "id": "eq-25", "nombre": "Los Luqueros", "escudo": "assets/img/equipos/LOSLUQUEROS.png" },
+  { "id": "eq-26", "nombre": "Mecanica Eckerdt", "escudo": "assets/img/equipos/MECANICAECKERDT.png" },
+  { "id": "eq-27", "nombre": "Los Pizantes", "escudo": "assets/img/equipos/LOSPIZANTES.png" },
+  { "id": "eq-28", "nombre": "Refrigeraciones Centurión", "escudo": "assets/img/equipos/REFRIGERACIONESCENTURION.png" },
+  { "id": "eq-29", "nombre": "Remises Norte", "escudo": "assets/img/equipos/REMISESNORTE.png" },
+  { "id": "eq-30", "nombre": "Sabaleros", "escudo": "assets/img/equipos/SABALEROS.png" },
+  { "id": "eq-31", "nombre": "San Jacinto", "escudo": "assets/img/equipos/SANJACINTO.png" },
+  { "id": "eq-32", "nombre": "Stud El Tigresito", "escudo": "assets/img/equipos/STUDELTIGRESITO.png" }
   ],
-  "rondas": [
-    {
-      "numero": 1,
-      "zona": "iniciales",
-      "partidos": [
-        { "id": "r1-p1", "equipoA": "eq-1", "equipoB": "eq-2", "estado": "jugado", "resultado": { "golesA": 2, "golesB": 1 }, "penales": null, "fecha": "2026-10-03", "hora": "20:30" },
-        { "id": "r1-p2", "equipoA": "eq-3", "equipoB": "eq-4", "estado": "jugado", "resultado": { "golesA": 0, "golesB": 0 }, "penales": { "a": 3, "b": 2 }, "fecha": "2026-10-03", "hora": "21:30" },
-        { "id": "r1-p3", "equipoA": "eq-5", "equipoB": "eq-6", "estado": "por jugar", "fecha": "2026-10-04", "hora": "19:00" }
-      ]
-    },
-    {
-      "numero": 2,
-      "zona": "ganadores",
-      "partidos": [
-        { "id": "r2-p1", "equipoA": "eq-1", "equipoB": null, "estado": "pase-libre", "fecha": "", "hora": "" }
-      ]
-    },
-    {
-      "numero": 2,
-      "zona": "perdedores",
-      "partidos": [
-        { "id": "r2-p2", "equipoA": "eq-2", "equipoB": "eq-3", "estado": "por jugar", "fecha": "2026-10-10", "hora": "20:30" }
-      ]
-    }
-  ],
-  "goleadores": [
-    { "jugador": "López", "equipoId": "eq-1", "goles": 3 },
-    { "jugador": "Fernández", "equipoId": "eq-3", "goles": 2 }
-  ]
+  "rondas": [],
+  "goleadores": []
 }
