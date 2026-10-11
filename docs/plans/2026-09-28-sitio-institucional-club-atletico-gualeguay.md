@@ -788,6 +788,8 @@ git commit -m "feat: páginas manuscritas Instalaciones, Contacto y 404"
 
 > **Actualización posterior (fondos lisos).** Las páginas Instalaciones y Contacto dejaron las fotos de fondo por un spec propio: cada sección lleva un campo de color con focos que derivan lento (`.fondo-liso` + variantes `.fondo-cancha`, `.fondo-sede`, `.fondo-contacto` y `.fondo-redes`), full-width con el `.page` adentro, y se estira hasta el pie. Ver el spec del sistema de animaciones (P4).
 
+> **Actualización posterior (Instalaciones).** El hero dejó el verde (fuera de la paleta) por el azul del escudo con un foco amarillo (`.fondo-cancha`). El contenido se reorganizó en tres bloques (`.inst`): **El predio** (ahora con un plano cenital —cancha, accesos, cantina y baños— en `assets/img/predio-cenital.svg`), **Horarios** (de 21 a 1:00, sujeto a cambios, con los números en Rye, `--font-numeros`, estilo GTA San Andreas) y **Ubicación** (dirección en Space Grotesk + mapa). En PC van en columnas desparejas y corridas; en móvil, uno abajo del otro.
+
 ---
 
 ### Tarea 7: CSS — tokens, base y layout (móvil primero)

@@ -440,6 +440,114 @@ body {
   background: var(--color-primario);
 }
 
+/* ===== Instalaciones: bloques editoriales =====
+   En compu, el predio y los horarios van en dos columnas desparejas y la
+   derecha, corrida hacia abajo, para que la página no sea una pila prolija;
+   Ubicación va abajo, más angosta y sin pegarse al borde. En celular caen uno
+   abajo del otro. El horario usa --font-numeros (Rye), estilo cartel. */
+.inst {
+  display: grid;
+  gap: var(--esp-9);
+  margin-top: var(--esp-8);
+}
+.inst-bloque { min-width: 0; }
+.inst-bloque > h2 { margin: 0 0 var(--esp-5); }
+.inst-bloque > h2::before {
+  content: "";
+  display: block;
+  width: 46px;
+  height: 3px;
+  margin-bottom: var(--esp-5);
+  background: var(--color-primario);
+}
+.inst-texto {
+  margin: 0 0 var(--esp-6);
+  max-width: 52ch;
+  font-size: 1.06rem;
+}
+
+/* Plano desde arriba del predio. */
+.plano { margin: 0; }
+.plano img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--color-borde);
+  background: var(--color-superficie);
+}
+.plano figcaption {
+  margin-top: var(--esp-4);
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+}
+
+/* Horario: números gigantes tipo cartel, con conectores chicos. */
+.horario {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--esp-5);
+  margin: 0;
+  font-family: var(--font-numeros);
+  color: var(--color-primario);
+}
+.horario-hora {
+  font-size: clamp(2.6rem, 7vw, 4.4rem);
+  line-height: 0.9;
+}
+.horario-union {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--color-texto-suave);
+}
+.horario-nota {
+  margin: var(--esp-5) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-texto-suave);
+}
+
+/* Ubicación: la dirección en tipografía moderna (Space Grotesk) con su rótulo
+   amarillo, en vez de un string suelto. */
+.direccion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+  margin: 0 0 var(--esp-6);
+}
+.direccion-kicker {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--color-primario);
+}
+.direccion-valor {
+  font-family: var(--font-titulo);
+  font-size: clamp(1.15rem, 3.2vw, 1.7rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--color-blanco);
+}
+
+@media (min-width: 768px) {
+  .inst {
+    grid-template-columns: repeat(12, 1fr);
+    align-items: start;
+    gap: var(--esp-9) var(--esp-8);
+  }
+  /* Dos columnas arriba (texto del predio | horario), el plano a lo ancho en
+     el medio y Ubicación abajo, sin pegarse al borde: nunca queda todo en fila. */
+  .inst-predio { grid-column: 1 / 8; grid-row: 1; }
+  .inst-horarios { grid-column: 8 / 13; grid-row: 1; margin-top: 1.75rem; }
+  .plano { grid-column: 1 / -1; grid-row: 2; }
+  .inst-ubicacion { grid-column: 2 / 12; grid-row: 3; }
+}
+
 .hero {
   position: relative;
   isolation: isolate;
@@ -575,11 +683,11 @@ body {
 /* Variantes: campo y focos de cada sección. */
 .fondo-cancha {
   --fondo-base:
-    radial-gradient(120% 82% at 50% -8%, rgba(126, 226, 178, 0.16), transparent 62%),
-    linear-gradient(180deg, #08271c 0%, #05160f 55%, #030b08 100%);
+    radial-gradient(120% 80% at 50% -10%, rgba(46, 82, 224, 0.42), transparent 64%),
+    linear-gradient(180deg, #0a1a4d 0%, #081136 55%, #05091f 100%);
   --fondo-focos:
-    radial-gradient(46% 32% at 20% 26%, rgba(140, 240, 196, 0.12), transparent 70%),
-    radial-gradient(54% 40% at 82% 82%, rgba(46, 82, 224, 0.18), transparent 74%);
+    radial-gradient(62% 42% at 50% -8%, rgba(255, 213, 0, 0.13), transparent 70%),
+    radial-gradient(52% 40% at 84% 84%, rgba(46, 82, 224, 0.22), transparent 74%);
 }
 .fondo-sede {
   --fondo-base:

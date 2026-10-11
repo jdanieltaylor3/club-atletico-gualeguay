@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img"
+  aria-label="Plano desde arriba del predio: la cancha de fútbol 7 en el centro, la cantina y los baños a la derecha, y los accesos arriba y abajo">
+  <style>
+    .fondo { fill: #060a21; }
+    .predio { fill: #0a1130; stroke: #1b2750; stroke-width: 2; }
+    .campo { fill: #0e2a58; }
+    .linea { fill: none; stroke: #cfe0ff; stroke-width: 3; }
+    .linea-fina { fill: none; stroke: #cfe0ff; stroke-width: 2; opacity: 0.55; }
+    .arco { fill: #dfe8ff; }
+    .edificio { fill: #141a3a; stroke: #ffd500; stroke-width: 2.5; }
+    .foco { fill: #ffd500; }
+    .t {
+      fill: #dfe8ff; font-family: Arial, Helvetica, sans-serif;
+      font-size: 27px; letter-spacing: 3px; text-anchor: middle;
+    }
+    .t-chica { font-size: 22px; opacity: 0.72; }
+    .t-ambar {
+      fill: #ffd500; font-family: Arial, Helvetica, sans-serif;
+      font-size: 21px; letter-spacing: 3px; text-anchor: middle;
+    }
+  </style>
+
+  <rect class="fondo" width="1200" height="760"/>
+  <rect class="predio" x="40" y="40" width="1120" height="680" rx="26"/>
+
+  <!-- cancha (fútbol 7) -->
+  <rect class="campo" x="120" y="150" width="680" height="480" rx="6"/>
+  <rect class="linea" x="120" y="150" width="680" height="480" rx="6"/>
+  <line class="linea" x1="460" y1="150" x2="460" y2="630"/>
+  <circle class="linea" cx="460" cy="390" r="74"/>
+  <circle class="arco" cx="460" cy="390" r="4"/>
+  <rect class="linea" x="120" y="288" width="98" height="204"/>
+  <rect class="linea" x="702" y="288" width="98" height="204"/>
+  <rect class="linea-fina" x="120" y="355" width="40" height="70"/>
+  <rect class="linea-fina" x="760" y="355" width="40" height="70"/>
+  <rect class="arco" x="106" y="352" width="14" height="76"/>
+  <rect class="arco" x="800" y="352" width="14" height="76"/>
+  <text class="t t-chica" x="252" y="198">CANCHA F7</text>
+
+  <!-- cantina -->
+  <rect class="edificio" x="850" y="150" width="270" height="150" rx="18"/>
+  <text class="t" x="985" y="238">CANTINA</text>
+
+  <!-- baños -->
+  <rect class="edificio" x="850" y="470" width="270" height="150" rx="18"/>
+  <text class="t" x="985" y="558">BAÑOS</text>
+
+  <!-- accesos -->
+  <polygon class="foco" points="460,134 438,96 482,96"/>
+  <polygon class="foco" points="460,626 438,664 482,664"/>
+  <text class="t-ambar" x="460" y="80">ACCESO</text>
+  <text class="t-ambar" x="460" y="702">ACCESO</text>
+</svg>

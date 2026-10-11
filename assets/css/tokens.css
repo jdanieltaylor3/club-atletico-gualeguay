@@ -26,6 +26,9 @@
   /* Título del listado de noticias: Space Grotesk, una grotesca actual, para
      el único título del sitio que va centrado y moderno. */
   --font-titulo: "Space Grotesk", "Archivo", system-ui, sans-serif;
+  /* Números "a lo GTA San Andreas" del horario de Instalaciones: Rye, una
+     display de cartel del Oeste, la más parecida al logo del juego. */
+  --font-numeros: "Rye", "Oswald", system-ui, serif;
   --fs-xs: 0.68rem;    /* etiquetas muy chicas (subtítulos de tarjeta) */
   --fs-sm: 0.8rem;     /* metadatos */
   --fs-base: 0.9rem;   /* botones y tablas */

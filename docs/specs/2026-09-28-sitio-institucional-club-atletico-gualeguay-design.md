@@ -179,7 +179,7 @@ El repositorio contiene fuentes (`data/`, `templates/`, `assets/`, páginas manu
 ## 12. Noticias e institucional
 
 - Noticias en `data/noticias.json` → listado + detalle (generadas por build). El listado y el detalle comparten el fondo azul propio; el listado lleva el título centrado en mayúsculas. Las tarjetas del listado, de la home y de partidos/equipos del resto del sitio comparten el marco amarillo animado.
-- Institucional: Instalaciones/Sede y Contacto manuscritos (modo B), con header/footer compartidos. Cada sección lleva un fondo liso animado propio (sin fotos ni escudo); ver el sistema de animaciones.
+- Institucional: Instalaciones/Sede y Contacto manuscritos (modo B), con header/footer compartidos. Cada sección lleva un fondo liso animado propio (sin fotos ni escudo); ver el sistema de animaciones. Instalaciones organiza su contenido en tres bloques (`.inst`): **El predio** (con un plano cenital del predio —cancha, accesos, cantina y baños—), **Horarios** (de 21 a 1:00, sujeto a cambios, con los números en Rye, `--font-numeros`, al estilo cartel de GTA San Andreas) y **Ubicación** (dirección en Space Grotesk + mapa). En PC los bloques van en columnas desparejas y corridas; en móvil, uno abajo del otro.
 - Contacto: datos de contacto + redes sociales (sin formulario: GitHub Pages no permite envío de mensajes, se descartó la idea de "mensaje rápido").
 
 ## 13. Despliegue (todo gratuito)
