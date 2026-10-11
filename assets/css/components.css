@@ -535,21 +535,30 @@ html.js-reveal [data-reveal].tarjeta-nota.visible:hover {
 }
 .tarjeta-nota:hover .nota-img { transform: scale(1.04); }
 
-/* El marco gira lento siempre y se acelera con el mouse o el teclado en las
-   tarjetas que son un enlace. Solo transform; con menos movimiento no hay
-   animación (base.css la apaga con !important) y el anillo queda quieto. */
+/* El marco de las tarjetas de nota gira lento siempre (son pocas) y se acelera
+   con el mouse o el teclado. Las de partido y equipo pueden ser muchas (toda
+   una grilla): en reposo quedan quietas y el marco gira solo al pasar el mouse.
+   Se pausa en vez de quitarse para que retome desde el mismo ángulo. Solo
+   transform; con menos movimiento no hay animación (base.css la apaga con
+   !important) y el anillo queda quieto. */
 @keyframes borde-nota {
   to { transform: rotate(360deg); }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .tarjeta-nota::before,
-  .tarjeta-partido::before {
+  .tarjeta-nota::before {
     animation: borde-nota 12s linear infinite;
     will-change: transform;
   }
   .tarjeta-nota:hover::before,
   .tarjeta-nota:focus-within::before {
     animation-duration: 3s;
+  }
+  .tarjeta-partido::before {
+    animation: borde-nota 3s linear infinite;
+    animation-play-state: paused;
+  }
+  .tarjeta-partido:hover::before {
+    animation-play-state: running;
   }
 }
 

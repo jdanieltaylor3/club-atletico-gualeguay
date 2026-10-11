@@ -21,9 +21,10 @@ Estética buscada: institucional + deportiva + moderna + dinámica + elegante.
 2. **Nada permanente por defecto**: cada animación ocurre una vez (entrada,
    anillo v2) o es un ken-burns de 26-30 s que no compite con la lectura. Las
    excepciones son el fondo azul de Noticias (deriva muy lento, también en el
-   detalle de cada nota) y el marco amarillo de las tarjetas del sitio, que gira
-   lento (12 s) y se acelera en el hover de las tarjetas que son enlace. Todo se
-   apaga con `prefers-reduced-motion`.
+   detalle de cada nota) y el marco amarillo de las tarjetas: el de las tarjetas
+   de nota gira lento (12 s) y acelera con el hover; el de partidos y equipos
+   queda quieto en reposo (pueden ser muchas juntas) y gira al pasar el mouse.
+   Todo se apaga con `prefers-reduced-motion`.
 3. **Scroll = IntersectionObserver**, un solo disparo por elemento, con
    `unobserve()`. Fuera de viewport no hay animación en curso.
 4. **`prefers-reduced-motion: reduce`** apaga transiciones y animaciones
@@ -64,7 +65,7 @@ Estética buscada: institucional + deportiva + moderna + dinámica + elegante.
 | ID | Animación | Cómo |
 |----|-----------|------|
 | P1 | Fondo azul de Noticias | `.seccion-noticias` (layout.css): azul propio con halos y textura; el `::after` deriva 28 s alternando (`translate3d`+`scale`+`opacity`). Se usa en el listado y en el detalle de cada nota. |
-| P2 | Marco amarillo de las tarjetas | `.tarjeta-nota` y `.tarjeta-partido` comparten dos pseudos: el `::before` (gradiente cónico amarillo, `z-index:-2`) queda detrás del `::after` (superficie recortada 3 px, `z-index:-1`), así solo se ve el anillo. El `::before` gira 12 s; en las tarjetas de nota el hover/foco acelera a 3 s. |
+| P2 | Marco amarillo de las tarjetas | `.tarjeta-nota` y `.tarjeta-partido` comparten dos pseudos: el `::before` (gradiente cónico amarillo, `z-index:-2`) queda detrás del `::after` (superficie recortada 3 px, `z-index:-1`), así solo se ve el anillo. En las tarjetas de nota el `::before` gira 12 s (hover/foco acelera a 3 s); en las de partido y equipo queda pausado en reposo y gira a 3 s al pasar el mouse. |
 
 ### 4. Opcionales (descartadas por criterio del usuario)
 
@@ -94,7 +95,8 @@ Estética buscada: institucional + deportiva + moderna + dinámica + elegante.
 - Navegador: hero de home y contacto, aparición de tarjetas al scrollear,
   apertura/cierre del menú móvil, cambio de pestaña/ronda con `vista-anim`,
   anillo v2. Listado y detalle de Noticias con el fondo azul; marco girando en
-  el listado, el detalle y la grilla de Equipos; el hover de una tarjeta de nota
-  no deja que la imagen tape el marco. Sin desborde horizontal a 1280, 900 y
+  el listado y el detalle, y al pasar el mouse en la grilla de Equipos; el hover
+  de una tarjeta de nota no deja que la imagen tape el marco. Sin desborde
+  horizontal a 1280, 900 y
   390 px. Bajo `prefers-reduced-motion` (emulando en DevTools) debe verse todo
   estático y visible.
