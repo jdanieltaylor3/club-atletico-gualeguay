@@ -306,8 +306,8 @@ function homeVideo() {
 // también en compu, corrida sobre la cinta; ver layout.css). El sello de F7 va
 // solo en compu: en el celu no entra sin apretar el escudo contra el título, y
 // el dato ya está en el texto y en la cinta. El resto de las páginas conserva
-// su hero centrado; ver .hero-contacto/.hero-cancha). El protocolo es un
-// <section class="hero
+// su hero centrado, ahora con fondo liso propio (ver .fondo-liso en layout.css).
+// El protocolo es un <section class="hero
 // hero-afiche">: el CSS de layout.css le da la forma de afiche en compu y la
 // pila (banda diagonal) en el celu.
 function hero() {

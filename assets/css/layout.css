@@ -243,8 +243,6 @@
 }
 
 /* Variantes: cada sección del sitio elige su foto. */
-.seccion-cabina { --foto: url("../img/cancha-cabina.jpg"); }
-.seccion-cabina::before { background-position: center 42%; }
 .seccion-banco { --foto: url("../img/banco-suplentes.jpg"); }
 .seccion-banco::before { background-position: center 28%; }
 .seccion-club { --foto: url("../img/foto-club.png"); }
@@ -407,12 +405,13 @@ body {
   flex-direction: column;
 }
 /* La última sección se estira para absorber el alto que sobra. En las páginas
-   con .seccion-foto (torneos, una nota, instalaciones, contacto, una edición)
-   el pseudoelemento de la foto llega así hasta el pie en vez de dejar a la
-   vista el azul del body. Va por :last-of-type de .page y no por :last-child
-   porque la página de edición lleva su <script> después de la sección, dentro
-   del main. */
-.site-main > .page:last-of-type {
+   con .seccion-foto (torneos, una nota, una edición) el pseudoelemento de la
+   foto llega así hasta el pie en vez de dejar a la vista el azul del body; en
+   Instalaciones y Contacto hace lo mismo el fondo liso (ver .fondo-liso). Va
+   por :last-of-type y no por :last-child porque la página de edición lleva su
+   <script> después de la sección, dentro del main. */
+.site-main > .page:last-of-type,
+.site-main > .fondo-liso:last-of-type {
   flex: 1 0 auto;
 }
 
@@ -497,13 +496,6 @@ body {
   );
 }
 
-/* Variantes: cada una elige su foto. */
-.hero-contacto::before { background-image: url("../img/foto-club.png"); }
-.hero-cancha::before {
-  background-image: url("../img/cancha-f7.jpg");
-  background-position: center 45%;
-}
-
 .hero h1 { margin-bottom: var(--esp-3); }
 .hero p {
   opacity: 0.85;
@@ -535,6 +527,104 @@ body {
 @keyframes hero-subir {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: none; }
+}
+
+/* ===== Fondos lisos de sección (Instalaciones y Contacto) =====
+   Estas dos páginas dejan las fotos: cada sección lleva un campo de color
+   propio con focos que derivan muy lento, con la misma técnica que el fondo de
+   Noticias (base en ::before, brillos en ::after; solo transform/opacidad, se
+   apagan con prefers-reduced-motion). Cada variante cambia el color y la
+   posición de los focos, así ninguna repite el fondo. La sección es full-width
+   (no .page) y el .page de adentro centra el contenido, como en Noticias; con
+   menos movimiento queda un campo liso y quieto.
+
+   Va después de las reglas del hero a propósito: el hero también es .fondo-liso
+   y así estas reglas le ganan a .hero::before/::after (misma especificidad,
+   más abajo en el archivo). */
+.fondo-liso {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.fondo-liso::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  /* opacity: 1 para pisar el 0.12 con que .hero::before pinta el escudo. */
+  opacity: 1;
+  background: var(--fondo-base);
+}
+.fondo-liso::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--fondo-focos);
+}
+/* El hero conserva alto y centrado aunque ya no lleve foto. */
+.hero.fondo-liso {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 300px;
+}
+
+/* Variantes: campo y focos de cada sección. */
+.fondo-cancha {
+  --fondo-base:
+    radial-gradient(120% 82% at 50% -8%, rgba(126, 226, 178, 0.16), transparent 62%),
+    linear-gradient(180deg, #08271c 0%, #05160f 55%, #030b08 100%);
+  --fondo-focos:
+    radial-gradient(46% 32% at 20% 26%, rgba(140, 240, 196, 0.12), transparent 70%),
+    radial-gradient(54% 40% at 82% 82%, rgba(46, 82, 224, 0.18), transparent 74%);
+}
+.fondo-sede {
+  --fondo-base:
+    radial-gradient(120% 72% at 50% 0%, rgba(46, 82, 224, 0.26), transparent 62%),
+    linear-gradient(180deg, #0a1233 0%, #060b24 52%, #040819 100%);
+  --fondo-focos:
+    radial-gradient(48% 34% at 76% 22%, rgba(46, 82, 224, 0.22), transparent 72%),
+    radial-gradient(56% 42% at 30% 84%, rgba(20, 40, 140, 0.26), transparent 74%);
+}
+.fondo-contacto {
+  --fondo-base:
+    radial-gradient(120% 82% at 50% 0%, rgba(255, 213, 0, 0.15), transparent 60%),
+    linear-gradient(180deg, #10132f 0%, #080a20 55%, #050716 100%);
+  --fondo-focos:
+    radial-gradient(48% 36% at 26% 28%, rgba(255, 213, 0, 0.13), transparent 72%),
+    radial-gradient(52% 38% at 80% 78%, rgba(46, 82, 224, 0.16), transparent 74%);
+}
+.fondo-redes {
+  --fondo-base:
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.016) 0 2px, transparent 2px 120px),
+    radial-gradient(120% 70% at 50% -6%, rgba(255, 213, 0, 0.07), transparent 60%),
+    linear-gradient(180deg, #0b0e1d 0%, #060811 55%, #03040a 100%);
+  --fondo-focos:
+    radial-gradient(46% 34% at 30% 22%, rgba(46, 82, 224, 0.1), transparent 72%),
+    radial-gradient(50% 38% at 78% 84%, rgba(255, 213, 0, 0.06), transparent 74%);
+}
+
+/* Deriva lenta de los focos. Dos recorridos y tiempos distintos para que
+   ninguna sección se mueva igual. */
+@keyframes fondo-deriva-a {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.75; }
+  to { transform: translate3d(2.5%, -2%, 0) scale(1.07); opacity: 1; }
+}
+@keyframes fondo-deriva-b {
+  from { transform: translate3d(0, 0, 0) scale(1.05); opacity: 1; }
+  to { transform: translate3d(-2.5%, 2%, 0) scale(1); opacity: 0.75; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fondo-liso::after {
+    animation: fondo-deriva-a 32s var(--ease) infinite alternate;
+    will-change: transform, opacity;
+  }
+  .fondo-sede::after { animation-name: fondo-deriva-b; animation-duration: 27s; }
+  .fondo-contacto::after { animation-duration: 40s; }
+  .fondo-redes::after { animation-name: fondo-deriva-b; animation-duration: 46s; }
 }
 
 /* ===== Home: hero afiche (corte diagonal + costura) =====

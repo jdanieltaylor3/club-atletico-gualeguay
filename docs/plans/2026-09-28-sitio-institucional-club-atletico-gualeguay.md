@@ -786,6 +786,8 @@ git add templates/instalaciones.html templates/contacto.html templates/404.html 
 git commit -m "feat: páginas manuscritas Instalaciones, Contacto y 404"
 ```
 
+> **Actualización posterior (fondos lisos).** Las páginas Instalaciones y Contacto dejaron las fotos de fondo por un spec propio: cada sección lleva un campo de color con focos que derivan lento (`.fondo-liso` + variantes `.fondo-cancha`, `.fondo-sede`, `.fondo-contacto` y `.fondo-redes`), full-width con el `.page` adentro, y se estira hasta el pie. Ver el spec del sistema de animaciones (P4).
+
 ---
 
 ### Tarea 7: CSS — tokens, base y layout (móvil primero)
