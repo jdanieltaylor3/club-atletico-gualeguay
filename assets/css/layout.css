@@ -363,6 +363,31 @@
 @media (prefers-reduced-motion: reduce) {
   .video-fondo video { display: none; }
 }
+/* Celular: el clip no se descarga. En la sección queda el póster (un
+   fotograma real del video) con un ken-burns lento, como el del hero: se ve
+   vivo por ~56 KB en vez de ~700 KB. fondo-video.js no reproduce un video con
+   display:none, así que con preload="none" el mp4 ni se pide. */
+@media (max-width: 767px) {
+  .video-fondo video { display: none; }
+  .video-fondo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: url("../img/video-cancha-vertical.jpg") center 45% / cover no-repeat;
+    opacity: var(--foto-opacidad);
+  }
+}
+@keyframes video-kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.12); }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .video-fondo::before {
+    animation: video-kenburns 26s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+}
 
 /* ===== Contenido =====
    Pie pegado abajo: el body es una columna que mide al menos una pantalla y el

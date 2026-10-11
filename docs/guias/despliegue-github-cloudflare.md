@@ -10,13 +10,14 @@
 - `dist/` NO se versiona (está en `.gitignore`); lo genera el workflow en CI y lo publica GitHub Pages.
 - El workflow `.github/workflows/deploy.yml` corre `node --test` (validación) + `node build.js` en cada push a `main`.
 - No hacen falta secretos ni tokens: GitHub Pages usa OIDC y el `id-token` del propio workflow.
+- Peso por visita (medido local, sin gzip): la home baja ≈1,6 MB en PC (el video de fondo recomprimido son ≈717 KB) y ≈0,9 MB en celular, donde el video **no se descarga** y en su lugar va un póster animado por CSS. El grueso del sitio son los 32 escudos (≈8,6 MB) y solo pesan al abrir la pestaña Equipos. GitHub Pages comprime el texto y cachea los assets 10 min.
 
 ---
 
 ## Paso 0 — Precondiciones
 
 1. Usuario de GitHub con acceso web (o GitHub CLI `gh` instalado).
-2. Nombre de repo sugerido: `club-atletico-gualeguay` (público → Pages gratis sin límites de banda).
+2. Nombre de repo sugerido: `club-atletico-gualeguay` (público → Pages gratis; límite blando de ≈100 GB/mes de transferencia y 1 GB de sitio publicado).
 3. Tener a mano la URL del sitio esperada: `https://<USUARIO>.github.io/club-atletico-gualeguay/`.
 
 > Si el nombre del usuario o del repo fuera otro, solo cambia la URL de Pages, no el código: las rutas son relativas y sirven igual bajo cualquier subruta o dominio.
