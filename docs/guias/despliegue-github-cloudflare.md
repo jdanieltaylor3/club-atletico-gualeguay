@@ -1,12 +1,12 @@
 # Estrategia de subida a GitHub y despliegue del sitio
 
-> Documento de referencia para el momento de publicar el sitio. **Nada de esto se ejecuta todavía**: el repositorio remoto no existe ni se configuró, y el plan es terminar la validación local primero.
-> Cuando llegue el momento, seguí esta guía paso a paso desde la carpeta del proyecto (`C:\Users\jose_\OneDrive\Documentos\Proyecto predeterminado`).
+> Documento de referencia del despliegue. **Ya está en marcha**: el repositorio remoto es `jose-taylor/club-atletico-gualeguay` y el sitio se publica con GitHub Pages en cada push a `main`.
+> Esta guía describe el flujo completo, desde la carpeta del proyecto (`C:\Users\jose_\OneDrive\Documentos\Proyecto predeterminado`).
 
 ## Estado actual del proyecto (resumen)
 
-- Repositorio git local en rama `main`, historial lineal y limpio (16 commits de implementación + spec + plan).
-- Identidad de commits ya configurada: `Jose Daniel Taylor <jdanieltaylor3@gmail.com>`.
+- Repositorio git en rama `main`, historial lineal y limpio.
+- Identidad de commits configurada: `Jose Daniel Taylor <273530832+jose-taylor@users.noreply.github.com>` (el email *noreply* lleva el ID de la cuenta y el usuario actual, `jose-taylor`).
 - `dist/` NO se versiona (está en `.gitignore`); lo genera el workflow en CI y lo publica GitHub Pages.
 - El workflow `.github/workflows/deploy.yml` corre `node --test` (validación) + `node build.js` en cada push a `main`.
 - No hacen falta secretos ni tokens: GitHub Pages usa OIDC y el `id-token` del propio workflow.
@@ -18,7 +18,7 @@
 
 1. Usuario de GitHub con acceso web (o GitHub CLI `gh` instalado).
 2. Nombre de repo sugerido: `club-atletico-gualeguay` (público → Pages gratis; límite blando de ≈100 GB/mes de transferencia y 1 GB de sitio publicado).
-3. Tener a mano la URL del sitio esperada: `https://<USUARIO>.github.io/club-atletico-gualeguay/`.
+3. La URL del sitio: `https://jose-taylor.github.io/club-atletico-gualeguay/`.
 
 > Si el nombre del usuario o del repo fuera otro, solo cambia la URL de Pages, no el código: las rutas son relativas y sirven igual bajo cualquier subruta o dominio.
 
@@ -44,7 +44,7 @@ El `--push` hace exactamente el push inicial de `main`. (Si preferís pushear ma
 
 ```powershell
 $env:PATH = "C:\Program Files\Git\cmd;" + $env:PATH     # si git no se reconoce
-git remote add origin https://github.com/<USUARIO>/club-atletico-gualeguay.git
+git remote add origin https://github.com/jose-taylor/club-atletico-gualeguay.git
 git push -u origin main
 ```
 
@@ -59,12 +59,12 @@ git push -u origin main
 3. No hace falta más configuración: el workflow `deploy.yml` ya está en el repo y se dispara con cada push a `main`.
 
 En **Actions** vas a ver el run **"Build y deploy a GitHub Pages"** que:
-1. `node --test` → corre los 8 tests (falla el deploy si algo se rompe).
+1. `node --test` → corre los 110 tests (falla el deploy si algo se rompe).
 2. `node build.js` → genera `dist/`.
 3. Sube `dist/` como artefacto y `actions/deploy-pages` lo publica.
 
 Cuando el run termine en ✓, el sitio queda en línea en:
-`https://<USUARIO>.github.io/club-atletico-gualeguay/`
+`https://jose-taylor.github.io/club-atletico-gualeguay/`
 
 ---
 
@@ -125,7 +125,7 @@ No hace falta tocar `dist/`, ni idealmente `git push --force` en main, ni genera
 ## Paso 7 — Dominio personalizado (fase posterior, solo si el club tiene dominio)
 
 1. En GitHub: Settings → Pages → **Custom domain** → agregar `www.clubgualeguay.com.ar` (o el que sea) y **Save** (esto crea un commit con el `CNAME`).
-2. En el DNS del dominio: registros `CNAME` hacia `<USUARIO>.github.io` (o reglas DNS de Cloudflare apuntando al proyecto Pages).
+2. En el DNS del dominio: registros `CNAME` hacia `jose-taylor.github.io` (o reglas DNS de Cloudflare apuntando al proyecto Pages).
 3. Activar **Enforce HTTPS**.
 
 > Recomendación: no hacer esto en el primer despliegue; primero estabilizar en las URL gratuitas.
