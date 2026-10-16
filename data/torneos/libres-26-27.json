@@ -39,7 +39,7 @@
   { "id": "eq-31", "nombre": "Los Pibes De Pompeya", "escudo": "" },
   { "id": "eq-32", "nombre": "Los 3 Pinos", "escudo": "" },
   { "id": "eq-33", "nombre": "Kiosco Del Parque", "escudo": "assets/img/equipos/LOS3PINOS.png" },
-  { "id": "eq-34", "nombre": "El Taladro", "escudo": "" },
+  { "id": "eq-34", "nombre": "El Taladro", "escudo": "" }
   ],
   "rondas": [],
   "goleadores": []
