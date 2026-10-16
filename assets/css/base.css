@@ -41,7 +41,7 @@ body[data-pagina]:not([data-pagina="inicio"]) .site-main {
    Solo los párrafos de entrada de una sección (.page > p) y la lista de
    contacto: las fechas, el "volver" y el cuerpo de una nota quedan afuera, son
    lectura larga o etiquetas y ahí el tamaño chico es el correcto. */
-body[data-pagina]:not([data-pagina="inicio"]) .page > p:not(.nota-meta):not(.nota-volver),
+body[data-pagina]:not([data-pagina="inicio"]) .page > p:not(.nota-meta):not(.nota-volver):not(.error-kicker):not(.titulo-kicker),
 body[data-pagina]:not([data-pagina="inicio"]) .contact-list {
   font-size: 1.06rem;
 }

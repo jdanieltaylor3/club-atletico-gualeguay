@@ -105,8 +105,8 @@ test("build: cada página tiene un solo h1 y su título", () => {
 
 test("build: la home muestra las ediciones vigentes", () => {
   const html = leer("index.html");
-  assert.match(html, /Libres · Edición 26\/27/);
-  assert.match(html, /Veteranos · Edición 26\/27/);
+  assert.match(html, /Libres · Edición <b class="ed-num">26\/27<\/b>/);
+  assert.match(html, /Veteranos · Edición <b class="ed-num">26\/27<\/b>/);
   assert.match(html, /Próximos partidos/);
   assert.doesNotMatch(html, /<a[^>]+href="assets\/img/); // los escudos no son enlaces
 });
@@ -156,7 +156,7 @@ test("build: el índice de torneos tiene un botón por edición", () => {
 
 test("build: el selector marca la edición activa y la identifica como actual", () => {
   const html = leer("torneos/libres/26-27/index.html");
-  assert.match(html, /Edición 26\/27 · vigente/);
+  assert.match(html, /Edición <b class="ed-num ed-num--sm">26\/27<\/b> · vigente/);
 
   const selector = html.match(/<div class="selector-ediciones">([\s\S]*?)<\/div>/)?.[1] ?? "";
   assert.equal((selector.match(/class="tab on"/g) || []).length, 1, "solo una edición activa");

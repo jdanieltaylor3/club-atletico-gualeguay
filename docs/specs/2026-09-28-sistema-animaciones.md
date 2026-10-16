@@ -83,7 +83,7 @@ Estética buscada: institucional + deportiva + moderna + dinámica + elegante.
 
 ## Archivos tocados
 
-- `assets/css/tokens.css` — tokens de movimiento, `--font-titulo` (Space Grotesk) y `--font-numeros` (Rye, para los números del horario de Instalaciones).
+- `assets/css/tokens.css` — tokens de movimiento, `--font-titulo` (Space Grotesk, para el kicker de sección y la dirección de Instalaciones) y `--font-numeros` (Rye, para los títulos de sección y los números de cartel).
 - `assets/css/base.css` — reduced-motion ampliado (transiciones + animaciones).
 - `assets/css/layout.css` — hero (E4), menú móvil (E3), sistema de movimiento (E1/E2), fondo azul de Noticias (P1), fondo con video y su póster animado en celular (P3) y los fondos lisos de Instalaciones y Contacto (P4).
 - `assets/css/components.css` — hover de tarjetas (R1), anillo v2 (R2), título del listado y marco amarillo de las tarjetas (P2).
@@ -92,11 +92,11 @@ Estética buscada: institucional + deportiva + moderna + dinámica + elegante.
 - `assets/video/cancha-largo.mp4` — recomprimido para PC: 1080×1920/26 fps/2,22 MB → 720×1280/20 fps/717 KB (PSNR ≈ 39,7 dB, SSIM ≈ 0,97).
 - `assets/js/torneo.js` — re-disparo de `vista-anim` al re-renderizar.
 - `templates/partials/_scripts.html` — carga el módulo nuevo.
-- `templates/partials/_head.html` — familia Space Grotesk para el título de Noticias.
+- `templates/partials/_head.html` — familias Space Grotesk (kicker de sección) y Rye (títulos y números de cartel).
 - `templates/noticias-index.html` — listado a pantalla completa dentro de `.seccion-noticias`.
 - `templates/noticia.html` — el detalle vive en `.seccion-noticias` (mismo fondo azul).
-- `templates/instalaciones.html` y `templates/contacto.html` — secciones full-width con `.fondo-liso` y su variante (P4); cada `.page` adentro centra el contenido. Instalaciones suma los bloques editoriales `.inst` (El predio, con el plano cenital; Horarios, con los números en `--font-numeros`; y Ubicación).
-- `assets/img/predio-cenital.svg` — plano desde arriba del predio (cancha, accesos, cantina y baños) para la sub-sección El predio.
+- `templates/instalaciones.html` y `templates/contacto.html` — secciones full-width con `.fondo-liso` y su variante (P4); cada `.page` adentro centra el contenido. Los títulos de sección llevan el kicker con dato real. Instalaciones suma los bloques editoriales `.inst` (El predio, con el plano cenital y una tarjeta de servicios con el marco amarillo animado; Horarios, con los números en `--font-numeros`; y Ubicación).
+- `assets/img/predio-aereo.jpg` — foto aérea del predio, con las entradas, la cantina y los baños señalizados, para la sub-sección El predio (el original sin optimizar vive en `recursos/`, fuera del repo).
 - `build.js` — `data-reveal` en tarjetas y `.nota-media` envolviendo la foto de la tarjeta.
 - `assets/img/hero-club.png` → renombrado `assets/img/foto-club.png` (foto del frente del club). Ya no se usa: el hero de Contacto pasó al fondo liso (P4).
 

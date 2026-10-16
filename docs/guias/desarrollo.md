@@ -75,8 +75,8 @@ Cuatro familias, con un reparto explícito:
 
 - **Oswald** (`--font-display`): la identidad de cartel del club. Títulos, navegación, botones del índice de torneos y etiquetas en mayúsculas.
 - **Archivo** (`--font-text-moderna`): el texto corrido de las páginas interiores (torneos, noticias, instalaciones y contacto). La home mantiene la letra de sistema (`--font-text`); el cuerpo de una nota (`.nota-cuerpo`) también, para que la lectura larga no se agrande.
-- **Space Grotesk** (`--font-titulo`): el título centrado del listado de noticias (`/noticias/`, `.noticias-titulo`) y la dirección del bloque Ubicación de Instalaciones (`.direccion-valor`).
-- **Rye** (`--font-numeros`): solo los números del horario de Instalaciones (`.horario-hora`, 21 y 1:00), con el look de cartel de GTA San Andreas.
+- **Space Grotesk** (`--font-titulo`): los acentos chicos en letra moderna —el *kicker* sobre los títulos de sección (`.titulo-kicker`) y la dirección del bloque Ubicación de Instalaciones (`.direccion-valor`).
+- **Rye** (`--font-numeros`): la tipografía de cartel, "a lo GTA San Andreas". Va en los títulos de sección (`.titulo-cartel`, `.noticias-titulo`), en el rótulo **El predio** de Instalaciones y en los números grandes y puntuales: el horario de Instalaciones (`.horario-hora`, 21 y 1:00), el marcador de partido (`.tp-marcador`), los goles (`.goles-num`), la fecha de la noticia (`.fecha-cartel`), la edición (`26/27`, `.ed-num`) y el `404`. Nunca en el cuerpo, la navegación ni el teléfono.
 
 El `<body>` lleva `data-pagina` con la sección activa (lo completa `assemble`, ver `lib/layout.js`). La regla de `base.css` pasa `.site-main` a Archivo salvo en `data-pagina="inicio"`, así la home queda intacta sin duplicar plantillas. Las cuatro familias se cargan desde Google Fonts en `_head.html`.
 

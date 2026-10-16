@@ -10,7 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { leerJSON, leerTexto, escribirArchivo, existe } from "./lib/utils.js";
-import { escapeHtml, slugify, formatFecha } from "./lib/texto.js";
+import { escapeHtml, slugify, formatFecha, partesFecha } from "./lib/texto.js";
 import { assemble, parsearPlantilla } from "./lib/layout.js";
 import { assetsRoot, slugEdicion, rutaPaginaEdicion, urlEdicionHermana, rutaAsset } from "./lib/rutas.js";
 import { tarjetaPartido, badge } from "./lib/render.js";
@@ -114,6 +114,7 @@ function generarManuscritas() {
     const { titulo, navActiva, contenido } = plantilla(nombre);
     const html = nombre === "instalaciones.html"
       ? rellenar(contenido, {
+          "<!-- KICKER -->": escapeHtml(sitio().ciudad),
           "<!-- DIRECCION -->": escapeHtml(sitio().contacto.direccion),
         })
       : contenido;
@@ -127,6 +128,7 @@ function generarContacto() {
   const c = sitio().contacto;
   const { titulo, navActiva, contenido } = plantilla("contacto.html");
   escribirPagina("contacto.html", titulo, navActiva, rellenar(contenido, {
+    "<!-- KICKER -->": "Lunes a viernes",
     "<!-- CONTACTO -->": `<ul class="contact-list" data-reveal>
       <li>Email: ${escapeHtml(c.email)}</li>
       <li>Teléfono: ${escapeHtml(c.telefono)}</li>
@@ -143,7 +145,7 @@ function generarEdiciones() {
     const rutaRel = rutaPaginaEdicion(torneo);
     const titulo = `${torneo.nombre} · Edición ${torneo.edicion}`;
     const contenido = rellenar(plantilla("torneo-edicion.html").contenido, {
-      "<!-- TITULO_EDICION -->": escapeHtml(titulo),
+      "<!-- TITULO_EDICION -->": `${escapeHtml(torneo.nombre)} · Edición <b class="ed-num">${escapeHtml(torneo.edicion)}</b>`,
       "<!-- INDICE_EDICIONES -->": selectorEdiciones(torneo, lista),
       "<!-- DATA_URL -->": `${assetsRoot(rutaRel)}data/torneos/${torneo.id}.json`,
     });
@@ -159,7 +161,7 @@ function selectorEdiciones(activo, lista) {
       const href = on ? "index.html" : urlEdicionHermana(t);
       const vigente = t.estado === "vigente" ? " · vigente" : "";
       return `<a class="tab${on ? " on" : ""}" href="${href}"${on ? ' aria-current="page"' : ""}>` +
-        `Edición ${escapeHtml(t.edicion)}${vigente}</a>`;
+        `Edición <b class="ed-num ed-num--sm">${escapeHtml(t.edicion)}</b>${vigente}</a>`;
     })
     .join("");
 }
@@ -171,6 +173,7 @@ function generarTorneosIndex() {
   const botones = Object.entries(grupos)
     .flatMap(([categoria, lista]) => lista.map((t) => botonEdicion(categoria, lista, t)));
   const contenido = rellenar(plantilla("torneos-index.html").contenido, {
+    "<!-- KICKER -->": kickerTemporada(),
     "<!-- CATEGORIAS -->": botones.length
       ? `<div class="torneos">${botones.join("\n")}</div>`
       : '<p class="nota-meta">Todavía no hay torneos cargados.</p>',
@@ -200,6 +203,7 @@ function generarNoticias() {
   const rutaRel = "noticias/index.html";
   const { titulo, navActiva, contenido } = plantilla("noticias-index.html");
   escribirPagina(rutaRel, titulo, navActiva, rellenar(contenido, {
+    "<!-- KICKER -->": kickerTemporada(),
     "<!-- LISTA_NOTICIAS -->": listaNoticias(profundidad(rutaRel)),
   }));
 
@@ -209,7 +213,7 @@ function generarNoticias() {
     escribirPagina(`noticias/${slug}.html`, `${n.titulo} | Club Atlético Gualeguay`, "noticias",
       rellenar(detalle.contenido, {
         "<!-- NOTICIA_TITULO -->": escapeHtml(n.titulo),
-        "<!-- NOTICIA_META -->": `${formatFecha(n.fecha)} · ${badge(n.categoria)}`,
+        "<!-- NOTICIA_META -->": `${fechaCartel(n.fecha)} ${badge(n.categoria)}`,
         "<!-- NOTICIA_IMAGEN -->": imagenNota(n, 1, { alt: n.titulo, lazy: false }),
         "<!-- NOTICIA_CONTENIDO -->": cuerpoNoticia(n),
       }));
@@ -230,6 +234,17 @@ function imagenNota(n, profundidad, { alt = "", lazy = true } = {}) {
     (lazy ? ` loading="lazy"` : "") + ">";
 }
 
+// Fecha "de cartel" de una noticia: el día en grande (tipo cartel, --font-numeros)
+// y el mes y el año chicos apilados al lado. Reemplaza al string suelto "3 de
+// octubre de 2026" en las tarjetas y en el detalle, para que la fecha sea una
+// pieza, no una línea de texto.
+function fechaCartel(iso) {
+  const { dia, mes, anio } = partesFecha(iso);
+  return `<span class="fecha-cartel"><b class="fc-dia">${dia}</b>` +
+    `<span class="fc-resto"><span class="fc-mes">${escapeHtml(mes)}</span>` +
+    `<span class="fc-anio">${anio}</span></span></span>`;
+}
+
 // Tarjeta de una nota (la comparten el listado y la home). Dos formas:
 //   - con foto propia: la foto va arriba, en una banda apaisada de 180 px;
 //   - sin foto: la portada por defecto (el trofeo) va como una placa vertical al
@@ -239,7 +254,7 @@ function imagenNota(n, profundidad, { alt = "", lazy = true } = {}) {
 // `conBadge` agrega la categoría al pie de la nota (solo el listado).
 function tarjetaNota(n, profundidad, { prefijoHref = "", conBadge = false } = {}) {
   const href = `${prefijoHref}${slugify(n.titulo)}-${n.id}.html`;
-  const meta = conBadge ? `${formatFecha(n.fecha)} ${badge(n.categoria)}` : formatFecha(n.fecha);
+  const meta = conBadge ? `${fechaCartel(n.fecha)} ${badge(n.categoria)}` : fechaCartel(n.fecha);
   const cuerpo = `<div class="tarjeta-nota-body">
         <h3><a href="${href}">${escapeHtml(n.titulo)}</a></h3>
         <p class="nota-meta">${meta}</p>
@@ -335,7 +350,7 @@ function hero() {
       <div class="hero-cuerpo">
         <img class="hero-escudo" src="${rutaAsset("assets/img/escudo-club.png", 0)}" alt="" width="110" height="110">
         <h1>${escapeHtml(primera)}<br>${escapeHtml(ultima)}</h1>
-        <p>${escapeHtml(s.ciudad)} — torneos de Fútbol 7, con sistema de doble eliminación.</p>
+        <p>${escapeHtml(s.ciudad)} — torneos de Fútbol 7.</p>
         <a class="btn" href="torneos/index.html">Ver torneos</a>
       </div>
       <div class="hero-velo" aria-hidden="true"></div>
@@ -427,12 +442,18 @@ function tarjetaVigente(torneo, lista) {
   return `
         <article data-reveal>
           <h2 class="home-torneo-titulo">
-            <a href="${url}">${nombre} · Edición ${escapeHtml(torneo.edicion)}</a>
+            <a href="${url}">${nombre} · Edición <b class="ed-num">${escapeHtml(torneo.edicion)}</b></a>
             ${torneo.estado === "vigente" ? badge("vigente", "vigente") : ""}
           </h2>
           ${seccion("Próximos partidos", tarjetas(data.proximosPartidos(torneo), torneo, 0), "Todavía no hay partidos programados.")}
           ${seccion("Resultados recientes", tarjetas(data.recientesPartidos(torneo), torneo, 0), "Todavía no hay resultados cargados.")}
         </article>`;
+}
+
+// El kicker de sección: la temporada vigente, en el mismo formato que usa el
+// club ("Temporada 26/27").
+function kickerTemporada() {
+  return `Temporada ${escapeHtml(sitio().edicionVigente.libres)}`;
 }
 
 function bloqueNoticias() {
@@ -442,7 +463,7 @@ function bloqueNoticias() {
 
   return `
     <section class="page">
-      <h2>Últimas noticias</h2>
+      <h2 class="titulo-cartel"><span class="titulo-kicker" aria-hidden="true">${kickerTemporada()}</span>Últimas noticias</h2>
       <div class="noticias-grid">${items || "<p>Todavía no hay noticias.</p>"}</div>
       <p><a href="noticias/index.html">Ver todas las noticias →</a></p>
     </section>`;

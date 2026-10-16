@@ -31,7 +31,7 @@ export function vistaCuadro(torneo, indice, profundidad) {
     .map(({ zona, partidos }) => zonaHTML(zona, partidos, baseRender(torneo, profundidad, zona)))
     .join("");
 
-  return `<h2>Cuadro · Ronda ${ronda.numero}</h2>` +
+  return `<h2>Cuadro · Ronda <b class="ed-num">${ronda.numero}</b></h2>` +
     `<div class="nav-ronda">${navRonda(i, rondas.length, ronda.numero)}</div>` +
     `<div class="zonas">${columnas}</div>`;
 }
@@ -39,7 +39,7 @@ export function vistaCuadro(torneo, indice, profundidad) {
 function navRonda(actual, total, numero) {
   const prev = `<button class="tab" type="button" data-ronda="-1" ${actual === 0 ? "disabled" : ""} aria-label="Ronda anterior">◀</button>`;
   const next = `<button class="tab" type="button" data-ronda="1" ${actual === total - 1 ? "disabled" : ""} aria-label="Ronda siguiente">▶</button>`;
-  return prev + `<span class="ronda-actual">Ronda ${numero}</span>` + next;
+  return prev + `<span class="ronda-actual">Ronda <b class="ed-num ed-num--sm">${numero}</b></span>` + next;
 }
 
 // --- Fixture: todas las rondas, partidos ordenados por fecha ---

@@ -152,12 +152,13 @@
   text-transform: uppercase;
   color: var(--color-texto-suave);
 }
-/* El número de edición con cifras tabulares: 26/27 se alinea con 25/26 si
-   mañana hay más de una edición por categoría. */
+/* El número de edición, ahora como estampa de cartel (--font-numeros):
+   26/27 se lee como el año del afiche. */
 .bt-num {
-  font-variant-numeric: tabular-nums lining-nums;
+  font-family: var(--font-numeros);
+  font-weight: 400;
+  font-size: 1.25em;
   color: var(--color-primario);
-  font-weight: 600;
 }
 .bt-flecha {
   color: var(--color-primario);
@@ -344,6 +345,89 @@
 }
 .tabla tr:nth-child(even) td { background: rgba(255, 255, 255, 0.04); }
 
+/* ===== Números cartel (Rye) =====
+   La display del horario de Instalaciones (--font-numeros) sale de ahí y se
+   usa en los pocos números del sitio que funcionan como cartel: el marcador
+   de un partido jugado, los goles del goleador, el número de edición y el
+   404. Siempre grandes, en amarillo y con un giro leve a propósito: puestos
+   "desordenados" pero siempre legibles. Nunca en texto corrido ni chico. */
+.tp-marcador {
+  font-family: var(--font-numeros);
+  font-size: clamp(1.4rem, 3.8vw, 1.75rem);
+  line-height: 1;
+  display: inline-block;
+  transform: rotate(-2deg);
+}
+.td-goles { text-align: right; }
+.tabla th:last-child { text-align: right; }
+.goles-num {
+  font-family: var(--font-numeros);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-primario);
+}
+/* El máximo goleador (primera fila, ya viene ordenado) pesa más que el resto. */
+.tabla tbody tr:first-child .goles-num { font-size: 2rem; }
+.ed-num {
+  font-family: var(--font-numeros);
+  font-weight: 400;
+  color: var(--color-primario);
+}
+.ed-num--sm { font-size: 1.1em; }
+
+/* La fecha de una noticia, como pieza de fanzine: el día en grande y el mes y
+   el año apilados al lado. Reemplaza al "3 de octubre de 2026" de una línea. */
+.fecha-cartel {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.fecha-cartel .fc-dia {
+  font-family: var(--font-numeros);
+  font-weight: 400;
+  font-size: 1.7rem;
+  line-height: 0.8;
+  color: var(--color-primario);
+  display: inline-block;
+  transform: rotate(-4deg);
+}
+.fecha-cartel .fc-resto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.6rem;
+  color: var(--color-texto-suave);
+}
+.fecha-cartel .fc-anio { letter-spacing: 0.18em; }
+
+/* Página no encontrada: el 404 como cartel grande, apenas girado. */
+.error-pagina { text-align: center; }
+.error-kicker {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.42em;
+  font-size: var(--fs-sm);
+  color: var(--color-primario);
+  margin: 0 0 var(--esp-2);
+}
+.error-codigo {
+  font-family: var(--font-numeros);
+  font-weight: 400;
+  font-size: clamp(5.5rem, 26vw, 12rem);
+  line-height: 0.9;
+  color: var(--color-primario);
+  transform: rotate(-3deg);
+  text-shadow: 0.06em 0.06em 0 rgba(0, 0, 0, 0.35);
+  margin: 0 0 var(--esp-5);
+}
+.error-texto {
+  color: var(--color-texto);
+  margin: 0 0 var(--esp-6);
+}
+
 /* ===== Estados vacío y error ===== */
 .estado {
   border: 2px dashed var(--color-borde);
@@ -370,19 +454,21 @@
   gap: var(--esp-7);
 }
 
-/* Título del listado: centrado, en mayúsculas, con la letra moderna (Space
-   Grotesk) y el acento amarillo del club debajo. Es lo único del sitio con esta
-   familia. Se pasa a mayúsculas por CSS (no en el HTML) para que un lector de
-   pantalla siga leyendo la palabra normal y no deletree las siglas. */
+/* ===== Títulos de sección en Rye =====
+   Los títulos de las páginas y de las secciones grandes van en la tipografía
+   de cartel (--font-numeros), la misma de los números "a lo GTA": Noticias,
+   Torneos, Instalaciones, Contacto y el "Últimas noticias" de la home. Se
+   pasan a mayúsculas por CSS (no en el HTML) para que un lector de pantalla
+   siga leyendo la palabra normal. */
 .noticias-titulo {
-  font-family: var(--font-titulo);
-  font-weight: 700;
-  font-size: clamp(2.5rem, 9vw, 5rem);
-  line-height: 1;
+  font-family: var(--font-numeros);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 8vw, 4.4rem);
+  line-height: 1.05;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   text-align: center;
-  margin: var(--esp-8) 0 var(--esp-9);
+  margin: 0 0 var(--esp-9);
 }
 .noticias-titulo::after {
   content: "";
@@ -391,6 +477,45 @@
   height: 4px;
   margin: var(--esp-5) auto 0;
   background: var(--color-primario);
+}
+
+/* El mismo tratamiento para el resto de los títulos de sección: los hero de
+   Torneos, Instalaciones y Contacto, y el "Últimas noticias" de la home. No
+   trae centrado propio: lo hereda del contenedor (el hero ya centra, la home
+   va a la izquierda). El selector de hero suma un nivel para ganarle al
+   font-size de .hero h1 en pantallas grandes. */
+.titulo-cartel {
+  font-family: var(--font-numeros);
+  font-weight: 400;
+  font-size: clamp(1.9rem, 6.5vw, 3.6rem);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.hero h1.titulo-cartel { font-size: clamp(1.9rem, 6.5vw, 3.6rem); }
+
+/* ===== Kicker de sección =====
+   La línea chica que va arriba del título, en la letra moderna (Space Grotesk)
+   y con el amarillo del club. Lleva un dato real de la página (la temporada, la
+   ciudad, los días de atención), no una etiqueta decorativa. */
+.titulo-kicker {
+  display: block;
+  font-family: var(--font-titulo);
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  line-height: 1.2;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--color-primario);
+  margin: 0 0 var(--esp-3);
+}
+/* Centrado cuando el título lo está pero el contenedor no (listado de Noticias). */
+.titulo-kicker--centrado { text-align: center; }
+/* En un hero el kicker es un acento: pisa la atenuación y el ancho de .hero p. */
+.hero .titulo-kicker {
+  max-width: none;
+  opacity: 1;
+  margin: 0 0 var(--esp-4);
 }
 
 /* Tarjeta (la comparten el listado de noticias y la home). */
@@ -403,8 +528,9 @@
 }
 
 /* ===== Marco amarillo animado de las tarjetas =====
-   Lo comparten todas las tarjetas del sitio: las de nota (.tarjeta-nota) y las
-   de partido y equipo (.tarjeta-partido). El marco son dos pseudoelementos en
+   Lo comparten todas las tarjetas del sitio: las de nota (.tarjeta-nota), las
+   de partido y equipo (.tarjeta-partido) y la tarjeta de servicios del predio
+   (.inst-servicios). El marco son dos pseudoelementos en
    z-index negativo: el ::before (el gradiente cónico amarillo que gira) queda
    detrás del ::after (la superficie maciza, recortada 3 px), así solo se ve el
    anillo del borde. Van en negativo para no posicionar el contenido: si el
@@ -413,7 +539,8 @@
    la foto. El isolation crea el contexto de apilado para que ese negativo no se
    escape detrás del fondo de la sección. */
 .tarjeta-nota,
-.tarjeta-partido {
+.tarjeta-partido,
+.inst-servicios {
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -426,7 +553,8 @@
   padding: calc(var(--esp-5) + 3px) calc(0.8rem + 3px);
 }
 .tarjeta-nota::before,
-.tarjeta-partido::before {
+.tarjeta-partido::before,
+.inst-servicios::before {
   content: "";
   position: absolute;
   inset: -150%;
@@ -442,7 +570,8 @@
   );
 }
 .tarjeta-nota::after,
-.tarjeta-partido::after {
+.tarjeta-partido::after,
+.inst-servicios::after {
   content: "";
   position: absolute;
   inset: 3px;
@@ -546,6 +675,10 @@ html.js-reveal [data-reveal].tarjeta-nota.visible:hover {
 }
 @media (prefers-reduced-motion: no-preference) {
   .tarjeta-nota::before {
+    animation: borde-nota 12s linear infinite;
+    will-change: transform;
+  }
+  .inst-servicios::before {
     animation: borde-nota 12s linear infinite;
     will-change: transform;
   }

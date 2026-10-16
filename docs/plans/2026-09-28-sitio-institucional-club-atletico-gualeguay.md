@@ -790,6 +790,12 @@ git commit -m "feat: páginas manuscritas Instalaciones, Contacto y 404"
 
 > **Actualización posterior (Instalaciones).** El hero dejó el verde (fuera de la paleta) por el azul del escudo con un foco amarillo (`.fondo-cancha`). El contenido se reorganizó en tres bloques (`.inst`): **El predio** (ahora con un plano cenital —cancha, accesos, cantina y baños— en `assets/img/predio-cenital.svg`), **Horarios** (de 21 a 1:00, sujeto a cambios, con los números en Rye, `--font-numeros`, estilo GTA San Andreas) y **Ubicación** (dirección en Space Grotesk + mapa). En PC van en columnas desparejas y corridas; en móvil, uno abajo del otro.
 
+> **Actualización posterior (títulos, kickers y predio).** Los títulos de sección —Noticias, Torneos (Fútbol 7), Instalaciones / Sede, Contacto y el "Últimas noticias" de la home— pasaron a la tipografía de cartel (Rye, `--font-numeros`). Arriba de cada uno va un *kicker* chico en Space Grotesk (`--font-titulo`) con un dato real (temporada, ciudad o días de atención). Se descartó el experimento de "fichas" para los textos largos: competían con los botones Libres/Veteranos y no se entendían; en Torneos el formato quedó en una frase ("dos derrotas y quedás afuera"). En Instalaciones, "El predio" ya no repite que hay una cancha con luz: los servicios —accesos, cantina y baños— van en una tarjeta pegada al plano, con el marco amarillo animado. Se eliminó `.inst-texto`.
+
+> **Actualización posterior (foto aérea del predio).** El plano cenital en SVG (`assets/img/predio-cenital.svg`) se reemplazó por una foto aérea real del predio (`assets/img/predio-aereo.jpg`, 1292×1218, comprimida a ~280 KB) en la que las entradas, la cantina y los baños están señalizados. El original sin optimizar queda en `recursos/`, que git ignora. La tarjeta de servicios de abajo sigue marcando Accesos, Cantina y Baños.
+
+> **Actualización posterior (El predio en cartel).** El rótulo **El predio** pasó a la tipografía de cartel (Rye, `--font-numeros`) y a un tamaño grande (`clamp(2.2rem, 8vw, 4.2rem)`), más que los otros bloques de Instalaciones (Horarios y Ubicación quedan en Oswald).
+
 ---
 
 ### Tarea 7: CSS — tokens, base y layout (móvil primero)

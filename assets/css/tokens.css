@@ -23,11 +23,13 @@
      una grotesca actual, en vez de la letra de sistema. Los títulos siguen en
      Oswald. El cuerpo de las notas queda en el tamaño chico de siempre. */
   --font-text-moderna: "Archivo", "Segoe UI", system-ui, sans-serif;
-  /* Título del listado de noticias: Space Grotesk, una grotesca actual, para
-     el único título del sitio que va centrado y moderno. */
+  /* La letra moderna de los acentos: el kicker chico sobre los títulos de
+     sección y la dirección de Instalaciones. Space Grotesk, una grotesca
+     actual. */
   --font-titulo: "Space Grotesk", "Archivo", system-ui, sans-serif;
-  /* Números "a lo GTA San Andreas" del horario de Instalaciones: Rye, una
-     display de cartel del Oeste, la más parecida al logo del juego. */
+  /* La tipografía de cartel "a lo GTA San Andreas": los números grandes
+     (horario, marcadores, goleadores, edición) y los títulos de sección. Rye,
+     una display del Oeste, la más parecida al logo del juego. */
   --font-numeros: "Rye", "Oswald", system-ui, serif;
   --fs-xs: 0.68rem;    /* etiquetas muy chicas (subtítulos de tarjeta) */
   --fs-sm: 0.8rem;     /* metadatos */
